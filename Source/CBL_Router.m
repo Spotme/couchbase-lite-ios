@@ -141,11 +141,16 @@
     if (outError)
         *outError = nil;
     NSString* value = [self query: param];
-    if (!value)
+    if (!value) {
         return nil;
+    }
+    //Add quotes tp startkey_docid and endkey_docid param values in order to fix parsing
+    if ([param isEqualToString:@"startkey_docid"] || [param isEqualToString:@"endkey_docid"]) {
+        value = [NSString stringWithFormat:@"\"%@\"", value];
+    }
     id result = [CBLJSON JSONObjectWithData: [value dataUsingEncoding: NSUTF8StringEncoding]
-                                   options: CBLJSONReadingAllowFragments
-                                     error: outError];
+                                    options: CBLJSONReadingAllowFragments
+                                      error: outError];
     if (!result)
         Warn(@"CBL_Router: invalid JSON in query param ?%@=%@", param, value);
     return result;
@@ -235,6 +240,12 @@
         if (error)
             return NO;
         options->endKey = [self retainQuery: [self jsonQuery: @"endkey" error: &error]];
+        if (error)
+            return NO;
+        options->startKeyDocID = [self retainQuery: [self jsonQuery: @"startkey_docid" error: &error]];
+        if (error)
+            return NO;
+        options->endKeyDocID = [self retainQuery: [self jsonQuery: @"endkey_docid" error: &error]];
         if (error)
             return NO;
     }
