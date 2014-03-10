@@ -192,7 +192,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
 
 
 - (BOOL) checkSSLCert {
-    SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
+    /*SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
                                                                   kCFStreamPropertySSLPeerTrust);
     if (sslTrust) {
         NSURL* url = CFBridgingRelease(CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
@@ -208,7 +208,8 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
                                          userInfo: nil];
             return NO;
         }
-    }
+    }*/
+    // FIXME: for now, always return YES for SSL Check, necessary for local nodes
     return YES;
 }
 
