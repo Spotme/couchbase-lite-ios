@@ -159,34 +159,34 @@ static void ClientCallback(SCNetworkReachabilityRef target,
 #if DEBUG
 
 static void runReachability( NSString* hostname ) {
-    Log(@"Test reachability of %@ ...", hostname);
+    LogMY(@"Test reachability of %@ ...", hostname);
     CBLReachability* r = [[CBLReachability alloc] initWithHostName: hostname];
     CAssert(r);
-    Log(@"CBLReachability = %@", r);
+    LogMY(@"CBLReachability = %@", r);
     CAssertEqual(r.hostName, hostname);
     __block BOOL resolved = NO;
     
     __weak CBLReachability *weakR = r;
     r.onChange = ^{
         CBLReachability *strongR = weakR;
-        Log(@"onChange: known=%d, flags=%x --> reachable=%d",
+        LogMY(@"onChange: known=%d, flags=%x --> reachable=%d",
             strongR.reachabilityKnown, strongR.reachabilityFlags, strongR.reachable);
-        Log(@"CBLReachability = %@", strongR);
+        LogMY(@"CBLReachability = %@", strongR);
         if (strongR.reachabilityKnown)
             resolved = YES;
     };
     CAssert([r start]);
 
     BOOL known = r.reachabilityKnown;
-    Log(@"Initially: known=%d, flags=%x --> reachable=%d", known, r.reachabilityFlags, r.reachable);
+    LogMY(@"Initially: known=%d, flags=%x --> reachable=%d", known, r.reachabilityFlags, r.reachable);
     if (!known) {
         while (!resolved) {
-            Log(@"waiting...");
+            LogMY(@"waiting...");
             [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
         }
     }
     [r stop];
-    Log(@"...done!");
+    LogMY(@"...done!");
 }
 
 TestCase(CBLReachability) {

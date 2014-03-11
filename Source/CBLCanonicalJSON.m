@@ -214,7 +214,7 @@ static NSComparisonResult compareCanonStrings( id s1, id s2, void *context) {
 
 static void roundtrip( id obj ) {
     NSData* json = [CBLCanonicalJSON canonicalData: obj];
-    Log(@"%@ --> `%@`", [obj description], [json my_UTF8ToString]);
+    LogMY(@"%@ --> `%@`", [obj description], [json my_UTF8ToString]);
     NSError* error;
     id reconstituted = [NSJSONSerialization JSONObjectWithData: json options:NSJSONReadingAllowFragments error: &error];
     CAssert(reconstituted, @"Canonical JSON `%@` was unparseable: %@",
@@ -229,7 +229,7 @@ static void roundtripFloat( double n ) {
     CAssert(reconstituted, @"`%@` was unparseable: %@",
             [json my_UTF8ToString], error);
     double delta = [reconstituted doubleValue] / n - 1.0;
-    Log(@"%g --> `%@` (error = %g)", n, [json my_UTF8ToString], delta);
+    LogMY(@"%g --> `%@` (error = %g)", n, [json my_UTF8ToString], delta);
     CAssert(fabs(delta) < 1.0e-15, @"`%@` had floating point roundoff error of %g (%g vs %g)",
             [json my_UTF8ToString], delta, [reconstituted doubleValue], n);
 }

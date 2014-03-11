@@ -73,7 +73,7 @@
     // work, but it has to block until that work is done, because UIApplication requires
     // background tasks to be registered before the notification handler returns; otherwise the app
     // simply suspends itself.
-    Log(@"APP BACKGROUNDING");
+    LogMY(@"APP BACKGROUNDING");
     [self.db doSync: ^{
         if (self.active) {
             _bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler: ^{
@@ -98,7 +98,7 @@
 
 - (void) appForegrounding: (NSNotification*)n {
     // Danger: This is called on the main thread!
-    Log(@"APP FOREGROUNDING");
+    LogMY(@"APP FOREGROUNDING");
     [self.db doAsync: ^{
         if (_bgTask != UIBackgroundTaskInvalid) {
             LogTo(Sync, @"%@: App returning to foreground (bgTask=%lu)", self, (unsigned long)_bgTask);

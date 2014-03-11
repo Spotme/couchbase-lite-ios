@@ -128,7 +128,7 @@ static CBLDatabase* reopenTestDB(CBLDatabase* db) {
 
 - (void) didLoadFromDocument {
     self.reloadCount++;
-    Log(@"reloadCount = %u",self.reloadCount);
+    LogMY(@"reloadCount = %u",self.reloadCount);
 }
 
 + (Class) othersItemClass {
@@ -211,7 +211,7 @@ TestCase(API_ModelDynamicProperties) {
     CAssertEqual(model.strings, strings);
     CAssertEqual(model.data, data);
 
-    Log(@"Model: %@", [CBLJSON stringWithJSONObject: model.propertiesToSave options: 0 error: NULL]);
+    LogMY(@"Model: %@", [CBLJSON stringWithJSONObject: model.propertiesToSave options: 0 error: NULL]);
 }
 
 

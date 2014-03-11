@@ -255,7 +255,7 @@
                 return NO;
             }
         }
-        Log(@"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
+        LogMY(@"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
             self, authorization, authResponse);
         errorInfo = $dict({@"HTTPAuthorization", authorization},
                           {@"HTTPAuthenticateHeader", authResponse});

@@ -329,9 +329,9 @@ TestCase(CBL_URLProtocol) {
                                          returningResponse: &response 
                                                      error: &error];
     NSString* bodyStr = [[NSString alloc] initWithData: body encoding: NSUTF8StringEncoding];
-    Log(@"Response = %@", response);
-    Log(@"MIME Type = %@", response.MIMEType);
-    Log(@"Body = %@", bodyStr);
+    LogMY(@"Response = %@", response);
+    LogMY(@"MIME Type = %@", response.MIMEType);
+    LogMY(@"Body = %@", bodyStr);
     CAssert(body != nil);
     CAssert(response != nil);
     CAssertEq(response.statusCode, kCBLStatusOK);

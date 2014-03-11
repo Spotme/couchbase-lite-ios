@@ -222,7 +222,7 @@
                                                  appropriateForURL: parentURL
                                                  create: YES error: &error];
         _tempDir = [tempDirURL.path copy];
-        Log(@"CBL_BlobStore %@ created tempDir %@", _path, _tempDir);
+        LogMY(@"CBL_BlobStore %@ created tempDir %@", _path, _tempDir);
         if (!_tempDir)
             Warn(@"CBL_BlobStore: Unable to create temp dir: %@", error);
 #endif

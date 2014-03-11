@@ -131,7 +131,7 @@ TestCase(CBLMultipartDownloader) {
      {
          CAssertNil(error);
          CBLMultipartDownloader* request = result;
-         Log(@"Got document: %@", request.document);
+         LogMY(@"Got document: %@", request.document);
          NSDictionary* attachments = (request.document)[@"_attachments"];
          CAssert(attachments.count >= 1);
          CAssertEq(db.attachmentStore.count, 0u);
@@ -140,7 +140,7 @@ TestCase(CBLMultipartDownloader) {
              CAssert(writer);
              CAssert([writer install]);
              NSData* blob = [db.attachmentStore blobForKey: writer.blobKey];
-             Log(@"Found %u bytes of data for attachment %@", (unsigned)blob.length, attachment);
+             LogMY(@"Found %u bytes of data for attachment %@", (unsigned)blob.length, attachment);
              NSNumber* lengthObj = attachment[@"encoded_length"] ?: attachment[@"length"];
              CAssertEq(blob.length, [lengthObj unsignedLongLongValue]);
              CAssertEq(writer.length, blob.length);

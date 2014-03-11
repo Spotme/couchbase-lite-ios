@@ -727,7 +727,7 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
     NSInteger numDeleted = [_attachments deleteBlobsExceptWithKeys: allKeys];
     if (numDeleted < 0)
         return kCBLStatusAttachmentError;
-    Log(@"Deleted %d attachments", (int)numDeleted);
+    LogMY(@"Deleted %d attachments", (int)numDeleted);
     return kCBLStatusOK;
 }
 

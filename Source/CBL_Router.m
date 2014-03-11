@@ -434,7 +434,7 @@ static NSArray* splitPath( NSURL* url ) {
     // Send myself a message based on the components:
     SEL sel = NSSelectorFromString(message);
     if (!sel || ![self respondsToSelector: sel]) {
-        Log(@"CBL_Router: unknown request type: %@ %@ (mapped to %@)",
+        LogMY(@"CBL_Router: unknown request type: %@ %@ (mapped to %@)",
              _request.HTTPMethod, _request.URL.path, message);
         Assert([self respondsToSelector: @selector(do_GETRoot)],
                @"CBL_Router(Handlers) is missing -- app may be linked without -ObjC linker flag.");

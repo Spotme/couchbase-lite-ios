@@ -67,7 +67,7 @@ NSURL* RemoteTestDBURL(NSString* dbName) {
             Assert(password, @"Didn't setenv CBL_TEST_PASSWORD");
             Assert(realm, @"Didn't setenv CBL_TEST_REALM");
             AddTemporaryCredential(server, realm, username, password);
-            Log(@"Registered credentials for %@ as %@  (realm %@)", urlStr, username, realm);
+            LogMY(@"Registered credentials for %@ as %@  (realm %@)", urlStr, username, realm);
         }
     });
 
@@ -99,7 +99,7 @@ static id<CBLAuthorizer> authorizer(void) {
 
 
 void DeleteRemoteDB(NSURL* dbURL) {
-    Log(@"Deleting %@", dbURL);
+    LogMY(@"Deleting %@", dbURL);
     __block NSError* error = nil;
     __block BOOL finished = NO;
     CBLRemoteRequest* request = [[CBLRemoteRequest alloc] initWithMethod: @"DELETE"
@@ -135,7 +135,7 @@ static NSString* replic8(CBLDatabase* db, NSURL* remote, BOOL push,
     [repl start];
     
     CAssert(repl.running);
-    Log(@"Waiting for replicator to finish...");
+    LogMY(@"Waiting for replicator to finish...");
     while (repl.running || repl.savingCheckpoint) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
                                       beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]])
@@ -145,7 +145,7 @@ static NSString* replic8(CBLDatabase* db, NSURL* remote, BOOL push,
     CAssert(!repl.savingCheckpoint);
     CAssertNil(repl.error);
     CAssert(!repl.active);
-    Log(@"...replicator finished. lastSequence=%@", repl.lastSequence);
+    LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
     return repl.lastSequence;
 }
 
@@ -163,7 +163,7 @@ static NSString* replic8Continuous(CBLDatabase* db, NSURL* remote,
 
     // Start the replicator and wait for it to go active, then inactive:
     CAssert(repl.running);
-    Log(@"Waiting for replicator to go idle...");
+    LogMY(@"Waiting for replicator to go idle...");
     bool wasActive = repl.active;
     while (repl.running || repl.savingCheckpoint) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
@@ -178,7 +178,7 @@ static NSString* replic8Continuous(CBLDatabase* db, NSURL* remote,
     CAssert(!repl.savingCheckpoint);
     CAssert(repl.running);
     CAssertNil(repl.error);
-    Log(@"...replicator finished. lastSequence=%@", repl.lastSequence);
+    LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
     NSString* result = repl.lastSequence;
     [repl stop];
     return result;
@@ -193,8 +193,8 @@ TestCase(CBL_Pusher) {
     
     __block int filterCalls = 0;
     [db setFilterNamed: @"filter" asBlock: ^BOOL(CBLSavedRevision *revision, NSDictionary* params) {
-        Log(@"Test filter called with params = %@", params);
-        Log(@"Rev = %@, properties = %@", revision, revision.properties);
+        LogMY(@"Test filter called with params = %@", params);
+        LogMY(@"Rev = %@, properties = %@", revision, revision.properties);
         CAssert(revision.properties);
         ++filterCalls;
         return YES;
@@ -256,7 +256,7 @@ TestCase(CBL_Puller) {
     CAssertEq(db.lastSequenceNumber, 3);
     
     // Replicate again; should complete but add no revisions:
-    Log(@"Second replication, should get no more revs:");
+    LogMY(@"Second replication, should get no more revs:");
     replic8(db, RemoteTestDBURL(kScratchDBName), NO, nil, nil);
     CAssertEq(db.lastSequenceNumber, 3);
     
@@ -292,7 +292,7 @@ TestCase(CBL_Puller_Continuous) {
     CAssertEq(db.lastSequenceNumber, 3);
 
     // Replicate again; should complete but add no revisions:
-    Log(@"Second replication, should get no more revs:");
+    LogMY(@"Second replication, should get no more revs:");
     replic8Continuous(db, remoteURL, NO, nil);
     CAssertEq(db.lastSequenceNumber, 3);
 
@@ -332,7 +332,7 @@ TestCase(CBL_Puller_DocIDs) {
     
     // Let the replicator run.
     CAssert(repl.running);
-    Log(@"Waiting for replicator to finish...");
+    LogMY(@"Waiting for replicator to finish...");
     while (repl.running || repl.savingCheckpoint) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
                                       beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]])
@@ -341,18 +341,18 @@ TestCase(CBL_Puller_DocIDs) {
     CAssert(!repl.running);
     CAssert(!repl.savingCheckpoint);
     CAssertNil(repl.error);
-    Log(@"...replicator finished. lastSequence=%@", repl.lastSequence);
+    LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
     id lastSeq = repl.lastSequence;
     
     CAssertEqual(lastSeq, @1);
     
-    Log(@"GOT DOCS: %@", [db getAllDocs:nil]);
+    LogMY(@"GOT DOCS: %@", [db getAllDocs:nil]);
     
     CAssertEq(db.documentCount, 1u);
     CAssertEq(db.lastSequenceNumber, 2);
     
     // Replicate again; should complete but add no revisions:
-    Log(@"Second replication, should get no more revs:");
+    LogMY(@"Second replication, should get no more revs:");
     replic8(db, RemoteTestDBURL(kScratchDBName), NO, nil, nil);
     CAssertEq(db.lastSequenceNumber, 3);
     
@@ -427,7 +427,7 @@ TestCase(CBL_Puller_FromCouchApp) {
     for (NSString* name in attachments) { 
         NSDictionary* attachment = attachments[name];
         NSData* data = [CBLBase64 decode: attachment[@"data"]];
-        Log(@"Attachment %@: %u bytes", name, (unsigned)data.length);
+        LogMY(@"Attachment %@: %u bytes", name, (unsigned)data.length);
         CAssert(data);
         CAssertEq([data length], [attachment[@"length"] unsignedLongLongValue]);
     }

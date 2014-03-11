@@ -181,7 +181,7 @@
         if (![key hasPrefix: @"_"]  || [sSpecialKeysToLeave member: key]) {
             properties[key] = origProps[key];
         } else if (![sSpecialKeysToRemove member: key]) {
-            Log(@"CBLDatabase: Invalid top-level key '%@' in document to be inserted", key);
+            LogMY(@"CBLDatabase: Invalid top-level key '%@' in document to be inserted", key);
             return nil;
         }
     }
@@ -621,27 +621,27 @@
 - (CBLStatus) compact {
     // Can't delete any rows because that would lose revision tree history.
     // But we can remove the JSON of non-current revisions, which is most of the space.
-    Log(@"CBLDatabase: Deleting JSON of old revisions...");
+    LogMY(@"CBLDatabase: Deleting JSON of old revisions...");
     if (![_fmdb executeUpdate: @"UPDATE revs SET json=null WHERE current=0"])
         return self.lastDbError;
 
-    Log(@"Deleting old attachments...");
+    LogMY(@"Deleting old attachments...");
     CBLStatus status = [self garbageCollectAttachments];
 
-    Log(@"Flushing SQLite WAL...");
+    LogMY(@"Flushing SQLite WAL...");
     if (![_fmdb executeUpdate: @"PRAGMA wal_checkpoint(RESTART)"])
         return self.lastDbError;
 
-    Log(@"Vacuuming SQLite database...");
+    LogMY(@"Vacuuming SQLite database...");
     if (![_fmdb executeUpdate: @"VACUUM"])
         return self.lastDbError;
 
-    Log(@"Closing and re-opening database...");
+    LogMY(@"Closing and re-opening database...");
     [_fmdb close];
     if (![self openFMDB: nil])
         return self.lastDbError;
 
-    Log(@"...Finished database compaction.");
+    LogMY(@"...Finished database compaction.");
     return status;
 }
 

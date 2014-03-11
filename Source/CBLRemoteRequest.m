@@ -342,7 +342,7 @@ static void WarnUntrustedCert(NSString* host, SecTrustRef trust) {
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     if (WillLog()) {
         if (!(_dontLog404 && error.code == kCBLStatusNotFound && $equal(error.domain, CBLHTTPErrorDomain)))
-            Log(@"%@: Got error %@", self, error);
+            LogMY(@"%@: Got error %@", self, error);
     }
     
     // If the error is likely transient, retry:

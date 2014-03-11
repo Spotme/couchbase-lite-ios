@@ -338,7 +338,7 @@ TestCase(CBLMultipartReader_Simple) {
                                       $dict()];
 
     for (NSUInteger chunkSize = 1; chunkSize <= mime.length; ++chunkSize) {
-        Log(@"--- chunkSize = %u", (unsigned)chunkSize);
+        LogMY(@"--- chunkSize = %u", (unsigned)chunkSize);
         TestMultipartReaderDelegate* delegate = [[TestMultipartReaderDelegate alloc] init];
         CBLMultipartReader* reader = [[CBLMultipartReader alloc] initWithContentType: @"multipart/related; boundary=\"BOUNDARY\"" delegate: delegate];
         CAssert(!reader.finished);

@@ -231,7 +231,7 @@ static CBLManager* sInstance;
         NSString* oldPath = [_dir stringByAppendingPathComponent: filename];
         NSString* newPath = [oldPath.stringByDeletingPathExtension
                                             stringByAppendingPathExtension: kDBExtension];
-        Log(@"Renaming old database file %@", oldPath);
+        LogMY(@"Renaming old database file %@", oldPath);
         for (NSString* suffix in @[@"", @"-wal", @"-shm"]) {
             NSError* error;
             BOOL ok = [[NSFileManager defaultManager]

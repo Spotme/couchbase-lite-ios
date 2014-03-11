@@ -544,13 +544,13 @@
         if (_longpoll) {
             [changes addObject: rev];
         } else {
-            Log(@"CBL_Router: Sending continous change chunk");
+            LogMY(@"CBL_Router: Sending continous change chunk");
             [self sendContinuousLine: [self changeDictForRev: rev]];
         }
     }
 
     if (_longpoll && changes.count > 0) {
-        Log(@"CBL_Router: Sending longpoll response");
+        LogMY(@"CBL_Router: Sending longpoll response");
         [self sendResponseHeaders];
         NSDictionary* body = [self responseBodyForChanges: changes since: 0];
         _response.body = [CBL_Body bodyWithProperties: body];

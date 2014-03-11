@@ -570,7 +570,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
                 Warn(@"%@: Db busy, too many retries, giving up", self);
                 break;
             }
-            Log(@"%@: Db busy, retrying transaction (#%d)...", self, retries);
+            LogMY(@"%@: Db busy, retrying transaction (#%d)...", self, retries);
             [NSThread sleepForTimeInterval: kTransactionRetryDelay];
         }
     } while (status == kCBLStatusDBBusy);

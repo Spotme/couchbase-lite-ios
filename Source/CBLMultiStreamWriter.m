@@ -324,7 +324,7 @@ static CBLMultiStreamWriter* createWriter(unsigned bufSize) {
 
 TestCase(CBLMultiStreamWriter_Sync) {
     for (unsigned bufSize = 1; bufSize < 128; ++bufSize) {
-        Log(@"Buffer size = %u", bufSize);
+        LogMY(@"Buffer size = %u", bufSize);
         CBLMultiStreamWriter* mp = createWriter(bufSize);
         NSData* outputBytes = [mp allOutput];
         CAssertEqual(outputBytes.my_UTF8ToString, kExpectedOutputString);
@@ -361,19 +361,19 @@ TestCase(CBLMultiStreamWriter_Sync) {
     AssertEq(stream, _stream);
     switch (event) {
         case NSStreamEventOpenCompleted:
-            Log(@"NSStreamEventOpenCompleted");
+            LogMY(@"NSStreamEventOpenCompleted");
             break;
         case NSStreamEventHasBytesAvailable: {
-            Log(@"NSStreamEventHasBytesAvailable");
+            LogMY(@"NSStreamEventHasBytesAvailable");
             uint8_t buffer[10];
             NSInteger length = [_stream read: buffer maxLength: sizeof(buffer)];
-            Log(@"    read %d bytes", (int)length);
+            LogMY(@"    read %d bytes", (int)length);
             //Assert(length > 0);
             [_output appendBytes: buffer length: length];
             break;
         }
         case NSStreamEventEndEncountered:
-            Log(@"NSStreamEventEndEncountered");
+            LogMY(@"NSStreamEventEndEncountered");
             _finished = YES;
             break;
         default:
@@ -390,16 +390,16 @@ TestCase(CBLMultiStreamWriter_Async) {
     CBLMultiStreamWriterTester *tester = [[CBLMultiStreamWriterTester alloc] initWithStream: input];
     NSRunLoop* rl = [NSRunLoop currentRunLoop];
     [input scheduleInRunLoop: rl forMode: NSDefaultRunLoopMode];
-    Log(@"Opening stream");
+    LogMY(@"Opening stream");
     [input open];
     
     while (!tester->_finished) {
-        Log(@"...waiting for stream...");
+        LogMY(@"...waiting for stream...");
         [[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]];
     }
 
     [input removeFromRunLoop: rl forMode: NSDefaultRunLoopMode];
-    Log(@"Closing stream");
+    LogMY(@"Closing stream");
     [input close];
     [writer close];
     CAssertEqual(tester->_output.my_UTF8ToString, @"<part the first, let us make it a bit longer for greater interest><2nd part, again unnecessarily prolonged for testing purposes beyond any reasonable length...>");

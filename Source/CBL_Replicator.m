@@ -362,7 +362,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 - (void) stopped {
     LogTo(Sync, @"%@ STOPPED", self);
-    Log(@"Replication: %@ took %.3f sec; error=%@",
+    LogMY(@"Replication: %@ took %.3f sec; error=%@",
         self, CFAbsoluteTimeGetCurrent()-_startTime, _error);
 #if TARGET_OS_IPHONE
     [self endBackgrounding];

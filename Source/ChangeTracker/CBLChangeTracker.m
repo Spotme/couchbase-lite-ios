@@ -190,7 +190,7 @@
         NSTimeInterval retryDelay = kInitialRetryDelay * (1 << MIN(_retryCount, 16U));
         retryDelay = MIN(retryDelay, kMaxRetryDelay);
         ++_retryCount;
-        Log(@"%@: Connection error #%d, retrying in %.1f sec: %@",
+        LogMY(@"%@: Connection error #%d, retrying in %.1f sec: %@",
             self, _retryCount, retryDelay, error.localizedDescription);
         [self retryAfterDelay: retryDelay];
     } else {
