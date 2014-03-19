@@ -128,16 +128,41 @@ NSString* CBLEscapeID( NSString* docOrRevID ) {
     docOrRevID = [docOrRevID stringByReplacingOccurrencesOfString: @"/" withString: @"%2F"];
     return docOrRevID;
 #else
+    NSString* unescapedPrefix = nil;
+    NSString* substrToEscape = nil;
+    
+    if ([docOrRevID hasPrefix:@"_design/"] || [docOrRevID hasPrefix:@"_local/"]) {
+        NSRange firstBackslash = [docOrRevID rangeOfString:@"/"];
+        if (firstBackslash.location != NSNotFound) { // just in case
+            substrToEscape = [docOrRevID substringFromIndex: firstBackslash.location + 1];
+            unescapedPrefix = [docOrRevID substringToIndex: firstBackslash.location + 1];
+        }
+    } else {
+        substrToEscape = docOrRevID;
+    }
+    
     CFStringRef escaped = CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                  (CFStringRef)docOrRevID,
+                                                                  (CFStringRef)substrToEscape,
                                                                   NULL, (CFStringRef)@"?&/",
                                                                   kCFStringEncodingUTF8);
-    #ifdef __OBJC_GC__
-    return NSMakeCollectable(escaped);
-    #else
-    return (__bridge_transfer NSString *)escaped;
-    #endif
-
+    
+    if (unescapedPrefix) {
+        NSString *result = [unescapedPrefix stringByAppendingString:(__bridge_transfer NSString *)escaped];
+        
+        #ifdef __OBJC_GC__
+        NSMakeCollectable(escaped);
+        #else
+        //CFRelease(escaped); // FIXME: figure out why it crashes the app if uncommented
+        #endif
+        
+        return result;
+    } else {
+        #ifdef __OBJC_GC__
+        return NSMakeCollectable(escaped);
+        #else
+        return (__bridge_transfer NSString *)escaped;
+        #endif
+    }
 #endif
 }
 
