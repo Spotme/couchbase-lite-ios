@@ -230,7 +230,6 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
 - (NSArray*) replicationsWithURL: (NSURL*)otherDbURL exclusively: (bool)exclusively
         __attribute__((deprecated("call replicationToURL: and replicationFromURL:")));
 #endif
-
 @end
 
 

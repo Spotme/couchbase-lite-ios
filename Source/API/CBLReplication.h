@@ -130,6 +130,8 @@ typedef enum {
         root certs; if YES, it replaces them (so *only* the given certs will be trusted.) */
 + (void) setAnchorCerts: (NSArray*)certs onlyThese: (BOOL)onlyThese;
 
+#pragma mark -  SSL Check
++ (void) setShouldCheckSSL:(BOOL)shouldCheckSSL;
 
 #pragma mark - STATUS:
 

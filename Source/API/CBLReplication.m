@@ -397,4 +397,10 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
 - (unsigned) total      {return self.changesCount;}
 #endif
 
+
+
+#pragma mark - should check SSL
++ (void)setShouldCheckSSL:(BOOL)shouldCheckSSL {
+    [CBL_Replicator setShouldCheckSSL:shouldCheckSSL];
+}
 @end

@@ -269,7 +269,7 @@ static void WarnUntrustedCert(NSString* host, SecTrustRef trust) {
             ok = (SecTrustEvaluate(trust, &result) == noErr) &&
                     (result==kSecTrustResultProceed || result==kSecTrustResultUnspecified);
         }
-        if (ok) {
+        if (ok || ![CBL_Replicator shouldCheckSSL]) {
             LogTo(RemoteRequest, @"    useCredential for trust: %@", trust);
             [sender useCredential: [NSURLCredential credentialForTrust: trust]
                     forAuthenticationChallenge: challenge];
@@ -283,7 +283,6 @@ static void WarnUntrustedCert(NSString* host, SecTrustRef trust) {
         [sender performDefaultHandlingForAuthenticationChallenge: challenge];
     }
 }
-
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     _status = (int) ((NSHTTPURLResponse*)response).statusCode;
