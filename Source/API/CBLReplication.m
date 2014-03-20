@@ -290,11 +290,11 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
         changed = YES;
     }
     if (changesProcessed != _completedChangesCount) {
-        self.completedChangesCount = changesProcessed;
+        self.completedChangesCount = (unsigned int)changesProcessed;
         changed = YES;
     }
     if (changesTotal != _changesCount) {
-        self.changesCount = changesTotal;
+        self.changesCount = (unsigned int)changesTotal;
         changed = YES;
     }
     if (changed) {

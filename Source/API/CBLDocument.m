@@ -55,8 +55,9 @@ NSString* const kCBLDocumentChangeNotification = @"CBLDocumentChange";
 #if ! CBLCACHE_IS_SMART
 - (void)dealloc
 {
-    if (_modelObject)
-        Warn(@"Deallocing %@ while it still has a modelObject %@", self, _modelObject);
+    id modelObject = _modelObject;
+    if (modelObject)
+        Warn(@"Deallocing %@ while it still has a modelObject %@", self, modelObject);
     [_owningCache resourceBeingDealloced: self];
 }
 #endif
