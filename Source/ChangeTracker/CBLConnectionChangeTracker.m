@@ -22,20 +22,7 @@
 #import "CBLStatus.h"
 #import "MYURLUtils.h"
 
-
-//static NSURL* AddDotToURLHost( NSURL* url );
-//static SecTrustRef CopyTrustWithPolicy(SecTrustRef trust, SecPolicyRef policy);
-
-
 @implementation CBLConnectionChangeTracker
-
-//- (NSURL*) changesFeedURL {
-//    // Really ugly workaround for CFNetwork, to make sure that long-running connections like these
-//    // don't end up using the same socket pool as regular connections to the same host; otherwise
-//    // the regular connections can get stuck indefinitely behind a long-running one.
-//    // (This substitution appends a "." to the host name, if it didn't already end with one.)
-//    return AddDotToURLHost([super changesFeedURL]);
-//}
 
 - (BOOL) start {
     if(_connection)
@@ -47,13 +34,6 @@
     request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     //request.timeoutInterval = 6.02e23;
     
-    //// Override the default Host: header to use the hostname _without_ the "." suffix
-    //// (the suffix appears to confuse Cloudant / BigCouch's HTTP server.)
-    //NSString* host = _databaseURL.host;
-    //if (_databaseURL.port)
-    //    host = [host stringByAppendingFormat: @":%@", _databaseURL.port];
-    //[request setValue: host forHTTPHeaderField: @"Host"];
-
     // Add authorization:
     if (_authorizer) {
         [request setValue: [_authorizer authorizeURLRequest: request forRealm: nil]
@@ -111,99 +91,6 @@
     [self start];
     return true;
 }
-
-
-// TODO understand what this method does and if we still need it
-//- (void)connection:(NSURLConnection *)connection
-//        willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-//{
-//    id<NSURLAuthenticationChallengeSender> sender = challenge.sender;
-//    NSURLProtectionSpace* space = challenge.protectionSpace;
-//    NSString* authMethod = space.authenticationMethod;
-//
-//    // Is this challenge for the DB hostname with the "." appended (the one in the URL request)?
-//    BOOL challengeIsForDottedHost = NO;
-//    NSString* host = space.host;
-//    if ([host hasSuffix: @"."] && !space.isProxy) {
-//        NSString* hostWithoutDot = [host substringToIndex: host.length - 1];
-//        challengeIsForDottedHost = ([hostWithoutDot caseInsensitiveCompare: _databaseURL.host] == 0);
-//    }
-//
-//    if ($equal(authMethod, NSURLAuthenticationMethodServerTrust)) {
-//        // Verify trust of SSL server cert:
-//        SecTrustRef trust = challenge.protectionSpace.serverTrust;
-//        if (challengeIsForDottedHost) {
-//            // Update the policy with the correct original hostname (without the "." suffix):
-//            host = _databaseURL.host;
-//            SecPolicyRef policy = SecPolicyCreateSSL(YES, (__bridge CFStringRef)host);
-//            trust = CopyTrustWithPolicy(trust, policy);
-//            CFRelease(policy);
-//        } else {
-//            CFRetain(trust);
-//        }
-//        if ([TDRemoteRequest checkTrust: trust forHost: host]) {
-//            [sender useCredential: [NSURLCredential credentialForTrust: trust]
-//                    forAuthenticationChallenge: challenge];
-//        } else {
-//            [sender cancelAuthenticationChallenge: challenge];
-//        }
-//        CFRelease(trust);
-//        return;
-//    }
-//
-//    _challenged = true;
-//    
-//    NSURLCredential* cred = nil;
-//    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
-//        // Look up a credential for the original hostname without the "." suffix:
-//        host = _databaseURL.host;
-//        NSURLProtectionSpace* newSpace = [[NSURLProtectionSpace alloc]
-//                                                   initWithHost: host
-//                                                           port: space.port
-//                                                       protocol: space.protocol
-//                                                          realm: space.realm
-//                                           authenticationMethod: space.authenticationMethod];
-//        NSURLCredentialStorage* storage = [NSURLCredentialStorage sharedCredentialStorage];
-//        NSString* username = _databaseURL.user;
-//        if (username)
-//            cred = [[storage credentialsForProtectionSpace: newSpace] objectForKey: username];
-//        else
-//            cred = [storage defaultCredentialForProtectionSpace: newSpace];
-//        [newSpace release];
-//    }
-//
-//    NSURLCredential* proposedCredential = challenge.proposedCredential;
-//    if (proposedCredential) {
-//        // Use the proposed credential unless the username doesn't match the one we want:
-//        if (!cred || [cred.user isEqualToString: proposedCredential.user]) {
-//            LogTo(ChangeTracker, @"%@: Using proposed credential '%@' for "
-//                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//                  self, proposedCredential.user, host, (int)space.port, space.protocol, space.realm,
-//                  space.authenticationMethod);
-//            [sender performDefaultHandlingForAuthenticationChallenge: challenge];
-//            return;
-//        }
-//    }
-//    
-//    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
-//        if (cred) {
-//            // Found a credential, so use it:
-//            LogTo(ChangeTracker, @"%@: Using credential '%@' for "
-//                                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//                self, cred.user, host, (int)space.port, space.protocol, space.realm,
-//                space.authenticationMethod);
-//            [sender useCredential: cred forAuthenticationChallenge: challenge];
-//            return;
-//        }
-//    }
-//    
-//    // Give up:
-//    Log(@"%@: Continuing without credential for {host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//        self, host, (int)space.port, space.protocol, space.realm,
-//        space.authenticationMethod);
-//    [sender continueWithoutCredentialForAuthenticationChallenge: challenge];
-//}
-
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     CBLStatus status = (CBLStatus) ((NSHTTPURLResponse*)response).statusCode;
@@ -283,66 +170,3 @@
 
 
 @end
-
-//static SecTrustRef CopyTrustWithPolicy(SecTrustRef trust, SecPolicyRef policy) {
-//#if TARGET_OS_IPHONE
-//    CFIndex nCerts = SecTrustGetCertificateCount(trust);
-//    CFMutableArrayRef certs = CFArrayCreateMutable(NULL, nCerts, &kCFTypeArrayCallBacks);
-//    for (CFIndex i = 0; i < nCerts; ++i)
-//        CFArrayAppendValue(certs, SecTrustGetCertificateAtIndex(trust, i));
-//    OSStatus err = SecTrustCreateWithCertificates(certs, policy, &trust);
-//    CAssertEq(err, noErr);
-//    return trust;
-//#else
-//    SecTrustSetPolicies(trust, policy);
-//    CFRetain(trust);
-//    return trust;
-//#endif
-//}
-//
-//
-//static NSURL* AddDotToURLHost( NSURL* url ) {
-//    CAssert(url);
-//    UInt8 urlBytes[1024];
-//    CFIndex nBytes = CFURLGetBytes((CFURLRef)url, urlBytes, sizeof(urlBytes) - 1);
-//    if (nBytes > 0) {
-//        CFRange range;
-//        CFURLGetByteRangeForComponent((CFURLRef)url, kCFURLComponentHost, &range);
-//        if (range.length >= 2) {
-//            CFIndex end = range.location + range.length - 1;
-//            if (urlBytes[end] == '/' || urlBytes[end] == ':')
-//                --end;
-//            if (isalpha(urlBytes[end])) {
-//                // Alright, insert the '.' after end:
-//                memmove(&urlBytes[end+2], &urlBytes[end+1], nBytes - end);
-//                urlBytes[end+1] = '.';
-//                NSURL* newURL = (id)(CFURLCreateWithBytes(NULL, urlBytes, nBytes + 1,
-//                                                          kCFStringEncodingUTF8, NULL));
-//                if (newURL)
-//                    url = [newURL autorelease];
-//                else
-//                    Warn(@"AddDotToURLHost: Failed to add dot to <%@> -- result is <%.*s>",
-//                         url, (int)nBytes+1, urlBytes);
-//            }
-//        }
-//    }
-//    return url;
-//}
-//
-//#if DEBUG
-//static NSString* addDot( NSString* urlStr ) {
-//    return AddDotToURLHost([NSURL URLWithString: urlStr]).absoluteString;
-//}
-//
-//TestCase(AddDotToURLHost) {
-//    CAssertEqual(addDot(@"http://x/y"),                 @"http://x./y");
-//    CAssertEqual(addDot(@"http://foo.com"),             @"http://foo.com.");
-//    CAssertEqual(addDot(@"http://foo.com/"),            @"http://foo.com./");
-//    CAssertEqual(addDot(@"http://foo.com/bar"),         @"http://foo.com./bar");
-//    CAssertEqual(addDot(@"http://foo.com:123/"),        @"http://foo.com.:123/");
-//    CAssertEqual(addDot(@"http://user:pass@foo.com/"),  @"http://user:pass@foo.com./");
-//    CAssertEqual(addDot(@"http://foo.com./"),           @"http://foo.com./");
-//    CAssertEqual(addDot(@"http://localhost/"),          @"http://localhost./");
-//    CAssertEqual(addDot(@"http://10.0.1.12/"),          @"http://10.0.1.12/");
-//}
-//#endif

@@ -36,10 +36,10 @@
 - (BOOL) start {
     if (_trackingInput)
         return NO;
-
+    
     LogTo(ChangeTracker, @"%@: Starting...", self);
     [super start];
-
+    
     NSURL* url = self.changesFeedURL;
     CFHTTPMessageRef request = CFHTTPMessageCreateRequest(NULL, CFSTR("GET"),
                                                           (__bridge CFURLRef)url,
@@ -50,7 +50,7 @@
     [self.requestHeaders enumerateKeysAndObjectsUsingBlock: ^(id key, id value, BOOL *stop) {
         CFHTTPMessageSetHeaderFieldValue(request, (__bridge CFStringRef)key, (__bridge CFStringRef)value);
     }];
-
+    
     // Add cookie headers from the NSHTTPCookieStorage:
     NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL: url];
     NSDictionary* cookieHeaders = [NSHTTPCookie requestHeaderFieldsWithCookies: cookies];
@@ -59,7 +59,7 @@
                                          (__bridge CFStringRef)headerName,
                                          (__bridge CFStringRef)cookieHeaders[headerName]);
     }
-
+    
     // If this is a retry, set auth headers from the credential we got:
     if (_unauthResponse && _credential) {
         NSString* password = _credential.password;
@@ -69,7 +69,7 @@
             // If this happens, try looking up the credential again:
             LogTo(ChangeTracker, @"Huh, couldn't get password of %@; trying again", _credential);
             _credential = [self credentialForAuthHeader:
-                                                [self authHeaderForResponse: _unauthResponse]];
+                           [self authHeaderForResponse: _unauthResponse]];
             password = _credential.password;
         }
         if (password) {
@@ -91,7 +91,7 @@
             CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Authorization"),
                                              (__bridge CFStringRef)(authHeader));
     }
-
+    
     // Now open the connection:
     LogTo(SyncVerbose, @"%@: GET %@", self, url.resourceSpecifier);
     CFReadStreamRef cfInputStream = CFReadStreamCreateForHTTPRequest(NULL, request);
@@ -100,33 +100,35 @@
         return NO;
     
     CFReadStreamSetProperty(cfInputStream, kCFStreamPropertyHTTPShouldAutoredirect, kCFBooleanTrue);
-
+    
     // Configure HTTP proxy -- CFNetwork makes us do this manually, unlike NSURLConnection :-p
     CFDictionaryRef proxySettings = CFNetworkCopySystemProxySettings();
     if (proxySettings) {
         CFArrayRef proxies = CFNetworkCopyProxiesForURL((__bridge CFURLRef)url, proxySettings);
-        if (CFArrayGetCount(proxies) > 0) {
-            CFTypeRef proxy = CFArrayGetValueAtIndex(proxies, 0);
-            LogTo(ChangeTracker, @"Changes feed using proxy %@", proxy);
-            bool ok = CFReadStreamSetProperty(cfInputStream, kCFStreamPropertyHTTPProxy, proxy);
-            Assert(ok);
+        if (proxies) {
+            if (CFArrayGetCount(proxies) > 0) {
+                CFTypeRef proxy = CFArrayGetValueAtIndex(proxies, 0);
+                LogTo(ChangeTracker, @"Changes feed using proxy %@", proxy);
+                bool ok = CFReadStreamSetProperty(cfInputStream, kCFStreamPropertyHTTPProxy, proxy);
+                Assert(ok);
+            }
             CFRelease(proxies);
         }
         CFRelease(proxySettings);
     }
-
+    
     if (_databaseURL.my_isHTTPS) {
         // Enable SSL for this connection.
         // Disable TLS 1.2 support because it breaks compatibility with some SSL servers;
         // workaround taken from Apple technote TN2287:
         // http://developer.apple.com/library/ios/#technotes/tn2287/
         NSDictionary *settings = $dict({(id)kCFStreamSSLLevel,
-                                        @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3"});
+            @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3"});
         CFReadStreamSetProperty(cfInputStream,
                                 kCFStreamPropertySSLSettings, (CFTypeRef)settings);
     }
     
-    _gotResponseHeaders = _atEOF = _inputAvailable = _parsing = false;
+    _gotResponseHeaders = _atEOF = _inputAvailable = false;
     
     _inputBuffer = [[NSMutableData alloc] initWithCapacity: kReadLength];
     
@@ -146,6 +148,7 @@
     _trackingInput = nil;
     _inputBuffer = nil;
     _changeBuffer = nil;
+    _inputAvailable = false;
 }
 
 
@@ -203,7 +206,7 @@
     // Basic & digest auth: http://www.ietf.org/rfc/rfc2617.txt
     if (!authHeader)
         return nil;
-
+    
     // Get the auth type:
     if ([authHeader hasPrefix: @"Basic"])
         authenticationMethod = NSURLAuthenticationMethodHTTPBasic;
@@ -238,7 +241,7 @@
     Assert(response);
     _gotResponseHeaders = true;
     NSDictionary* errorInfo = nil;
-
+    
     // Handle authentication failure (401 or 407 status):
     CFIndex status = CFHTTPMessageGetResponseStatusCode(response);
     LogTo(ChangeTracker, @"%@ got status %ld", self, status);
@@ -251,19 +254,20 @@
             if (_credential) {
                 // Recoverable auth failure -- close socket but try again with _credential:
                 _unauthResponse = response;
-                [self errorOccurred: CBLStatusToNSError((CBLStatus)status, self.changesFeedURL)];
+                [self clearConnection];
+                [self retry];
                 return NO;
             }
         }
-        LogMY(@"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
+        LogTo(ChangeTracker, @"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
             self, authorization, authResponse);
         errorInfo = $dict({@"HTTPAuthorization", authorization},
                           {@"HTTPAuthenticateHeader", authResponse});
     }
-
+    
     CFRelease(response);
     if (status >= 300) {
-        self.error = CBLStatusToNSErrorWithInfo(status, self.changesFeedURL, errorInfo);
+        self.error = CBLStatusToNSErrorWithInfo((CBLStatus)status, self.changesFeedURL, errorInfo);
         [self stop];
         return NO;
     }
@@ -271,75 +275,120 @@
     return YES;
 }
 
+#pragma mark - STREAM HANDLING:
 
-#pragma mark - REGULAR-MDOE PARSING:
 
-
-- (void) readEntireInput {
-    // After one-shot or longpoll response is complete, parse it as a single JSON document:
-    NSData* input = _inputBuffer;
-    LogTo(ChangeTracker, @"%@: Got entire body, %u bytes", self, (unsigned)input.length);
-    BOOL restart = NO;
-    NSString* errorMessage = nil;
-    NSInteger numChanges = [self receivedPollResponse: input errorMessage: &errorMessage];
-    if (numChanges < 0) {
-        // Oops, unparseable response. See if it gets special handling:
-        if ([self handleInvalidResponse: input])
-            return;
-        // Otherwise report an upstream unparseable-response error
-        [self setUpstreamError: errorMessage];
-    } else {
-        // Poll again if there was no error, and either we're in longpoll mode or it looks like we
-        // ran out of changes due to a _limit rather than because we hit the end.
-        restart = _mode == kLongPoll || numChanges == (NSInteger)_limit;
-    }
+- (void) readFromInput {
+    //Assert(!_parsing);
+    Assert(_inputAvailable);
+    _inputAvailable = false;
     
-    [self clearConnection];
-
-    if (restart)
-        [self start];       // Next poll...
+    uint8_t buffer[kReadLength];
+    NSInteger bytesRead = [_trackingInput read: buffer maxLength: sizeof(buffer)];
+    if (bytesRead > 0)
+        [_inputBuffer appendBytes: buffer length: bytesRead];
     else
-        [self stopped];
-}
-
-
-- (BOOL) handleInvalidResponse: (NSData*)body {
-    // Convert to string:
-    NSString* bodyStr = [body my_UTF8ToString];
-    if (!bodyStr) // (in case it was truncated in the middle of a UTF-8 character sequence)
-        bodyStr = [[NSString alloc] initWithData: body encoding: NSWindowsCP1252StringEncoding];
-    bodyStr = [bodyStr  stringByTrimmingCharactersInSet:
-               [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-    if (_mode != kLongPoll || ![bodyStr hasPrefix: @"{\"results\":["] ) {
-        Warn(@"%@: Unparseable response:\n%@", self, bodyStr);
-        return NO;
-    }
+        Warn(@"%@: input stream read returned %ld", self, (long)bytesRead); // should never happen
+    LogTo(ChangeTracker, @"%@: read %ld bytes", self, (long)bytesRead);
     
-    // The response at least starts out as what we'd expect, so it looks like the connection was
-    // closed unexpectedly before the full response was sent.
-    NSTimeInterval elapsed = CFAbsoluteTimeGetCurrent() - _startTime;
-    Warn(@"%@: Longpoll connection closed (by proxy?) after %.1f sec", self, elapsed);
-    if (elapsed >= 30.0 && $equal(bodyStr, @"{\"results\":[")) {
-        // Looks like the connection got closed by a proxy (like AWS' load balancer) while the
-        // server was waiting for a change to send, due to lack of activity.
-        // Lower the heartbeat time to work around this, and reconnect:
-        self.heartbeat = MIN(_heartbeat, elapsed * 0.75);
-        [self clearConnection];
-        [self start];       // Next poll...
-    } else {
-        // Response data was truncated. This has been reported as an intermittent error
-        // (see TouchDB issue #241). Treat it as if it were a socket error -- i.e. pause/retry.
-        [self errorOccurred: [NSError errorWithDomain: NSURLErrorDomain
-                                                 code: NSURLErrorNetworkConnectionLost
-                                             userInfo: nil]];
-    }
-    return YES;
+    if (_mode == kContinuous)
+        [self readLines];
 }
 
 
-#pragma mark - CONTINUOUS-MODE PARSING:
+- (void) handleEOF {
+    _atEOF = true;
+    if (!_gotResponseHeaders || (_mode == kContinuous && _inputBuffer.length > 0)) {
+        [self failedWithError: [NSError errorWithDomain: NSURLErrorDomain
+                                                   code: NSURLErrorNetworkConnectionLost
+                                               userInfo: nil]];
+        return;
+    }
+    if (_mode == kContinuous) {
+        [self stop];
+    } else if ([self endParsingData]) {
+        // Successfully reached end.
+        [_client changeTrackerFinished];
+        [self clearConnection];
+        if (_continuous) {
+            if (_mode == kOneShot && _pollInterval == 0.0)
+                _mode = kLongPoll;
+            if (_pollInterval > 0.0)
+                LogTo(ChangeTracker, @"%@: Next poll of _changes feed in %g sec...",
+                      self, _pollInterval);
+            [self retryAfterDelay: _pollInterval];       // Next poll...
+        } else {
+            [self stopped];
+        }
+    } else {
+        // JSON must have been truncated, probably due to socket being closed early.
+        if (_mode == kOneShot) {
+            [self failedWithError: [NSError errorWithDomain: NSURLErrorDomain
+                                                       code: NSURLErrorNetworkConnectionLost
+                                                   userInfo: nil]];
+            return;
+        }
+        NSTimeInterval elapsed = CFAbsoluteTimeGetCurrent() - _startTime;
+        Warn(@"%@: Longpoll connection closed (by proxy?) after %.1f sec", self, elapsed);
+        if (elapsed >= 30.0) {
+            // Looks like the connection got closed by a proxy (like AWS' load balancer) while the
+            // server was waiting for a change to send, due to lack of activity.
+            // Lower the heartbeat time to work around this, and reconnect:
+            self.heartbeat = MIN(_heartbeat, elapsed * 0.75);
+            [self clearConnection];
+            [self start];       // Next poll...
+        } else {
+            // Response data was truncated. This has been reported as an intermittent error
+            // (see TouchDB issue #241). Treat it as if it were a socket error -- i.e. pause/retry.
+            [self failedWithError: [NSError errorWithDomain: NSURLErrorDomain
+                                                       code: NSURLErrorNetworkConnectionLost
+                                                   userInfo: nil]];
+        }
+    }
+}
 
+
+- (void) failedWithError:(NSError*) error {
+    // Map lower-level errors from CFStream to higher-level NSURLError ones:
+    if ($equal(error.domain, NSPOSIXErrorDomain)) {
+        if (error.code == ECONNREFUSED)
+            error = [NSError errorWithDomain: NSURLErrorDomain
+                                        code: NSURLErrorCannotConnectToHost
+                                    userInfo: error.userInfo];
+    }
+    [self clearConnection];
+    [super failedWithError: error];
+}
+
+
+- (void) stream: (NSStream*)stream handleEvent: (NSStreamEvent)eventCode {
+    __unused id keepMeAround = self; // retain myself so I can't be dealloced during this method
+    switch (eventCode) {
+        case NSStreamEventHasBytesAvailable: {
+            LogTo(ChangeTracker, @"%@: HasBytesAvailable %@", self, stream);
+            if (!_gotResponseHeaders) {
+                if (![self checkSSLCert] || ![self readResponseHeader])
+                    return;
+            }
+            _inputAvailable = true;
+            [self readFromInput];
+            break;
+        }
+            
+        case NSStreamEventEndEncountered:
+            LogTo(ChangeTracker, @"%@: EndEncountered %@", self, stream);
+            [self handleEOF];
+            break;
+            
+        case NSStreamEventErrorOccurred:
+            [self failedWithError: stream.streamError];
+            break;
+            
+        default:
+            LogTo(ChangeTracker, @"%@: Event %lx on %@", self, (long)eventCode, stream);
+            break;
+    }
+}
 
 - (void) readLines {
     Assert(_gotResponseHeaders && _mode==kContinuous);
@@ -364,14 +413,14 @@
         [self asyncParseChangeLines: changes];
 }
 
-
 - (void) asyncParseChangeLines: (NSArray*)lines {
+    // TODO: investigate why this should be done async
     static NSOperationQueue* sParseQueue;
     if (!sParseQueue)
         sParseQueue = [[NSOperationQueue alloc] init];
     
     LogTo(ChangeTracker, @"%@: Async parsing %u changes...", self, (unsigned)lines.count);
-    Assert(!_parsing);
+    //Assert(!_parsing);
     _parsing = true;
     NSThread* resultThread = [NSThread currentThread];
     [sParseQueue addOperationWithBlock: ^{
@@ -387,7 +436,7 @@
         }
         MYOnThread(resultThread, ^{
             // Process change lines on original thread:
-            Assert(_parsing);
+            //Assert(_parsing);
             _parsing = false;
             if (!_trackingInput)
                 return;
@@ -406,100 +455,14 @@
     }];
 }
 
-
-- (BOOL) failUnparseable: (NSString*)line {
-    Warn(@"Couldn't parse line from _changes: %@", line);
-    [self setUpstreamError: @"Unparseable change line"];
-    [self stop];
-    return NO;
-}
-
-
-#pragma mark - STREAM HANDLING:
-
-
-- (void) readFromInput {
-    Assert(!_parsing);
-    Assert(_inputAvailable);
-    _inputAvailable = false;
+- (BOOL) endParsingData {
+    // After one-shot or longpoll response is complete, parse it as a single JSON document:
+    NSData* input = _inputBuffer;
+    LogTo(ChangeTracker, @"%@: Got entire body, %u bytes", self, (unsigned)input.length);
+    NSString* errorMessage = nil;
+    NSInteger numChanges = [self receivedPollResponse: input errorMessage: &errorMessage];
     
-    uint8_t buffer[kReadLength];
-    NSInteger bytesRead = [_trackingInput read: buffer maxLength: sizeof(buffer)];
-    if (bytesRead > 0)
-        [_inputBuffer appendBytes: buffer length: bytesRead];
-    else
-        Warn(@"%@: input stream read returned %ld", self, (long)bytesRead); // should never happen
-    LogTo(ChangeTracker, @"%@: read %ld bytes", self, (long)bytesRead);
-
-    if (_mode == kContinuous)
-        [self readLines];
-}
-
-
-- (void) errorOccurred: (NSError*)error {
-    LogTo(ChangeTracker, @"%@: ErrorOccurred: %@", self, error);
-    if (++_retryCount <= kMaxRetries) {
-        [self clearConnection];
-        NSTimeInterval retryDelay = kInitialRetryDelay * (1 << (_retryCount-1));
-        [self performSelector: @selector(start) withObject: nil afterDelay: retryDelay];
-    } else {
-        Warn(@"%@: Can't connect, giving up: %@", self, error);
-
-        // Map lower-level errors from CFStream to higher-level NSURLError ones:
-        if ($equal(error.domain, NSPOSIXErrorDomain)) {
-            if (error.code == ECONNREFUSED)
-                error = [NSError errorWithDomain: NSURLErrorDomain
-                                            code: NSURLErrorCannotConnectToHost
-                                        userInfo: error.userInfo];
-        }
-
-        self.error = error;
-        [self stop];
-    }
-}
-
-
-- (void) stream: (NSStream*)stream handleEvent: (NSStreamEvent)eventCode {
-    __unused id keepMeAround = self; // retain myself so I can't be dealloced during this method
-    switch (eventCode) {
-        case NSStreamEventHasBytesAvailable: {
-            LogTo(ChangeTracker, @"%@: HasBytesAvailable %@", self, stream);
-            if (!_gotResponseHeaders) {
-                if (![self checkSSLCert] || ![self readResponseHeader])
-                    return;
-            }
-            _inputAvailable = true;
-            // If still chewing on last bytes, don't eat any more yet
-            if (!_parsing)
-                [self readFromInput];
-            break;
-        }
-            
-        case NSStreamEventEndEncountered:
-            LogTo(ChangeTracker, @"%@: EndEncountered %@", self, stream);
-            _atEOF = true;
-            if (!_gotResponseHeaders || (_mode == kContinuous && _inputBuffer.length > 0)) {
-                [self errorOccurred: [NSError errorWithDomain: NSURLErrorDomain
-                                                         code: NSURLErrorNetworkConnectionLost
-                                                     userInfo: nil]];
-                break;
-            }
-            if (_mode == kContinuous) {
-                if (!_parsing)
-                    [self stop];
-            } else {
-                [self readEntireInput];
-            }
-            break;
-            
-        case NSStreamEventErrorOccurred:
-            [self errorOccurred: stream.streamError];
-            break;
-            
-        default:
-            LogTo(ChangeTracker, @"%@: Event %lx on %@", self, (long)eventCode, stream);
-            break;
-    }
+    return (numChanges >= 0);
 }
 
 

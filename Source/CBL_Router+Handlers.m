@@ -544,7 +544,7 @@
         if (_longpoll) {
             [changes addObject: rev];
         } else {
-            LogMY(@"CBL_Router: Sending continous change chunk");
+            //LogMY(@"CBL_Router: Sending continous change chunk");
             [self sendContinuousLine: [self changeDictForRev: rev]];
         }
     }
