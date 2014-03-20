@@ -147,7 +147,7 @@ static NSString* toJSONString( id object ) {
     NSData* geoKey = nil;
     if ([key isKindOfClass: [CBLSpecialKey class]]) {
         CBLSpecialKey *specialKey = key;
-        LogTo(View, @"    emit( %@, %@)", specialKey, valueJSON);
+        LogTo(View, @" %@ emit( %@, %@)", _name, specialKey, valueJSON);
         BOOL ok;
         NSString* text = specialKey.text;
         if (text) {
@@ -166,7 +166,7 @@ static NSString* toJSONString( id object ) {
     } else {
         if (key)
             keyJSON = toJSONString(key);
-        LogTo(View, @"    emit(%@, %@)", keyJSON, valueJSON);
+        LogTo(View, @" %@ emit(%@, %@)", _name, keyJSON, valueJSON);
     }
 
     if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "
@@ -335,7 +335,7 @@ static NSString* toJSONString( id object ) {
                 }
                 
                 // Call the user-defined map() to emit new key/value pairs from this revision:
-                LogTo(View, @"  call map for sequence=%lld...", sequence);
+                LogTo(View, @" %@ call map for sequence=%lld...", _name, sequence);
                 @try {
                     mapBlock(properties, emit);
                 } @catch (NSException* x) {
