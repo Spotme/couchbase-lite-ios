@@ -21,6 +21,7 @@
 #import "CBLMisc.h"
 #import "CBLStatus.h"
 #import "MYURLUtils.h"
+#import "CBL_Replicator.h"
 
 
 //static NSURL* AddDotToURLHost( NSURL* url );
@@ -113,96 +114,109 @@
 }
 
 
-// TODO understand what this method does and if we still need it
-//- (void)connection:(NSURLConnection *)connection
-//        willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-//{
-//    id<NSURLAuthenticationChallengeSender> sender = challenge.sender;
-//    NSURLProtectionSpace* space = challenge.protectionSpace;
-//    NSString* authMethod = space.authenticationMethod;
-//
-//    // Is this challenge for the DB hostname with the "." appended (the one in the URL request)?
-//    BOOL challengeIsForDottedHost = NO;
-//    NSString* host = space.host;
-//    if ([host hasSuffix: @"."] && !space.isProxy) {
-//        NSString* hostWithoutDot = [host substringToIndex: host.length - 1];
-//        challengeIsForDottedHost = ([hostWithoutDot caseInsensitiveCompare: _databaseURL.host] == 0);
-//    }
-//
-//    if ($equal(authMethod, NSURLAuthenticationMethodServerTrust)) {
-//        // Verify trust of SSL server cert:
-//        SecTrustRef trust = challenge.protectionSpace.serverTrust;
-//        if (challengeIsForDottedHost) {
-//            // Update the policy with the correct original hostname (without the "." suffix):
-//            host = _databaseURL.host;
-//            SecPolicyRef policy = SecPolicyCreateSSL(YES, (__bridge CFStringRef)host);
-//            trust = CopyTrustWithPolicy(trust, policy);
-//            CFRelease(policy);
-//        } else {
-//            CFRetain(trust);
-//        }
-//        if ([TDRemoteRequest checkTrust: trust forHost: host]) {
-//            [sender useCredential: [NSURLCredential credentialForTrust: trust]
-//                    forAuthenticationChallenge: challenge];
-//        } else {
-//            [sender cancelAuthenticationChallenge: challenge];
-//        }
-//        CFRelease(trust);
-//        return;
-//    }
-//
-//    _challenged = true;
-//    
-//    NSURLCredential* cred = nil;
-//    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
-//        // Look up a credential for the original hostname without the "." suffix:
-//        host = _databaseURL.host;
-//        NSURLProtectionSpace* newSpace = [[NSURLProtectionSpace alloc]
-//                                                   initWithHost: host
-//                                                           port: space.port
-//                                                       protocol: space.protocol
-//                                                          realm: space.realm
-//                                           authenticationMethod: space.authenticationMethod];
-//        NSURLCredentialStorage* storage = [NSURLCredentialStorage sharedCredentialStorage];
-//        NSString* username = _databaseURL.user;
-//        if (username)
-//            cred = [[storage credentialsForProtectionSpace: newSpace] objectForKey: username];
-//        else
-//            cred = [storage defaultCredentialForProtectionSpace: newSpace];
-//        [newSpace release];
-//    }
-//
-//    NSURLCredential* proposedCredential = challenge.proposedCredential;
-//    if (proposedCredential) {
-//        // Use the proposed credential unless the username doesn't match the one we want:
-//        if (!cred || [cred.user isEqualToString: proposedCredential.user]) {
-//            LogTo(ChangeTracker, @"%@: Using proposed credential '%@' for "
-//                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//                  self, proposedCredential.user, host, (int)space.port, space.protocol, space.realm,
-//                  space.authenticationMethod);
-//            [sender performDefaultHandlingForAuthenticationChallenge: challenge];
-//            return;
-//        }
-//    }
-//    
-//    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
-//        if (cred) {
-//            // Found a credential, so use it:
-//            LogTo(ChangeTracker, @"%@: Using credential '%@' for "
-//                                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//                self, cred.user, host, (int)space.port, space.protocol, space.realm,
-//                space.authenticationMethod);
-//            [sender useCredential: cred forAuthenticationChallenge: challenge];
-//            return;
-//        }
-//    }
-//    
-//    // Give up:
-//    Log(@"%@: Continuing without credential for {host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
-//        self, host, (int)space.port, space.protocol, space.realm,
-//        space.authenticationMethod);
-//    [sender continueWithoutCredentialForAuthenticationChallenge: challenge];
-//}
+// TODO understand what this method does and if we still need it, use shouldCheckSSL from CLBChangeTracker ?
+/*- (void)connection:(NSURLConnection *)connection
+        willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    id<NSURLAuthenticationChallengeSender> sender = challenge.sender;
+    NSURLProtectionSpace* space = challenge.protectionSpace;
+    NSString* authMethod = space.authenticationMethod;
+
+    // Is this challenge for the DB hostname with the "." appended (the one in the URL request)?
+    BOOL challengeIsForDottedHost = NO;
+    NSString* host = space.host;
+    if ([host hasSuffix: @"."] && !space.isProxy) {
+        NSString* hostWithoutDot = [host substringToIndex: host.length - 1];
+        challengeIsForDottedHost = ([hostWithoutDot caseInsensitiveCompare: _databaseURL.host] == 0);
+    }
+
+    if ($equal(authMethod, NSURLAuthenticationMethodServerTrust)) {
+        // Verify trust of SSL server cert:
+        SecTrustRef trust = challenge.protectionSpace.serverTrust;
+        if ([CBL_Re]challengeIsForDottedHost) {
+            // Update the policy with the correct original hostname (without the "." suffix):
+            host = _databaseURL.host;
+            SecPolicyRef policy = SecPolicyCreateSSL(YES, (__bridge CFStringRef)host);
+            trust = CopyTrustWithPolicy(trust, policy);
+            CFRelease(policy);
+        } else {
+            CFRetain(trust);
+        }
+        if ([TDRemoteRequest checkTrust: trust forHost: host]) {
+            [sender useCredential: [NSURLCredential credentialForTrust: trust]
+                    forAuthenticationChallenge: challenge];
+        } else {
+            [sender cancelAuthenticationChallenge: challenge];
+        }
+        CFRelease(trust);
+        return;
+    }
+
+    _challenged = true;
+    
+    NSURLCredential* cred = nil;
+    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
+        // Look up a credential for the original hostname without the "." suffix:
+        host = _databaseURL.host;
+        NSURLProtectionSpace* newSpace = [[NSURLProtectionSpace alloc]
+                                                   initWithHost: host
+                                                           port: space.port
+                                                       protocol: space.protocol
+                                                          realm: space.realm
+                                           authenticationMethod: space.authenticationMethod];
+        NSURLCredentialStorage* storage = [NSURLCredentialStorage sharedCredentialStorage];
+        NSString* username = _databaseURL.user;
+        if (username)
+            cred = [[storage credentialsForProtectionSpace: newSpace] objectForKey: username];
+        else
+            cred = [storage defaultCredentialForProtectionSpace: newSpace];
+        [newSpace release];
+    }
+
+    NSURLCredential* proposedCredential = challenge.proposedCredential;
+    if (proposedCredential) {
+        // Use the proposed credential unless the username doesn't match the one we want:
+        if (!cred || [cred.user isEqualToString: proposedCredential.user]) {
+            LogTo(ChangeTracker, @"%@: Using proposed credential '%@' for "
+                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
+                  self, proposedCredential.user, host, (int)space.port, space.protocol, space.realm,
+                  space.authenticationMethod);
+            [sender performDefaultHandlingForAuthenticationChallenge: challenge];
+            return;
+        }
+    }
+    
+    if (challengeIsForDottedHost && challenge.previousFailureCount == 0) {
+        if (cred) {
+            // Found a credential, so use it:
+            LogTo(ChangeTracker, @"%@: Using credential '%@' for "
+                                  "{host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
+                self, cred.user, host, (int)space.port, space.protocol, space.realm,
+                space.authenticationMethod);
+            [sender useCredential: cred forAuthenticationChallenge: challenge];
+            return;
+        }
+    }
+    
+    // Give up:
+    Log(@"%@: Continuing without credential for {host=<%@>, port=%d, protocol=%@ realm=%@ method=%@}",
+        self, host, (int)space.port, space.protocol, space.realm,
+        space.authenticationMethod);
+    [sender continueWithoutCredentialForAuthenticationChallenge: challenge];
+}*/
+
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+    if (![CBL_Replicator shouldCheckSSL]) {
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
+            [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
+        
+        [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+    }
+}
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

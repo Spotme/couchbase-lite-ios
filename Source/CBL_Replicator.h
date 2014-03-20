@@ -45,6 +45,8 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 
 /** Adds to (or replaces) the system list of trusted root certs. */
 + (void) setAnchorCerts: (NSArray*)certs onlyThese: (BOOL)onlyThese;
++ (void) setShouldCheckSSL:(BOOL)shouldCheckSLL;
++ (BOOL) shouldCheckSSL;
 
 - (instancetype) initWithDB: (CBLDatabase*)db
                      remote: (NSURL*)remote

@@ -683,33 +683,43 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 static NSArray* sAnchorCerts; // TODO: Add API to set these
 static BOOL sOnlyTrustAnchorCerts;
+static BOOL sShouldCheckSLL;
 
-
-+ (void) setAnchorCerts: (NSArray*)certs onlyThese: (BOOL)onlyThese {
++ (void) setAnchorCerts:(NSArray*)certs onlyThese:(BOOL)onlyThese {
     @synchronized(self) {
         sAnchorCerts = certs.copy;
         sOnlyTrustAnchorCerts = onlyThese;
     }
 }
 
++ (void) setShouldCheckSSL:(BOOL)shouldCheckSLL {
+    sShouldCheckSLL = shouldCheckSLL;
+}
+
++ (BOOL) shouldCheckSSL {
+    return sShouldCheckSLL;
+}
+
 - (BOOL) checkSSLServerTrust: (SecTrustRef)trust
                      forHost: (NSString*)host port: (UInt16)port
 {
-    /*@synchronized([self class]) {
-        if (sAnchorCerts.count > 0) {
-            SecTrustSetAnchorCertificates(trust, (__bridge CFArrayRef)sAnchorCerts);
-            SecTrustSetAnchorCertificatesOnly(trust, sOnlyTrustAnchorCerts);
+    if ([[self class] shouldCheckSSL]) {
+        @synchronized([self class]) {
+            if (sAnchorCerts.count > 0) {
+                SecTrustSetAnchorCertificates(trust, (__bridge CFArrayRef)sAnchorCerts);
+                SecTrustSetAnchorCertificatesOnly(trust, sOnlyTrustAnchorCerts);
+            }
         }
+        SecTrustResultType result;
+        OSStatus err = SecTrustEvaluate(trust, &result);
+        if (err) {
+            Warn(@"SecTrustEvaluate failed with err %d for host %@:%d", (int)err, host, port);
+            return NO;
+        }
+        return result == kSecTrustResultProceed || result == kSecTrustResultUnspecified;
+    } else {
+        return YES;
     }
-    SecTrustResultType result;
-    OSStatus err = SecTrustEvaluate(trust, &result);
-    if (err) {
-        Warn(@"SecTrustEvaluate failed with err %d for host %@:%d", (int)err, host, port);
-        return NO;
-    }
-    return result == kSecTrustResultProceed || result == kSecTrustResultUnspecified;*/
-    //FIXME: for now, always return YES for SSL Check, necessary for local nodes
-    return YES;
 }
 
 

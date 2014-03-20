@@ -22,6 +22,7 @@
 #import "CBLBase64.h"
 #import "MYBlockUtils.h"
 #import "MYURLUtils.h"
+#import "CBL_Replicator.h"
 #import <string.h>
 
 
@@ -170,22 +171,29 @@
 
 
 - (BOOL) checkSSLCert {
-    // FIXME: for now, always return YES for SSL Check, necessary for local nodes
-    //SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
-    //                                                              kCFStreamPropertySSLPeerTrust);
-    //if (sslTrust) {
-    //    NSURL* url = CFBridgingRelease(CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
-    //                                                            kCFStreamPropertyHTTPFinalURL));
-    //    BOOL trusted = [CBLRemoteRequest checkTrust: sslTrust forHost: url.host];
-    //    CFRelease(sslTrust);
-    //    if (!trusted) {
-    //        //TODO: This error could be made more precise
-    //        self.error = [NSError errorWithDomain: NSURLErrorDomain
-    //                                         code: NSURLErrorServerCertificateUntrusted
-    //                                     userInfo: nil];
-    //        return NO;
-    //    }
-    //}
+    if ([CBL_Replicator shouldCheckSSL]) {
+        SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
+                                                                      kCFStreamPropertySSLPeerTrust);
+        if (sslTrust) {
+            NSURL* url = CFBridgingRelease(CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
+                                                                    kCFStreamPropertyHTTPFinalURL));
+            
+            //TODO: check why "CBLRemoteRequest checkTrust: sslTrust forHost: url.host" does not exists, replaced with following function
+            //BOOL trusted = [CBLRemoteRequest checkTrust: sslTrust forHost: url.host];
+            BOOL trusted = [_client changeTrackerApproveSSLTrust: sslTrust
+                                          forHost: url.host
+                                             port: (UInt16)url.port.intValue];
+            CFRelease(sslTrust);
+            if (!trusted) {
+                //TODO: This error could be made more precise
+                self.error = [NSError errorWithDomain: NSURLErrorDomain
+                                                 code: NSURLErrorServerCertificateUntrusted
+                                             userInfo: nil];
+                return NO;
+            }
+        }
+    }
+    
     return YES;
 }
 
