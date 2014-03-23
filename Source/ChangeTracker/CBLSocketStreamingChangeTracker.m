@@ -283,7 +283,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
                 return NO;
             }
         }
-        Log(@"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
+        LogTo(ChangeTracker, @"%@: HTTP auth failed; sent Authorization: %@  ;  got WWW-Authenticate: %@",
             self, authorization, authResponse);
         errorInfo = $dict({@"HTTPAuthorization", authorization},
                           {@"HTTPAuthenticateHeader", authResponse});
@@ -291,7 +291,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
 
     CFRelease(response);
     if (status >= 300) {
-        self.error = CBLStatusToNSErrorWithInfo(status, self.changesFeedURL, errorInfo);
+        self.error = CBLStatusToNSErrorWithInfo((CBLStatus)status, self.changesFeedURL, errorInfo);
         [self stop];
         return NO;
     }

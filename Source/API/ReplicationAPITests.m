@@ -31,7 +31,7 @@ static CBLDatabase* createEmptyManagerAndDb(void) {
 
 
 static void runReplication(CBLReplication* repl) {
-    Log(@"Waiting for %@ to finish...", repl);
+    LogMY(@"Waiting for %@ to finish...", repl);
     bool started = false, done = false;
     [repl start];
     CFAbsoluteTime lastTime = 0;
@@ -52,7 +52,7 @@ static void runReplication(CBLReplication* repl) {
             Warn(@"Runloop was blocked for %g sec", now-lastTime);
         lastTime = now;
     }
-    Log(@"...replicator finished. mode=%d, progress %u/%u, error=%@",
+    LogMY(@"...replicator finished. mode=%d, progress %u/%u, error=%@",
         repl.status, repl.completedChangesCount, repl.changesCount, repl.lastError);
 }
 
@@ -115,7 +115,7 @@ TestCase(RunPushReplication) {
     }
     DeleteRemoteDB(remoteDbURL);
 
-    Log(@"Creating %d documents...", kNDocuments);
+    LogMY(@"Creating %d documents...", kNDocuments);
     CBLDatabase* db = createEmptyManagerAndDb();
     [db inTransaction:^BOOL{
         for (int i = 1; i <= kNDocuments; i++) {
@@ -129,7 +129,7 @@ TestCase(RunPushReplication) {
         return YES;
     }];
 
-    Log(@"Pushing...");
+    LogMY(@"Pushing...");
     CBLReplication* repl = [db replicationToURL: remoteDbURL];
     repl.createTarget = YES;
     [repl start];
@@ -150,12 +150,12 @@ TestCase(RunPullReplication) {
     }
     CBLDatabase* db = createEmptyManagerAndDb();
 
-    Log(@"Pulling...");
+    LogMY(@"Pulling...");
     CBLReplication* repl = [db replicationFromURL: remoteDbURL];
     runReplication(repl);
     AssertNil(repl.lastError);
 
-    Log(@"Verifying documents...");
+    LogMY(@"Verifying documents...");
     for (int i = 1; i <= kNDocuments; i++) {
         CBLDocument* doc = db[ $sprintf(@"doc-%d", i) ];
         AssertEqual(doc[@"index"], @(i));

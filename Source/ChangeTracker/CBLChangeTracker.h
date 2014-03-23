@@ -69,7 +69,7 @@ typedef enum CBLChangeTrackerMode {
 @property (readonly, nonatomic) NSURL* databaseURL;
 @property (readonly, nonatomic) NSString* databaseName;
 @property (readonly) NSURL* changesFeedURL;
-@property (readonly, copy, nonatomic) id lastSequenceID;
+@property (/*readonly, */copy, nonatomic) id lastSequenceID; // must be readwrite for subclasses
 @property (nonatomic) BOOL continuous;  // If true, never give up due to errors
 @property (nonatomic) NSTimeInterval pollInterval;  // 0.0 to not poll
 @property (strong, nonatomic) NSError* error;

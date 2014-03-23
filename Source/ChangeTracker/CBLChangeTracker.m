@@ -30,9 +30,9 @@
 #define kMaxRetryDelay (10*60.0)    // ...but will never get longer than this
 
 
-@interface CBLChangeTracker ()
-@property (readwrite, copy, nonatomic) id lastSequenceID;
-@end
+//@interface CBLChangeTracker ()
+//@property (readwrite, copy, nonatomic) id lastSequenceID;
+//@end
 
 
 @implementation CBLChangeTracker

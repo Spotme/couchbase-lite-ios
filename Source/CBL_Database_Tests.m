@@ -70,7 +70,7 @@ TestCase(CBL_Database_CRUD) {
     CBLDatabase* db = createDB();
     
     NSString* privateUUID = db.privateUUID, *publicUUID = db.publicUUID;
-    NSLog(@"DB private UUID = '%@', public = '%@'", privateUUID, publicUUID);
+    LogMY(@"DB private UUID = '%@', public = '%@'", privateUUID, publicUUID);
     CAssert(privateUUID.length >= 20, @"Invalid privateUUID: %@", privateUUID);
     CAssert(publicUUID.length >= 20, @"Invalid publicUUID: %@", publicUUID);
     
@@ -99,7 +99,7 @@ TestCase(CBL_Database_CRUD) {
     CBLStatus status;
     rev1 = [db putRevision: rev1 prevRevisionID: nil allowConflict: NO status: &status];
     CAssertEq(status, kCBLStatusCreated);
-    Log(@"Created: %@", rev1);
+    LogMY(@"Created: %@", rev1);
     CAssert(rev1.docID.length >= 10);
     CAssert([rev1.revID hasPrefix: @"1-"]);
     
@@ -116,7 +116,7 @@ TestCase(CBL_Database_CRUD) {
     CBL_Revision* rev2Input = rev2;
     rev2 = [db putRevision: rev2 prevRevisionID: rev1.revID allowConflict: NO status: &status];
     CAssertEq(status, kCBLStatusCreated);
-    Log(@"Updated: %@", rev2);
+    LogMY(@"Updated: %@", rev2);
     CAssertEqual(rev2.docID, rev1.docID);
     CAssert([rev2.revID hasPrefix: @"2-"]);
     
@@ -131,7 +131,7 @@ TestCase(CBL_Database_CRUD) {
     
     // Check the changes feed, with and without filters:
     CBL_RevisionList* changes = [db changesSinceSequence: 0 options: NULL filter: NULL params: nil];
-    Log(@"Changes = %@", changes);
+    LogMY(@"Changes = %@", changes);
     CAssertEq(changes.count, 1u);
 
     CBLFilterBlock filter = ^BOOL(CBLSavedRevision *revision, NSDictionary* params) {
@@ -167,11 +167,11 @@ TestCase(CBL_Database_CRUD) {
     
     // Check the changes feed again after the deletion:
     changes = [db changesSinceSequence: 0 options: NULL filter: NULL params: nil];
-    Log(@"Changes = %@", changes);
+    LogMY(@"Changes = %@", changes);
     CAssertEq(changes.count, 1u);
     
     NSArray* history = [db getRevisionHistory: revD];
-    Log(@"History = %@", history);
+    LogMY(@"History = %@", history);
     CAssertEqual(history, (@[revD, rev2, rev1]));
 
     // Check the revision-history object (_revisions property):
@@ -244,12 +244,12 @@ TestCase(CBL_Database_DeleteAndRecreate) {
     // Test case for issue #205: Create a doc, delete it, create it again with the same content.
     CBLDatabase* db = createDB();
     CBL_Revision* rev1 = putDoc(db, $dict({@"_id", @"dock"}, {@"property", @"value"}));
-    Log(@"Created: %@ -- %@", rev1, rev1.properties);
+    LogMY(@"Created: %@ -- %@", rev1, rev1.properties);
     CBL_Revision* rev2 = putDoc(db, $dict({@"_id", @"dock"}, {@"_rev", rev1.revID},
                      {@"_deleted", $true}));
-    Log(@"Deleted: %@ -- %@", rev2, rev2.properties);
+    LogMY(@"Deleted: %@ -- %@", rev2, rev2.properties);
     CBL_Revision* rev3 = putDoc(db, $dict({@"_id", @"dock"}, {@"property", @"value"}));
-    Log(@"Recreated: %@ -- %@", rev3, rev3.properties);
+    LogMY(@"Recreated: %@ -- %@", rev3, rev3.properties);
     CAssert([db close]);
 }
 
@@ -272,7 +272,7 @@ TestCase(CBL_Database_Validation) {
         CAssert(newRevision.properties || newRevision.isDeletion);
         validationCalled = YES;
         BOOL hoopy = newRevision.isDeletion || newRevision[@"towel"] != nil;
-        Log(@"--- Validating %@ --> %d", newRevision.properties, hoopy);
+        LogMY(@"--- Validating %@ --> %d", newRevision.properties, hoopy);
         if (!hoopy)
             [context rejectWithMessage: @"Where's your towel?"];
     }];
@@ -897,7 +897,7 @@ TestCase(CBL_Database_LocalDocs) {
     CBLStatus status;
     rev1 = [db putLocalRevision: rev1 prevRevisionID: nil status: &status];
     CAssertEq(status, kCBLStatusCreated);
-    Log(@"Created: %@", rev1);
+    LogMY(@"Created: %@", rev1);
     CAssertEqual(rev1.docID, @"_local/doc1");
     CAssert([rev1.revID hasPrefix: @"1-"]);
     
@@ -916,7 +916,7 @@ TestCase(CBL_Database_LocalDocs) {
     CBL_Revision* rev2Input = rev2;
     rev2 = [db putLocalRevision: rev2 prevRevisionID: rev1.revID status: &status];
     CAssertEq(status, kCBLStatusCreated);
-    Log(@"Updated: %@", rev2);
+    LogMY(@"Updated: %@", rev2);
     CAssertEqual(rev2.docID, rev1.docID);
     CAssert([rev2.revID hasPrefix: @"2-"]);
     

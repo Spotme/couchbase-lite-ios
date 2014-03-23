@@ -144,7 +144,7 @@ TestCase(CBL_View_Index) {
     CAssertEq([view updateIndex], kCBLStatusOK);
     
     NSArray* dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"one\""}, {@"seq", @1}),
                               $dict({@"key", @"\"three\""}, {@"seq", @3}),
                               $dict({@"key", @"\"two\""}, {@"seq", @2}) ));
@@ -170,7 +170,7 @@ TestCase(CBL_View_Index) {
     CAssertEq([view updateIndex], kCBLStatusOK);
 
     dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"3hree\""}, {@"seq", @6}),
                               $dict({@"key", @"\"four\""}, {@"seq", @7}),
                               $dict({@"key", @"\"one\""}, {@"seq", @1}) ));
@@ -208,14 +208,14 @@ TestCase(CBL_View_MapConflicts) {
         NSString* docID = doc[@"_id"];
         NSArray* conflicts = $cast(NSArray, doc[@"_conflicts"]);
         if (conflicts) {
-            Log(@"Doc %@, _conflicts = %@", docID, conflicts);
+            LogMY(@"Doc %@, _conflicts = %@", docID, conflicts);
             emit(docID, conflicts);
         }
     }) reduceBlock: NULL version: @"1"];
     
     CAssertEq([view updateIndex], kCBLStatusOK);
     NSArray* dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"44444\""},
                                     {@"value", $sprintf(@"[\"%@\"]", leaf1.revID)},
                                     {@"seq", @6}) ));
@@ -234,7 +234,7 @@ TestCase(CBL_View_ConflictWinner) {
     CBLView* view = createView(db);
     CAssertEq([view updateIndex], kCBLStatusOK);
     NSArray* dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"five\""}, {@"seq", @5}),
                               $dict({@"key", @"\"four\""}, {@"seq", @2}),
                               $dict({@"key", @"\"one\""},  {@"seq", @3}),
@@ -253,7 +253,7 @@ TestCase(CBL_View_ConflictWinner) {
     // Update the view -- should contain only the key from the new rev, not the old:
     CAssertEq([view updateIndex], kCBLStatusOK);
     dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"40ur\""}, {@"seq", @6},
                                     {@"value", $sprintf(@"[\"%@\"]", leaf1.revID)}),
                               $dict({@"key", @"\"five\""}, {@"seq", @5}),
@@ -275,7 +275,7 @@ TestCase(CBL_View_ConflictLoser) {
     CBLView* view = createView(db);
     CAssertEq([view updateIndex], kCBLStatusOK);
     NSArray* dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"five\""}, {@"seq", @5}),
                               $dict({@"key", @"\"four\""}, {@"seq", @2}),
                               $dict({@"key", @"\"one\""},  {@"seq", @3}),
@@ -294,7 +294,7 @@ TestCase(CBL_View_ConflictLoser) {
     // Update the view -- should contain only the key from the new rev, not the old:
     CAssertEq([view updateIndex], kCBLStatusOK);
     dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"five\""}, {@"seq", @5}),
                               $dict({@"key", @"\"four\""}, {@"seq", @2},
                                     {@"value", @"[\"1-....\"]"}),
@@ -577,7 +577,7 @@ TestCase(CBL_View_Reduce) {
 
     CAssertEq([view updateIndex], kCBLStatusOK);
     NSArray* dump = [view dump];
-    Log(@"View dump: %@", dump);
+    LogMY(@"View dump: %@", dump);
     CAssertEqual(dump, $array($dict({@"key", @"\"App\""}, {@"value", @"1.95"}, {@"seq", @2}),
                               $dict({@"key", @"\"CD\""}, {@"value", @"8.99"}, {@"seq", @1}),
                               $dict({@"key", @"\"Dessert\""}, {@"value", @"6.5"}, {@"seq", @3}) ));
@@ -868,7 +868,7 @@ TestCase(CBL_View_FullTextQuery) {
     CBLStatus status;
     NSArray* rows = [view _queryWithOptions: &options status: &status];
     CAssert(rows, @"_queryFullText failed: %d", status);
-    Log(@"rows = %@", rows);
+    LogMY(@"rows = %@", rows);
     NSArray* expectedRows = $array($dict({@"id",  @"44444"},
                                          {@"matches", @[@{@"range": @[@4, @7], @"term": @0}]},
                                          {@"snippet", @"and [STöRMy] night."},
@@ -926,7 +926,7 @@ TestCase(CBL_View_FullTextQuery) {
     options.fullTextQuery = fullTextQuery;
     rows = [view _queryWithOptions: &options status: &status];
     CAssert(rows, @"_queryFullText failed: %d", status);
-    Log(@"after deletion, rows = %@", rows);
+    LogMY(@"after deletion, rows = %@", rows);
 
     expectedRows = $array($dict({@"id",  @"44444"},
                                 {@"matches", @[@{@"range": @[@4, @7], @"term": @0}]},
