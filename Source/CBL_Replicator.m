@@ -63,13 +63,11 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 @implementation CBL_Replicator
 {
     BOOL _running, _online, _active;
-    BOOL _lastSequenceChanged;
     NSString* _sessionID;
     unsigned _revisionsFailed;
     NSError* _error;
     NSThread* _thread;
     NSDictionary* _remoteCheckpoint;
-    BOOL _savingCheckpoint;
     NSMutableArray* _remoteRequests;
     int _asyncTaskCount;
     NSUInteger _changesProcessed, _changesTotal;
@@ -129,11 +127,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 
 - (void) clearDbRef {
-    // If we're in the middle of saving the checkpoint and waiting for a response, by the time the
-    // response arrives _db will be nil, so there won't be any way to save the checkpoint locally.
-    // To avoid that, pre-emptively save the local checkpoint now.
-    if (_savingCheckpoint && _lastSequence)
-        [_db setLastSequence: _lastSequence withCheckpointID: self.remoteCheckpointDocID];
     _db = nil;
 }
 
@@ -181,10 +174,8 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
         LogTo(SyncVerbose, @"%@: Setting lastSequence to %@ (from %@)",
               self, lastSequence, _lastSequence);
         _lastSequence = [lastSequence copy];
-        if (!_lastSequenceChanged) {
-            _lastSequenceChanged = YES;
-            [self performSelector: @selector(saveLastSequence) withObject: nil afterDelay: 5.0];
-        }
+        // FIXME: maybe throttle saving ?
+        [self saveLastSequence];
     }
 }
 
@@ -292,7 +283,11 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
     // Did client request a reset (i.e. starting over from first sequence?)
     if (_options[kCBLReplicatorOption_Reset] != nil) {
-        [db setLastSequence: nil withCheckpointID: self.remoteCheckpointDocID];
+        NSString* checkpointID = self.remoteCheckpointDocID;
+        NSError *error = nil;
+        BOOL saved = [db deleteLocalDocumentWithID: checkpointID error: &error];
+        if (!saved)
+            LogTo(Sync, @"WARN %@: Unable to delete checkpoint (%@): %@", self, checkpointID, error);
     }
 
     // Note: This is actually a ref cycle, because the block has a (retained) reference to 'self',
@@ -759,52 +754,30 @@ static BOOL sShouldCheckSLL;
 
 
 - (void) fetchRemoteCheckpointDoc {
-    _lastSequenceChanged = NO;
     NSString* checkpointID = self.remoteCheckpointDocID;
-    NSString* localLastSequence = [_db lastSequenceWithCheckpointID: checkpointID];
-    
+
     NSDictionary *checkpointDocument = [self.db existingLocalDocumentWithID:checkpointID];
     checkpointDocument = $castIf(NSDictionary, checkpointDocument);
     self.remoteCheckpoint = checkpointDocument;
-    NSString* remoteLastSequence = checkpointDocument[@"lastSequence"];
+    _lastSequence = checkpointDocument[@"lastSequence"];
+    LogTo(Sync, @"%@: Replicating from lastSequence=%@", self, _lastSequence);
 
-    if ($equal(remoteLastSequence, localLastSequence)) {
-      _lastSequence = localLastSequence;
-      LogTo(Sync, @"%@: Replicating from lastSequence=%@", self, _lastSequence);
-    } else {
-      LogTo(Sync, @"%@: lastSequence mismatch: I had %@, remote had %@ (response = %@)",
-            self, localLastSequence, remoteLastSequence, checkpointDocument);
-    }
     [self beginReplicating];
 }
 
-#if DEBUG
-@synthesize savingCheckpoint=_savingCheckpoint;  // for unit tests
-#endif
-
-
 - (void) saveLastSequence {
-    if (!_lastSequenceChanged)
-        return;
-    
-    _lastSequenceChanged = NO;
-    
-    LogTo(Sync, @"%@ checkpointing sequence=%@", self, _lastSequence);
+    LogTo(Sync, @"%@: checkpointing sequence=%@", self, _lastSequence);
     NSMutableDictionary* body = [_remoteCheckpoint mutableCopy];
     if (!body)
         body = $mdict();
     [body setValue: _lastSequence.description forKey: @"lastSequence"]; // always save as a string
-    
-    CBLDatabase* db = _db;
-    _savingCheckpoint = YES;
+
     NSString* checkpointID = self.remoteCheckpointDocID;
     NSError *error = nil;
-    BOOL saved = [db putLocalDocument: body withID: checkpointID error: &error];
+    BOOL saved = [_db putLocalDocument: body withID: checkpointID error: &error];
     if (!saved)
-          Warn(@"%@: Unable to save remote checkpoint: %@", self, error);
+          LogTo(Sync, @"WARN %@: Unable to save checkpoint (%@): %@", self, checkpointID, error);
     self.remoteCheckpoint = body;
-    [db setLastSequence: _lastSequence withCheckpointID: checkpointID];
-    _savingCheckpoint = NO;
 }
 
 

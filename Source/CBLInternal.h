@@ -43,8 +43,6 @@
 
 @interface CBLDatabase (Replication_Internal)
 - (void) stopAndForgetReplicator: (CBL_Replicator*)repl;
-- (NSString*) lastSequenceWithCheckpointID: (NSString*)checkpointID;
-- (BOOL) setLastSequence: (NSString*)lastSequence withCheckpointID: (NSString*)checkpointID;
 + (NSString*) joinQuotedStrings: (NSArray*)strings;
 @end
 
@@ -112,9 +110,6 @@
 - (BOOL) goOnline;
 - (void) setSuspended: (BOOL)suspended;
 - (BOOL) checkSSLServerTrust: (SecTrustRef)trust forHost: (NSString*)host port: (UInt16)port;
-#if DEBUG
-@property (readonly) BOOL savingCheckpoint;
-#endif
 @end
 
 

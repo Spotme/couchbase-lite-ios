@@ -868,23 +868,6 @@ TestCase(CBL_Database_StubOutAttachmentsBeforeRevPos) {
 #pragma mark - MISC.:
 
 
-TestCase(CBL_Database_ReplicatorSequences) {
-    RequireTestCase(CBL_Database_CRUD);
-    CBLDatabase* db = createDB();
-    CAssertNil([db lastSequenceWithCheckpointID: @"pull"]);
-    [db setLastSequence: @"lastpull" withCheckpointID: @"pull"];
-    CAssertEqual([db lastSequenceWithCheckpointID: @"pull"], @"lastpull");
-    CAssertNil([db lastSequenceWithCheckpointID: @"push"]);
-    [db setLastSequence: @"newerpull" withCheckpointID: @"pull"];
-    CAssertEqual([db lastSequenceWithCheckpointID: @"pull"], @"newerpull");
-    CAssertNil([db lastSequenceWithCheckpointID: @"push"]);
-    [db setLastSequence: @"lastpush" withCheckpointID: @"push"];
-    CAssertEqual([db lastSequenceWithCheckpointID: @"pull"], @"newerpull");
-    CAssertEqual([db lastSequenceWithCheckpointID: @"push"], @"lastpush");
-    CAssert([db close]);
-}
-
-
 TestCase(CBL_Database_LocalDocs) {
     // Start with a fresh database in /tmp:
     CBLDatabase* db = createDB();
