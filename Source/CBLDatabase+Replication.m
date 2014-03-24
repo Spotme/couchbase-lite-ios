@@ -69,21 +69,6 @@
         [_activeReplicators removeObjectIdenticalTo: repl];
 }
 
-
-- (NSString*) lastSequenceWithCheckpointID: (NSString*)checkpointID {
-    // This table schema is out of date but I'm keeping it the way it is for compatibility.
-    // The 'remote' column now stores the opaque checkpoint IDs, and 'push' is ignored.
-    return [_fmdb stringForQuery:@"SELECT last_sequence FROM replicators WHERE remote=?",
-                                 checkpointID];
-}
-
-- (BOOL) setLastSequence: (NSString*)lastSequence withCheckpointID: (NSString*)checkpointID {
-    return [_fmdb executeUpdate: 
-            @"INSERT OR REPLACE INTO replicators (remote, push, last_sequence) VALUES (?, -1, ?)",
-            checkpointID, lastSequence];
-}
-
-
 + (NSString*) joinQuotedStrings: (NSArray*)strings {
     if (strings.count == 0)
         return @"";

@@ -136,13 +136,12 @@ static NSString* replic8(CBLDatabase* db, NSURL* remote, BOOL push,
     
     CAssert(repl.running);
     LogMY(@"Waiting for replicator to finish...");
-    while (repl.running || repl.savingCheckpoint) {
+    while (repl.running) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
                                       beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]])
             break;
     }
     CAssert(!repl.running);
-    CAssert(!repl.savingCheckpoint);
     CAssertNil(repl.error);
     CAssert(!repl.active);
     LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
@@ -165,7 +164,7 @@ static NSString* replic8Continuous(CBLDatabase* db, NSURL* remote,
     CAssert(repl.running);
     LogMY(@"Waiting for replicator to go idle...");
     bool wasActive = repl.active;
-    while (repl.running || repl.savingCheckpoint) {
+    while (repl.running) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
                                       beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]])
             break;
@@ -175,7 +174,6 @@ static NSString* replic8Continuous(CBLDatabase* db, NSURL* remote,
             break;  // Went inactive, so it's done
     }
     CAssert(wasActive && !repl.active);
-    CAssert(!repl.savingCheckpoint);
     CAssert(repl.running);
     CAssertNil(repl.error);
     LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
@@ -333,13 +331,12 @@ TestCase(CBL_Puller_DocIDs) {
     // Let the replicator run.
     CAssert(repl.running);
     LogMY(@"Waiting for replicator to finish...");
-    while (repl.running || repl.savingCheckpoint) {
+    while (repl.running) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode
                                       beforeDate: [NSDate dateWithTimeIntervalSinceNow: 0.5]])
             break;
     }
     CAssert(!repl.running);
-    CAssert(!repl.savingCheckpoint);
     CAssertNil(repl.error);
     LogMY(@"...replicator finished. lastSequence=%@", repl.lastSequence);
     id lastSeq = repl.lastSequence;

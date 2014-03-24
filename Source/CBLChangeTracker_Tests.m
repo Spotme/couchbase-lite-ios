@@ -124,7 +124,7 @@ TestCase(DictOf) {
 
 TestCase(CBLChangeTracker_Simple) {
     for (CBLChangeTrackerMode mode = kOneShot; mode <= kLongPoll; ++mode) {
-        Log(@"Mode = %d ...", mode);
+        LogMY(@"Mode = %d ...", mode);
         CBLChangeTrackerTester* tester = [[CBLChangeTrackerTester alloc] init];
         NSURL* url = [NSURL URLWithString: @"http://snej.iriscouch.com/tdpuller_test1"];
         CBLChangeTracker* tracker = [[CBLChangeTracker alloc] initWithDatabaseURL: url mode: mode conflicts: NO lastSequence: nil client: tester];

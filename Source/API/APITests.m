@@ -52,7 +52,7 @@ static CBLDocument* createDocumentWithProperties(CBLDatabase* db,
     CAssert(doc.currentRevisionID);
     CAssertEqual(doc.userProperties, properties);
     CAssertEq(db[doc.documentID], doc);
-    //Log(@"Created %p = %@", doc, doc);
+    //LogMY(@"Created %p = %@", doc, doc);
     return doc;
 }
 
@@ -78,7 +78,7 @@ TestCase(API_Manager) {
     CAssert(dbmgr);
     for (NSString* name in dbmgr.allDatabaseNames) {
         CBLDatabase* db = dbmgr[name];
-        Log(@"Database '%@': %u documents", db.name, (unsigned)db.documentCount);
+        LogMY(@"Database '%@': %u documents", db.name, (unsigned)db.documentCount);
     }
 
     CBLManagerOptions options = {.readOnly= true};
@@ -365,20 +365,20 @@ TestCase(API_AllDocuments) {
     // clear the cache so all documents/revisions will be re-fetched:
     [db _clearDocumentCache];
     
-    Log(@"----- all documents -----");
+    LogMY(@"----- all documents -----");
     CBLQuery* query = [db createAllDocumentsQuery];
     //query.prefetch = YES;
-    Log(@"Getting all documents: %@", query);
+    LogMY(@"Getting all documents: %@", query);
     
     CBLQueryEnumerator* rows = [query run: NULL];
     CAssertEq(rows.count, kNDocs);
     NSUInteger n = 0;
     for (CBLQueryRow* row in rows) {
-        Log(@"    --> %@", row);
+        LogMY(@"    --> %@", row);
         CBLDocument* doc = row.document;
         CAssert(doc, @"Couldn't get doc from query");
         CAssert(doc.currentRevision.propertiesAreLoaded, @"QueryRow should have preloaded revision contents");
-        Log(@"        Properties = %@", doc.properties);
+        LogMY(@"        Properties = %@", doc.properties);
         CAssert(doc.properties, @"Couldn't get doc properties");
         CAssertEqual([doc propertyForKey: @"testName"], @"testDatabase");
         n++;
@@ -425,7 +425,7 @@ TestCase(API_History) {
                                 nil];
     CBLDocument* doc = createDocumentWithProperties(db, properties);
     NSString* rev1ID = [doc.currentRevisionID copy];
-    Log(@"1st revision: %@", rev1ID);
+    LogMY(@"1st revision: %@", rev1ID);
     CAssert([rev1ID hasPrefix: @"1-"], @"1st revision looks wrong: '%@'", rev1ID);
     CAssertEqual(doc.userProperties, properties);
     properties = doc.properties.mutableCopy;
@@ -434,11 +434,11 @@ TestCase(API_History) {
     NSError* error;
     CAssert([doc putProperties: properties error: &error]);
     NSString* rev2ID = doc.currentRevisionID;
-    Log(@"2nd revision: %@", rev2ID);
+    LogMY(@"2nd revision: %@", rev2ID);
     CAssert([rev2ID hasPrefix: @"2-"], @"2nd revision looks wrong: '%@'", rev2ID);
 
     NSArray* revisions = [doc getRevisionHistory: &error];
-    Log(@"Revisions = %@", revisions);
+    LogMY(@"Revisions = %@", revisions);
     CAssertEq(revisions.count, 2u);
     
     CBLSavedRevision* rev1 = revisions[0];
@@ -713,17 +713,17 @@ TestCase(API_LiveQuery) {
     CBLLiveQuery* query = [[view createQuery] asLiveQuery];
     query.startKey = @23;
     query.endKey = @33;
-    Log(@"Created %@", query);
+    LogMY(@"Created %@", query);
     CAssertNil(query.rows);
 
-    Log(@"Waiting for live query to update...");
+    LogMY(@"Waiting for live query to update...");
     NSDate* timeout = [NSDate dateWithTimeIntervalSinceNow: 10.0];
     bool finished = false;
     while (!finished && timeout.timeIntervalSinceNow > 0.0) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate: timeout])
             break;
         CBLQueryEnumerator* rows = query.rows;
-        Log(@"Live query rows = %@", rows);
+        LogMY(@"Live query rows = %@", rows);
         if (rows != nil) {
             CAssertEq(rows.count, (NSUInteger)11);
 
@@ -760,7 +760,7 @@ TestCase(API_AsyncViewQuery) {
     __block bool finished = false;
     NSThread* curThread = [NSThread currentThread];
     [query runAsync: ^(CBLQueryEnumerator *rows, NSError* error) {
-        Log(@"Async query finished!");
+        LogMY(@"Async query finished!");
         CAssertEq([NSThread currentThread], curThread);
         CAssert(rows);
         CAssertNil(error);
@@ -775,7 +775,7 @@ TestCase(API_AsyncViewQuery) {
         finished = true;
     }];
 
-    Log(@"Waiting for async query to finish...");
+    LogMY(@"Waiting for async query to finish...");
     NSDate* timeout = [NSDate dateWithTimeIntervalSinceNow: 5.0];
     while (!finished) {
         if (![[NSRunLoop currentRunLoop] runMode: NSDefaultRunLoopMode beforeDate: timeout])
@@ -851,7 +851,7 @@ TestCase(API_ShowFunctions) {
     
     showFunction.showFunctionBlock = ^CBLFunctionResult*(NSDictionary *doc, NSDictionary *params) {
         CBLFunctionResult *result = [CBLFunctionResult new];
-        result.status = [doc[@"sequence"] unsignedIntegerValue];
+        result.status = (CBLStatus)[doc[@"sequence"] unsignedIntegerValue];
         result.headers = params;
         result.body = doc;
         

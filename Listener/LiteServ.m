@@ -30,8 +30,8 @@
 #if DEBUG
 #import "Logging.h"
 #else
-#define Warn NSLog
-#define Log NSLog
+#define WarnMY NSLog
+#define LogMY NSLog
 #endif
 
 
@@ -52,7 +52,7 @@ static NSString* GetServerPath() {
     if (![[NSFileManager defaultManager] createDirectoryAtPath: path
                                   withIntermediateDirectories: YES
                                                    attributes: nil error: &error]) {
-        NSLog(@"FATAL: Couldn't create CouchbaseLite server dir at %@", path);
+        LogMY(@"FATAL: Couldn't create CouchbaseLite server dir at %@", path);
         exit(1);
     }
     return path;
@@ -80,7 +80,7 @@ static bool doReplicate(CBLManager* dbm, const char* replArg,
         NSString* userStr = @(user);
         NSString* passStr = @(password);
         NSString* realmStr = realm ? @(realm) : nil;
-        Log(@"Setting session credentials for user '%@' in realm %@", userStr, realmStr);
+        LogMY(@"Setting session credentials for user '%@' in realm %@", userStr, realmStr);
         NSURLCredential* cred;
         cred = [NSURLCredential credentialWithUser: userStr
                                           password: passStr
@@ -99,9 +99,9 @@ static bool doReplicate(CBLManager* dbm, const char* replArg,
     }
 
     if (pull)
-        Log(@"Pulling from <%@> --> %@ ...", remote, dbName);
+        LogMY(@"Pulling from <%@> --> %@ ...", remote, dbName);
     else
-        Log(@"Pushing %@ --> <%@> ...", dbName, remote);
+        LogMY(@"Pushing %@ --> <%@> ...", dbName, remote);
 
     // Actually replicate -- this could probably be cleaned up to use the public API.
     CBL_Replicator* repl = nil;
@@ -237,7 +237,7 @@ int main (int argc, const char * argv[])
             srandomdev();
             NSString* password = [NSString stringWithFormat: @"%lx", random()];
             listener.passwords = @{@"cbl": password};
-            Log(@"Auth required: user='cbl', password='%@'", password);
+            LogMY(@"Auth required: user='cbl', password='%@'", password);
         }
 
         if (identityName) {
@@ -247,7 +247,7 @@ int main (int argc, const char * argv[])
                 Warn(@"FATAL: Couldn't find identity pref named '%@'", name);
                 exit(1);
             }
-            Log(@"Serving SSL with %@", identity);
+            LogMY(@"Serving SSL with %@", identity);
             listener.SSLIdentity = identity;
             CFRelease(identity);
         }
@@ -266,7 +266,7 @@ int main (int argc, const char * argv[])
             if (!doReplicate(server, replArg, pull, createTarget, continuous, user, password, realm))
                 return 1;
         } else {
-            Log(@"LiteServ %@ is listening%@ at <%@> ... relax!",
+            LogMY(@"LiteServ %@ is listening%@ at <%@> ... relax!",
                 CBLVersionString(),
                 (listener.readOnly ? @" in read-only mode" : @""),
                 listener.URL);
@@ -274,7 +274,7 @@ int main (int argc, const char * argv[])
 
         [[NSRunLoop currentRunLoop] run];
 
-        Log(@"LiteServ quitting");
+        LogMY(@"LiteServ quitting");
     }
     return 0;
 }
