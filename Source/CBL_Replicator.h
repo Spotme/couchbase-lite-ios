@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CBLDatabase, CBL_RevisionList, CBLBatcher, CBLReachability;
+@class CBLDatabase, CBL_RevisionList, CBLBatcher;
 @protocol CBLAuthorizer;
 
 
@@ -17,7 +17,6 @@ extern NSString* CBL_ReplicatorProgressChangedNotification;
 
 /** Posted when replicator stops running. */
 extern NSString* CBL_ReplicatorStoppedNotification;
-
 
 /** Abstract base class for push or pull replications. */
 @interface CBL_Replicator : NSObject

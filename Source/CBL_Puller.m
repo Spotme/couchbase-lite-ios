@@ -179,14 +179,14 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     return NO;
 }
 
-
+/*
 - (BOOL) goOffline {
     if (![super goOffline])
         return NO;
     [_changeTracker stop];
     return YES;
 }
-
+*/
 
 - (BOOL) changeTrackerApproveSSLTrust: (SecTrustRef)serverTrust
                               forHost: (NSString*)host
@@ -245,9 +245,9 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     _changeTracker = nil;
     
     if (error) {
-        if (CBLIsOfflineError(error))
+        /*if (CBLIsOfflineError(error))
             [self goOffline];
-        else if (!self.error)
+        else */if (!self.error)
             self.error = error;
     }
     

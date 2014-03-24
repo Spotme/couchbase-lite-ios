@@ -20,7 +20,6 @@
 #import "CBLRemoteRequest.h"
 #import "CBLAuthorizer.h"
 #import "CBLBatcher.h"
-#import "CBLReachability.h"
 #import "CBL_URLProtocol.h"
 #import "CBLInternal.h"
 #import "CBLMisc.h"
@@ -74,7 +73,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     int _asyncTaskCount;
     NSUInteger _changesProcessed, _changesTotal;
     CFAbsoluteTime _startTime;
-    CBLReachability* _host;
     BOOL _suspended;
 }
 
@@ -124,7 +122,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 - (void)dealloc {
     [self stop];
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    [_host stop];
 }
 
 
@@ -324,21 +321,12 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 #endif
     
     _online = NO;
-    if ([NSClassFromString(@"CBL_URLProtocol") handlesURL: _remote]) {
+    //comment commented when CBLReachibility has been removed
+    /*if ([NSClassFromString(@"CBL_URLProtocol") handlesURL: _remote]) {
         [self goOnline];    // local-to-local replication
-    } else {
-        // Start reachability checks. (This creates another ref cycle, because
-        // the block also retains a ref to self. Cycle is also broken in -stopped.)
-        _host = [[CBLReachability alloc] initWithHostName: _remote.host];
-        
-        __weak id weakSelf = self;
-        _host.onChange = ^{
-            CBL_Replicator *strongSelf = weakSelf;
-            [strongSelf reachabilityChanged:strongSelf->_host];
-        };
-        [_host start];
-        [self reachabilityChanged: _host];
-    }
+    } else {*/
+        [self goOnline];
+    /*}*/
 }
 
 
@@ -374,8 +362,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     [self saveLastSequence];
     
     _batcher = nil;
-    [_host stop];
-    _host = nil;
     _suspended = NO;
     [self clearDbRef];  // _db no longer tracks me so it won't notify me when it closes; clear ref now
 }
@@ -402,18 +388,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     }
 }
 
-
-- (BOOL) goOffline {
-    if (!_online)
-        return NO;
-    LogTo(Sync, @"%@: Going offline", self);
-    _online = NO;
-    [self stopRemoteRequests];
-    [self postProgressChanged];
-    return YES;
-}
-
-
 - (BOOL) goOnline {
     if (_online)
         return NO;
@@ -430,39 +404,11 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     return YES;
 }
 
-
-- (void) reachabilityChanged: (CBLReachability*)host {
-    LogTo(Sync, @"%@: Reachability state = %@ (%02X), suspended=%d",
-          self, host, host.reachabilityFlags, _suspended);
-
-    BOOL reachable = host.reachable && !_suspended;
-    if (reachable) {
-    // Parse "network" option. Could be nil or "WiFi" or "!Wifi" or "cell" or "!cell".
-    NSString* network = [$castIf(NSString, _options[kCBLReplicatorOption_Network])
-                              lowercaseString];
-        if (network) {
-            BOOL wifi = host.reachableByWiFi;
-            if ($equal(network, @"wifi") || $equal(network, @"!cell"))
-                reachable = wifi;
-            else if ($equal(network, @"cell") || $equal(network, @"!wifi"))
-                reachable = !wifi;
-            else
-                Warn(@"Unrecognized replication option \"network\"=\"%@\"", network);
-        }
-    }
-
-    if (reachable)
-        [self goOnline];
-    else if (host.reachabilityKnown || _suspended)
-        [self goOffline];
-}
-
 // When suspended, the replicator acts as though it's offline, stopping all network activity.
 // This is used by the iOS backgrounding support (see CBLReplication+Backgrounding.m)
 - (void) setSuspended: (BOOL)suspended {
     if (suspended != _suspended) {
         _suspended = suspended;
-        [self reachabilityChanged: _host];
     }
 }
 

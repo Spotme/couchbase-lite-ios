@@ -146,15 +146,6 @@ static int findCommonAncestor(CBL_Revision* rev, NSArray* possibleIDs);
     [self beginReplicating];
 }
 
-
-- (BOOL) goOffline {
-    if (![super goOffline])
-        return NO;
-    [self stopObserving];
-    return YES;
-}
-
-
 - (void) stop {
     LogTo(Sync, @"%@ STOPPING...", self);
     _uploaderQueue = nil;
