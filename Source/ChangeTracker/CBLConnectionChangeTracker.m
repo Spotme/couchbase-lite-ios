@@ -100,6 +100,9 @@
         
         [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
     }
+    else {
+        [challenge.sender performDefaultHandlingForAuthenticationChallenge:challenge];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
