@@ -72,6 +72,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     NSUInteger _changesProcessed, _changesTotal;
     CFAbsoluteTime _startTime;
     BOOL _suspended;
+    NSTimer* _saveLastSequenceThrottleTimer;
 }
 
 + (NSString *)progressChangedNotification
@@ -119,6 +120,8 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 - (void)dealloc {
     [self stop];
+    // not sure if we 100% need this
+    if ([_saveLastSequenceThrottleTimer isValid]) { [_saveLastSequenceThrottleTimer fire]; }
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
@@ -129,6 +132,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 
 - (void) databaseClosing {
+    [_saveLastSequenceThrottleTimer invalidate];
     [self saveLastSequence];
     [self stop];
     [self clearDbRef];
@@ -171,8 +175,9 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
         LogTo(SyncVerbose, @"%@: Setting lastSequence to %@ (from %@)",
               self, lastSequence, _lastSequence);
         _lastSequence = [lastSequence copy];
-        // FIXME: maybe throttle saving ?
-        [self saveLastSequence];
+
+        [_saveLastSequenceThrottleTimer invalidate];
+        _saveLastSequenceThrottleTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(saveLastSequence) userInfo:nil repeats:NO];
     }
 }
 
@@ -354,6 +359,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     
     [[NSNotificationCenter defaultCenter]
         postNotificationName: CBL_ReplicatorStoppedNotification object: self];
+    [_saveLastSequenceThrottleTimer invalidate];
     [self saveLastSequence];
     
     _batcher = nil;
