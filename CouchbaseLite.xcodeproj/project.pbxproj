@@ -734,7 +734,6 @@
 		A932B2D01875ED4B001B540A /* stem_ISO_8859_1_spanish.c in Sources */ = {isa = PBXBuildFile; fileRef = 277EF3DD17F4DF3700F7B7F7 /* stem_ISO_8859_1_spanish.c */; };
 		A932B2D11875ED4B001B540A /* sqlite3_unicodesn_tokenizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 277EF40717F4DF3700F7B7F7 /* sqlite3_unicodesn_tokenizer.c */; };
 		A932B2D31875ED4B001B540A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
-		A932B2DA1875ED6A001B540A /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CB186C5E6900833EFE /* JavaScriptCore.framework */; };
 		A932B2DB1875EDDD001B540A /* CBLJSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F7F1868B0E900DA3C3A /* CBLJSFunction.m */; };
 		A932B2DC1875EDDD001B540A /* CBLJSViewCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F881868B13600DA3C3A /* CBLJSViewCompiler.m */; };
 		A932B2DD1875EDDD001B540A /* CBLJSFilterCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F7D1868B0E900DA3C3A /* CBLJSFilterCompiler.m */; };
@@ -811,6 +810,7 @@
 		A932B3291875F634001B540A /* CBLHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 27E11F0C14ACFFC60006B340 /* CBLHTTPServer.h */; };
 		A932B32A1875F634001B540A /* CBLHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2753160A14ACFC2A0065964D /* CBLHTTPConnection.h */; };
 		A932B32B1875F634001B540A /* CBLHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 27E11F0E14AD15940006B340 /* CBLHTTPResponse.h */; };
+		A94772C618F2DA11001FD7DE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 792867D3178DE33E00248AF0 /* JavaScriptCore.framework */; };
 		A972B8CC186C5E6900833EFE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CB186C5E6900833EFE /* JavaScriptCore.framework */; };
 		A972B8CE186C5E7600833EFE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CD186C5E7600833EFE /* UIKit.framework */; };
 		A972B8D0186C5E7D00833EFE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CF186C5E7D00833EFE /* CoreGraphics.framework */; };
@@ -1765,7 +1765,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A932B2DA1875ED6A001B540A /* JavaScriptCore.framework in Frameworks */,
+				A94772C618F2DA11001FD7DE /* JavaScriptCore.framework in Frameworks */,
 				A932B2D31875ED4B001B540A /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5435,6 +5435,10 @@
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_GC = unsupported;
@@ -5471,6 +5475,10 @@
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -5504,6 +5512,10 @@
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
