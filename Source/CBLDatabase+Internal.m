@@ -192,7 +192,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     else
         flags |= SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     LogTo(CBLDatabase, @"Open %@ (flags=%X)", _path, flags);
-    if (![_fmdb openWithFlags: flags]) {
+    if (![_fmdb openWithFlags: flags encryptionKey: _manager.encryptionKey]) {
         if (outError) *outError = self.fmdbError;
         return NO;
     }

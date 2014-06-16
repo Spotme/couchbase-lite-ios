@@ -824,6 +824,7 @@
 		A972B8E4186C866300833EFE /* CBLFunctionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A972B8E2186C866300833EFE /* CBLFunctionResult.m */; };
 		A972B8E5186C866300833EFE /* CBLFunctionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A972B8E2186C866300833EFE /* CBLFunctionResult.m */; };
 		A972B8E6186C956900833EFE /* CBLFunctionResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A972B8E1186C866300833EFE /* CBLFunctionResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A9876523194EDBF100700708 /* libsqlcipher.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98764F7194EDB0400700708 /* libsqlcipher.a */; };
 		A9A98B9E1875FF9000293106 /* libCouchbaseLite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A932B2D91875ED4B001B540A /* libCouchbaseLite.a */; };
 		A9AB721E186C581D00B19EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
 		A9AB7226186C581D00B19EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9AB7224186C581D00B19EB0 /* InfoPlist.strings */; };
@@ -1602,6 +1603,7 @@
 		A972B8D9186C651C00833EFE /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
 		A972B8E1186C866300833EFE /* CBLFunctionResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBLFunctionResult.h; sourceTree = "<group>"; };
 		A972B8E2186C866300833EFE /* CBLFunctionResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLFunctionResult.m; sourceTree = "<group>"; };
+		A98764F7194EDB0400700708 /* libsqlcipher.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsqlcipher.a; sourceTree = "<group>"; };
 		A9AB721D186C581D00B19EB0 /* LiteServ-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LiteServ-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9AB7223186C581D00B19EB0 /* LiteServ-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LiteServ-iOS-Info.plist"; sourceTree = "<group>"; };
 		A9AB7225186C581D00B19EB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1765,6 +1767,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9876523194EDBF100700708 /* libsqlcipher.a in Frameworks */,
 				A94772C618F2DA11001FD7DE /* JavaScriptCore.framework in Frameworks */,
 				A932B2D31875ED4B001B540A /* Foundation.framework in Frameworks */,
 			);
@@ -1927,6 +1930,7 @@
 		2753154D14ACEF350065964D /* vendor */ = {
 			isa = PBXGroup;
 			children = (
+				A98764F7194EDB0400700708 /* libsqlcipher.a */,
 				277B5C5E1821A8370088881E /* yajl */,
 				27F0746C11CD51A200E9A2AB /* FMDB */,
 				27F0749A11CD5B1200E9A2AB /* MYUtilities */,
@@ -5460,6 +5464,10 @@
 					"$SRCROOT/vendor/yajl/build/yajl-2.0.5/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CouchbaseLite;
 				SDKROOT = iphoneos;
@@ -5498,6 +5506,10 @@
 					"$SRCROOT/vendor/yajl/build/yajl-2.0.5/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CouchbaseLite;
 				SDKROOT = iphoneos;
@@ -5535,6 +5547,10 @@
 					"$SRCROOT/vendor/yajl/build/yajl-2.0.5/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CouchbaseLite;
 				SDKROOT = iphoneos;

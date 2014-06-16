@@ -52,6 +52,8 @@ typedef struct CBLManagerOptions {
 /** The root directory of this manager (as specified at initialization time.) */
 @property (readonly) NSString* directory;
 
+@property (strong) NSString* encryptionKey;
+
 #pragma mark - DATABASES:
 
 /** Returns the database with the given name, creating it if it didn't already exist.

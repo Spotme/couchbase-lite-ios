@@ -63,6 +63,7 @@ static const CBLManagerOptions kCBLManagerDefaultOptions;
 
 @synthesize dispatchQueue=_dispatchQueue, directory = _dir;
 @synthesize customHTTPHeaders = _customHTTPHeaders;
+@synthesize encryptionKey = _encryptionKey;
 
 
 // http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
@@ -195,6 +196,7 @@ static CBLManager* sInstance;
                                                                shared: _shared];
     
     managerCopy.customHTTPHeaders = [self.customHTTPHeaders copy];
+    managerCopy.encryptionKey = [self.encryptionKey copy];
     
     return managerCopy;
 }
