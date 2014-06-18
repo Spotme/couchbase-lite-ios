@@ -33,9 +33,13 @@ typedef struct CBLBlobKey {
 
 - (instancetype) initWithPath: (NSString*)dir error: (NSError**)outError;
 
+// it would be better to link directly with CBLDatabase and
+// there from get encryption key from CBLManager
+@property (strong) NSString *encryptionKey;
+
 - (NSData*) blobForKey: (CBLBlobKey)key;
-- (NSInputStream*) blobInputStreamForKey: (CBLBlobKey)key
-                                  length: (UInt64*)outLength;
+//- (NSInputStream*) blobInputStreamForKey: (CBLBlobKey)key
+//                                  length: (UInt64*)outLength;
 
 - (BOOL) storeBlob: (NSData*)blob
        creatingKey: (CBLBlobKey*)outKey;

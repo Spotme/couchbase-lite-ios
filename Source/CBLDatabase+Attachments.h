@@ -73,6 +73,9 @@ typedef enum {
 /** Uses the "digest" field of the attachment dict to look up the attachment in the store and return a file URL to it. DO NOT MODIFY THIS FILE! */
 - (NSURL*) fileForAttachmentDict: (NSDictionary*)attachmentDict;
 
+/** Uses the "digest" field of the attachment dict to look up the attachment in the store and return a file data to it. DO NOT MODIFY THIS FILE! */
+- (NSData*) fileDataForAttachmentDict: (NSDictionary*)attachmentDict;
+
 /** Deletes obsolete attachments from the database and blob store. */
 - (CBLStatus) garbageCollectAttachments;
 

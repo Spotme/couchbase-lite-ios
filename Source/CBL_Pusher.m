@@ -389,7 +389,8 @@ CBLStatus CBLStatusFromBulkDocsResponseItem(NSDictionary* item) {
             [bodyStream setNextPartsHeaders: $dict({@"Content-Disposition", disposition},
                                                    {@"Content-Type", contentType},
                                                    {@"Content-Encoding", contentEncoding})];
-            [bodyStream addFileURL: [_db fileForAttachmentDict: attachment]];
+            //[bodyStream addFileURL: [_db fileForAttachmentDict: attachment]];
+            [bodyStream addData: [_db fileDataForAttachmentDict: attachment]];
         }
     }
     if (!bodyStream)

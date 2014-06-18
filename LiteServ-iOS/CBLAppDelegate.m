@@ -12,6 +12,7 @@
 #import "CBLJSShowFunctionCompiler.h"
 #import "CBLJSListFunctionCompiler.h"
 #import "CBLListener.h"
+#import "CBLMisc.h"
 
 #if DEBUG
 #import "Logging.h"
@@ -56,7 +57,45 @@
         Warn(@"FATAL: Error initializing CouchbaseLite: %@", error);
         exit(EXIT_FAILURE);
     }
-    Log(@"data dir: %@", dataPath);
+    LogMY(@"data dir: %@", dataPath);
+    
+    NSString *encryptionKey = nil;
+    {
+        NSDictionary *copyMatchingQuery = @{
+                                            (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
+                                            (__bridge id)kSecAttrService: @"sqlcipher",
+                                            (__bridge id)kSecAttrAccount: @"encryption-key",
+                                            (__bridge id)kSecReturnData: @YES
+                                            };
+        
+        CFDataRef outData = NULL;
+        OSStatus copyMatchingStatus = SecItemCopyMatching((__bridge CFDictionaryRef)copyMatchingQuery, (CFTypeRef *)&outData);
+        NSData *data = (__bridge_transfer NSData*)outData;
+        if (copyMatchingStatus == errSecSuccess) {
+            encryptionKey = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        }
+        else if (copyMatchingStatus == errSecItemNotFound) {
+            // insert new key
+            encryptionKey = CBLCreateUUID();
+            data = [encryptionKey dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *addAttributes = @{
+                                            (__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
+                                            (__bridge id)kSecAttrService: @"sqlcipher",
+                                            (__bridge id)kSecAttrAccount: @"encryption-key",
+                                            (__bridge id)kSecValueData: data
+                                            };
+            OSStatus addStaus = SecItemAdd((__bridge CFDictionaryRef)addAttributes, NULL);
+            if (addStaus != errSecSuccess) {
+                LogMY(@"FATAL: Error saving encryption key: %d", (int)addStaus);
+                exit(EXIT_FAILURE);
+            }
+        }
+        else {
+            LogMY(@"FATAL: Error querying encryption key: %d", (int)copyMatchingStatus);
+            exit(EXIT_FAILURE);
+        }
+    }
+    _manager.encryptionKey = encryptionKey;
 
     // Start a listener socket:
     _listener = [[CBLListener alloc] initWithManager: _manager port: 59840];
@@ -76,7 +115,7 @@
         exit(EXIT_FAILURE);
     }
     
-    Log(@"LiteServ %@ is listening%@ at <%@> ... relax!",
+    LogMY(@"LiteServ %@ is listening%@ at <%@> ... relax!",
         CBLVersionString(),
         (_listener.readOnly ? @" in read-only mode" : @""),
         _listener.URL);

@@ -69,3 +69,7 @@ NSURL* CBLURLWithoutQuery( NSURL* url ) __attribute__((nonnull));
 
 /** Appends path components to a URL. These will NOT be URL-escaped, so you can include queries. */
 NSURL* CBLAppendToURL(NSURL* baseURL, NSString* toAppend) __attribute__((nonnull));
+
+/** Encodes and decodes NSData objects using AES-256 */
+NSData* CBLDataEncode(NSData *data, NSString *key);
+NSData* CBLDataDecode(NSData *data, NSString *key);

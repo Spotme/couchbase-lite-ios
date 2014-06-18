@@ -412,6 +412,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
         [_fmdb close];
         return NO;
     }
+    _attachments.encryptionKey = self.manager.encryptionKey;
 
     _isOpen = YES;
 

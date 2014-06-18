@@ -283,6 +283,11 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
         *outStatus = kCBLStatusCorruptError;
         return nil;
     }
+    
+    if (_manager.encryptionKey) {
+        contents = CBLDataDecode(contents, _manager.encryptionKey);
+    }
+    
     if (outEncoding)
         *outEncoding = encoding;
     else
@@ -369,6 +374,17 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
     return [NSURL fileURLWithPath: [_attachments pathForKey: key]];
 }
 
+- (NSData*) fileDataForAttachmentDict: (NSDictionary*)attachmentDict {
+    NSURL* URL = [self fileForAttachmentDict: attachmentDict];
+    NSData* blob = [NSData dataWithContentsOfURL: URL
+                                         options: NSDataReadingMappedIfSafe
+                                           error: NULL];
+    if (_manager.encryptionKey) {
+        blob = CBLDataDecode(blob, _manager.encryptionKey);
+    }
+    
+    return blob;
+}
 
 // Calls the block on every attachment dictionary. The block can return a different dictionary,
 // which will be replaced in the rev's properties. If it returns nil, the operation aborts.

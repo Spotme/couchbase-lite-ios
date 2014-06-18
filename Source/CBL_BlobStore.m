@@ -67,6 +67,7 @@
 
 
 @synthesize path=_path;
+@synthesize encryptionKey=_encryptionKey;
 
 
 - (NSString*) pathForKey: (CBLBlobKey)key {
@@ -103,22 +104,26 @@
 
 - (NSData*) blobForKey: (CBLBlobKey)key {
     NSString* path = [self pathForKey: key];
-    return [NSData dataWithContentsOfFile: path options: NSDataReadingMappedIfSafe error: NULL];
+    NSData* blob = [NSData dataWithContentsOfFile: path options: NSDataReadingMappedIfSafe error: NULL];
+    if (_encryptionKey) {
+        blob = CBLDataDecode(blob, _encryptionKey);
+    }
+    return blob;
 }
 
-- (NSInputStream*) blobInputStreamForKey: (CBLBlobKey)key
-                                  length: (UInt64*)outLength
-{
-    NSString* path = [self pathForKey: key];
-    if (outLength) {
-        NSDictionary* info = [[NSFileManager defaultManager] attributesOfItemAtPath: path
-                                                                              error: NULL];
-        if (!info)
-            return nil;
-        *outLength = [info fileSize];
-    }
-    return [NSInputStream inputStreamWithFileAtPath: path];
-}
+//- (NSInputStream*) blobInputStreamForKey: (CBLBlobKey)key
+//                                  length: (UInt64*)outLength
+//{
+//    NSString* path = [self pathForKey: key];
+//    if (outLength) {
+//        NSDictionary* info = [[NSFileManager defaultManager] attributesOfItemAtPath: path
+//                                                                              error: NULL];
+//        if (!info)
+//            return nil;
+//        *outLength = [info fileSize];
+//    }
+//    return [NSInputStream inputStreamWithFileAtPath: path];
+//}
 
 - (BOOL) storeBlob: (NSData*)blob
        creatingKey: (CBLBlobKey*)outKey
@@ -127,12 +132,17 @@
     NSString* path = [self pathForKey: *outKey];
     if ([[NSFileManager defaultManager] isReadableFileAtPath: path])
         return YES;
+    
+    if (_encryptionKey) {
+        blob = CBLDataEncode(blob, _encryptionKey);
+    }
+    
     NSError* error;
     if (![blob writeToFile: path
                    options: NSDataWritingAtomic
-#if TARGET_OS_IPHONE
-                            | NSDataWritingFileProtectionCompleteUnlessOpen
-#endif
+//#if TARGET_OS_IPHONE
+//                            | NSDataWritingFileProtectionCompleteUnlessOpen
+//#endif
                      error: &error]) {
         Warn(@"CBL_BlobStore: Couldn't write to %@: %@", path, error);
         return NO;
@@ -304,15 +314,28 @@
     if (!_tempPath)
         return YES;  // already installed
     Assert(!_out, @"Not finished");
-    // Move temp file to correct location in blob store:
     NSString* dstPath = [_store pathForKey: _blobKey];
-    if ([[NSFileManager defaultManager] moveItemAtPath: _tempPath
-                                                toPath: dstPath error:NULL]) {
-        _tempPath = nil;
-    } else {
-        // If the move fails, assume it means a file with the same name already exists; in that
-        // case it must have the identical contents, so we're still OK.
-        [self cancel];
+    if (_store.encryptionKey) {
+        NSData* blob = [NSData dataWithContentsOfFile: _tempPath
+                                              options: NSDataReadingMappedIfSafe
+                                                error: NULL];
+        NSData* encryptedBlob = CBLDataEncode(blob, _store.encryptionKey);
+        if (![encryptedBlob writeToFile: dstPath atomically: NO]) {
+            [self cancel];
+        }
+        
+        [[NSFileManager defaultManager] removeItemAtPath: _tempPath error: NULL];
+    }
+    else {
+        // Move temp file to correct location in blob store:
+        if ([[NSFileManager defaultManager] moveItemAtPath: _tempPath
+                                                    toPath: dstPath error:NULL]) {
+            _tempPath = nil;
+        } else {
+            // If the move fails, assume it means a file with the same name already exists; in that
+            // case it must have the identical contents, so we're still OK.
+            [self cancel];
+        }
     }
     return YES;
 }
