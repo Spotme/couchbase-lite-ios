@@ -498,6 +498,7 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
                                                        error: &error];
             if (!fileData)
                 return nil;
+            fileData = CBLDataDecode(fileData, _manager.encryptionKey);
             NSMutableDictionary* editedAttachment = [attachment mutableCopy];
             [editedAttachment removeObjectForKey: @"follows"];
             editedAttachment[@"data"] = [CBLBase64 encode: fileData];
