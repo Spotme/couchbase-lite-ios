@@ -39,7 +39,8 @@ static JSValueRef GetRowCallback(JSContextRef ctx, JSObjectRef function, JSObjec
         return JSValueMakeUndefined(ctx);
     
     CBLQueryRow *row = getRowBlock();
-    return IDToValue(ctx, [row asJSONDictionary]);
+    JSValueRef ret = NSObjectToJSValue(ctx, [row asJSONDictionary]);//IDToValue(ctx, [row asJSONDictionary]);
+    return ret;
 }
 
 // This is the body of the JavaScript "start()" function.
@@ -50,7 +51,7 @@ static JSValueRef StartCallback(JSContextRef ctx, JSObjectRef function, JSObject
     CBLFunctionResult* currentFunctionResult = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
     // by this we're limiting start() to be only called once
     if (!currentFunctionResult && argumentCount > 0) {
-        NSDictionary* startDict = ValueToID(ctx, arguments[0]);
+        NSDictionary* startDict = (NSDictionary*)JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
         currentFunctionResult = [[CBLFunctionResult alloc] initWithResultObject: startDict];
         NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey] = currentFunctionResult;
     }
@@ -64,7 +65,7 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                                 JSValueRef* exception)
 {
     if (argumentCount > 0) {
-        NSString* chunk = ValueToID(ctx, arguments[0]);
+        NSString* chunk = (NSString*)JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
         
         CBLFunctionResult* currentFunctionResult = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
         if (!currentFunctionResult) {
@@ -138,7 +139,7 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
         }
         [NSThread.currentThread.threadDictionary removeObjectForKey:kCBLCurrentGetRowBlockKey];
         
-        id obj = ValueToID(ctx, fnRes);
+        id obj = JSValueToNSObject/*ValueToID*/(ctx, fnRes);
         if (exception) {
             result = [CBLFunctionResult new];
             

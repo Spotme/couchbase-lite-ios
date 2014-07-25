@@ -9,11 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScript.h>
 
-extern JSValueRef IDToValue(JSContextRef ctx, id object);
-extern id ValueToID(JSContextRef ctx, JSValueRef value);
+// extern JSValueRef IDToValue(JSContextRef ctx, id object);
+// extern id ValueToID(JSContextRef ctx, JSValueRef value);
 extern void WarnJSException(JSContextRef context, NSString* warning, JSValueRef exception);
 
 extern NSString* const kCBLJSFunctionCurrentRequireContextKey;
+
+// from https://github.com/phoboslab/Ejecta/blob/master/Source/Ejecta/EJConvert.h
+NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v );
+JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string );
+void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v );
+JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj );
+NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value );
+// * * *
 
 /** Abstract base class for JavaScript-based CBL*Compilers */
 @interface CBLJSCompiler : NSObject

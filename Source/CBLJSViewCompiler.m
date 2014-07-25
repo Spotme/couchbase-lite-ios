@@ -44,9 +44,9 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 {
     id key = nil, value = nil;
     if (argumentCount > 0) {
-        key = ValueToID(ctx, arguments[0]);
+        key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
         if (argumentCount > 1)
-            value = ValueToID(ctx, arguments[1]);
+            value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
     }
     sCurrentEmitBlock(key, value);
     return JSValueMakeUndefined(ctx);
@@ -113,7 +113,7 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
     // Return the CBLReduceBlock; the code inside will be called when CouchbaseLite wants to reduce:
     CBLReduceBlock reduceBlock = ^id(NSArray* keys, NSArray* values, BOOL rereduce) {
         JSValueRef result = [fn call: keys, values, @(rereduce)];
-        return ValueToID(self.context, result);
+        return JSValueToNSObject/*ValueToID*/(self.context, result);
     };
     return [reduceBlock copy];
 }

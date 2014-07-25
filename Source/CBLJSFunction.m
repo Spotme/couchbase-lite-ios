@@ -29,7 +29,7 @@ static JSValueRef RequireCallback(JSContextRef ctx, JSObjectRef function, JSObje
     
     NSDictionary* currentRequireContext = NSThread.currentThread.threadDictionary[kCBLJSFunctionCurrentRequireContextKey];
     
-    NSString* moduleName = ValueToID(ctx, arguments[0]);
+    NSString* moduleName = (NSString*)JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
     if (!moduleName || ![moduleName isKindOfClass: [NSString class]])
         return JSValueMakeUndefined(ctx);
     
@@ -83,7 +83,7 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
     
     for (size_t i = 0; i < argumentCount; i++) {
         JSValueRef argument = arguments[i];
-        id arg = ValueToID(ctx, argument);
+        id arg = JSValueToNSObject/*ValueToID*/(ctx, argument);
         [logStr appendFormat:@"%@", arg];
     }
     LogTo(JS, @"%@", logStr);
@@ -202,12 +202,12 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
         NSThread.currentThread.threadDictionary[kCBLJSFunctionCurrentRequireContextKey] = _requireContext;
     JSContextRef context = _compiler.context;
     JSValueRef jsParams[_nParams];
-    jsParams[0] = IDToValue(context, param1);
+    jsParams[0] = NSObjectToJSValue(context, param1);//IDToValue(context, param1);
     if (_nParams > 1) {
         va_list args;
         va_start(args, param1);
         for (NSUInteger i = 1; i < _nParams; ++i)
-            jsParams[i] = IDToValue(context, va_arg(args, id));
+            jsParams[i] = NSObjectToJSValue(context, va_arg(args, id));//IDToValue(context, va_arg(args, id));
         va_end(args);
     }
     JSValueRef exception = NULL;
@@ -227,7 +227,7 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
     JSValueRef jsParams[params_count];
     for (NSUInteger idx = 0; idx < params_count; idx++) {
         id obj = params[idx];
-        jsParams[idx] = IDToValue(context, obj);
+        jsParams[idx] = NSObjectToJSValue(context, obj);//IDToValue(context, obj);
     }
     JSValueRef exception = NULL;
     JSValueRef result = JSObjectCallAsFunction(context, _fn, NULL, _nParams, jsParams, &exception);
@@ -249,37 +249,6 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
 
 @end
 
-
-
-// Converts a JSON-compatible NSObject to a JSValue.
-JSValueRef IDToValue(JSContextRef ctx, id object) {
-    if (object == nil) {
-        return NULL;
-    } else if (object == (id)kCFBooleanFalse || object == (id)kCFBooleanTrue) {
-        return JSValueMakeBoolean(ctx, object == (id)kCFBooleanTrue);
-    } else if (object == [NSNull null]) {
-        return JSValueMakeNull(ctx);
-    } else if ([object isKindOfClass: [NSNumber class]]) {
-        return JSValueMakeNumber(ctx, [object doubleValue]);
-    } else if ([object isKindOfClass: [NSString class]]) {
-        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)object);
-        JSValueRef value = JSValueMakeString(ctx, jsStr);
-        JSStringRelease(jsStr);
-        return value;
-    } else {
-        //FIX: Going through JSON is inefficient.
-        NSData* json = [NSJSONSerialization dataWithJSONObject: object options: 0 error: NULL];
-        if (!json)
-            return NULL;
-        NSString* jsonStr = [[NSString alloc] initWithData: json encoding: NSUTF8StringEncoding];
-        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)jsonStr);
-        JSValueRef value = JSValueMakeFromJSONString(ctx, jsStr);
-        JSStringRelease(jsStr);
-        return value;
-    }
-}
-
-
 void WarnJSException(JSContextRef context, NSString* warning, JSValueRef exception) {
     JSStringRef error = JSValueToStringCopy(context, exception, NULL);
     CFStringRef cfError = error ? JSStringCopyCFString(NULL, error) : NULL;
@@ -288,20 +257,184 @@ void WarnJSException(JSContextRef context, NSString* warning, JSValueRef excepti
         CFRelease(cfError);
 }
 
+
+// Converts a JSON-compatible NSObject to a JSValue.
+//JSValueRef IDToValue(JSContextRef ctx, id object) {
+//    if (object == nil) {
+//        return NULL;
+//    } else if (object == (id)kCFBooleanFalse || object == (id)kCFBooleanTrue) {
+//        return JSValueMakeBoolean(ctx, object == (id)kCFBooleanTrue);
+//    } else if (object == [NSNull null]) {
+//        return JSValueMakeNull(ctx);
+//    } else if ([object isKindOfClass: [NSNumber class]]) {
+//        return JSValueMakeNumber(ctx, [object doubleValue]);
+//    } else if ([object isKindOfClass: [NSString class]]) {
+//        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)object);
+//        JSValueRef value = JSValueMakeString(ctx, jsStr);
+//        JSStringRelease(jsStr);
+//        return value;
+//    } else {
+//        //FIX: Going through JSON is inefficient.
+//        NSData* json = [NSJSONSerialization dataWithJSONObject: object options: 0 error: NULL];
+//        if (!json)
+//            return NULL;
+//        NSString* jsonStr = [[NSString alloc] initWithData: json encoding: NSUTF8StringEncoding];
+//        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)jsonStr);
+//        JSValueRef value = JSValueMakeFromJSONString(ctx, jsStr);
+//        JSStringRelease(jsStr);
+//        return value;
+//    }
+//}
+
 // Converts a JSON-compatible JSValue to an NSObject.
-id ValueToID(JSContextRef ctx, JSValueRef value) {
-    if (!value)
-        return nil;
-    //FIX: Going through JSON is inefficient.
-    //TODO: steal idea from https://github.com/ddb/ParseKit/blob/master/jssrc/PKJSUtils.m
-    JSStringRef jsStr = JSValueCreateJSONString(ctx, value, 0, NULL);
-    if (!jsStr)
-        return nil;
-    NSString* str = (NSString*)CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
-    JSStringRelease(jsStr);
-    str = [NSString stringWithFormat: @"[%@]", str];    // make it a valid JSON object
-    NSData* data = [str dataUsingEncoding: NSUTF8StringEncoding];
-    NSArray* result = [NSJSONSerialization JSONObjectWithData: data options: 0 error: NULL];
-    return [result objectAtIndex: 0];
+//id ValueToID(JSContextRef ctx, JSValueRef value) {
+//    if (!value)
+//        return nil;
+//    //FIX: Going through JSON is inefficient.
+//    //TODO: steal idea from https://github.com/ddb/ParseKit/blob/master/jssrc/PKJSUtils.m
+//    JSStringRef jsStr = JSValueCreateJSONString(ctx, value, 0, NULL);
+//    if (!jsStr)
+//        return nil;
+//    NSString* str = (NSString*)CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
+//    JSStringRelease(jsStr);
+//    str = [NSString stringWithFormat: @"[%@]", str];    // make it a valid JSON object
+//    NSData* data = [str dataUsingEncoding: NSUTF8StringEncoding];
+//    NSArray* result = [NSJSONSerialization JSONObjectWithData: data options: 0 error: NULL];
+//    return [result objectAtIndex: 0];
+//}
+
+NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v ) {
+	JSStringRef jsString = JSValueToStringCopy( ctx, v, NULL );
+	if( !jsString ) return nil;
+	
+	NSString *string = (__bridge NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsString );
+	//[string autorelease];
+	JSStringRelease( jsString );
+	
+	return string;
 }
 
+JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
+	JSStringRef jstr = JSStringCreateWithCFString((__bridge CFStringRef)string);
+	JSValueRef ret = JSValueMakeString(ctx, jstr);
+	JSStringRelease(jstr);
+	return ret;
+}
+
+// from https://github.com/phoboslab/Ejecta/blob/master/Source/Ejecta/EJConvert.h
+
+void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
+	if( ctx && v ) {
+		JSValueUnprotect(ctx, v);
+	}
+}
+
+JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
+	JSValueRef ret = NULL;
+	
+	// String
+	if( [obj isKindOfClass:NSString.class] ) {
+		ret = NSStringToJSValue(ctx, (NSString *)obj);
+	}
+	
+	// Number or Bool
+	else if( [obj isKindOfClass:NSNumber.class] ) {
+		NSNumber *number = (NSNumber *)obj;
+		if( strcmp(number.objCType, @encode(BOOL)) == 0 ) {
+			ret = JSValueMakeBoolean(ctx, number.boolValue);
+		}
+		else {
+			ret = JSValueMakeNumber(ctx, number.doubleValue);
+		}
+	}
+	
+	// Date
+	else if( [obj isKindOfClass:NSDate.class] ) {
+		NSDate *date = (NSDate *)obj;
+		JSValueRef timestamp = JSValueMakeNumber(ctx, date.timeIntervalSince1970 * 1000.0);
+		ret = JSObjectMakeDate(ctx, 1, &timestamp, NULL);
+	}
+	
+	// Array
+	else if( [obj isKindOfClass:NSArray.class] ) {
+		NSArray *array = (NSArray *)obj;
+		JSValueRef *args = malloc(array.count * sizeof(JSValueRef));
+		for( int i = 0; i < array.count; i++ ) {
+			args[i] = NSObjectToJSValue(ctx, array[i] );
+		}
+		ret = JSObjectMakeArray(ctx, array.count, args, NULL);
+		free(args);
+	}
+	
+	// Dictionary
+	else if( [obj isKindOfClass:NSDictionary.class] ) {
+		NSDictionary *dict = (NSDictionary *)obj;
+		ret = JSObjectMake(ctx, NULL, NULL);
+		for( NSString *key in dict ) {
+			JSStringRef jsKey = JSStringCreateWithUTF8CString(key.UTF8String);
+			JSValueRef value = NSObjectToJSValue(ctx, dict[key]);
+			JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, value, NULL, NULL);
+			JSStringRelease(jsKey);
+		}
+	}
+	
+	return ret ? ret : JSValueMakeNull(ctx);
+}
+
+NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
+	JSType type = JSValueGetType(ctx, value);
+	
+	switch( type ) {
+		case kJSTypeString: return JSValueToNSString(ctx, value);
+		case kJSTypeBoolean: return [NSNumber numberWithBool:JSValueToBoolean(ctx, value)];
+		case kJSTypeNumber: return [NSNumber numberWithDouble:JSValueToNumber(ctx, value, NULL)];
+		case kJSTypeNull: return [NSNull null];
+		case kJSTypeUndefined: return nil;
+		case kJSTypeObject: break;
+	}
+	
+	if( type == kJSTypeObject ) {
+		JSObjectRef jsObj = (JSObjectRef)value;
+		
+		// Get the Array constructor to check if this Object is an Array
+		JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+		JSObjectRef arrayConstructor = (JSObjectRef)JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx), arrayName, NULL);
+		JSStringRelease(arrayName);
+        
+		if( JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, NULL) ) {
+			// Array
+			JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
+            JSValueRef lengthValue = JSObjectGetProperty(ctx, jsObj, lengthName, NULL);
+			int count = JSValueToNumber(ctx, lengthValue, NULL);
+			JSStringRelease(lengthName);
+			
+			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+			for( int i = 0; i < count; i++ ) {
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL));
+				[array addObject:(obj ? obj : NSNull.null)];
+			}
+			return array;
+		}
+		else {
+			// Plain Object
+			JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
+			size_t count = JSPropertyNameArrayGetCount(properties);
+			
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
+			for( size_t i = 0; i < count; i++ ) {
+				JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+				if (!obj) continue;
+				NSString *name = (__bridge NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
+				dict[name] = obj;//obj ? obj : NSNull.null;
+				//[name release];
+			}
+			
+			JSPropertyNameArrayRelease(properties);
+			return dict;
+		}
+	}
+	
+	return nil;
+}
+// * * *
