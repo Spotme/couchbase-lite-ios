@@ -128,7 +128,7 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
 #pragma mark - INDEXING:
 
 
-static inline NSString* toJSONString( id object ) {
+static inline NSString* toJSONString(__unsafe_unretained id object ) {
     if (!object)
         return nil;
     return [CBLJSON stringWithJSONObject: object
@@ -138,37 +138,39 @@ static inline NSString* toJSONString( id object ) {
 
 
 /** The body of the emit() callback while indexing a view. */
-- (CBLStatus) _emitKey: (id)key value: (id)value forSequence: (SequenceNumber)sequence {
+- (CBLStatus) _emitKey: (__unsafe_unretained id)key value: (__unsafe_unretained id)value forSequence: (SequenceNumber)sequence {
     CBLDatabase* db = _weakDB;
     CBL_FMDatabase* fmdb = db.fmdb;
     NSString* valueJSON = toJSONString(value);
     NSNumber* fullTextID = nil, *bboxID = nil;
-    NSString* keyJSON = @"null";
+    //NSString* keyJSON = @"null";
     NSData* geoKey = nil;
-    if ([key isKindOfClass: [CBLSpecialKey class]]) {
-        CBLSpecialKey *specialKey = key;
-        LogTo(View, @" %@ emit( %@, %@)", _name, specialKey, valueJSON);
-        BOOL ok;
-        NSString* text = specialKey.text;
-        if (text) {
-            ok = [fmdb executeUpdate: @"INSERT INTO fulltext (content) VALUES (?)", text];
-            fullTextID = @(fmdb.lastInsertRowId);
-        } else {
-            CBLGeoRect rect = specialKey.rect;
-            ok = [fmdb executeUpdate: @"INSERT INTO bboxes (x0,y0,x1,y1) VALUES (?,?,?,?)",
-                  @(rect.min.x), @(rect.min.y), @(rect.max.x), @(rect.max.y)];
-            bboxID = @(fmdb.lastInsertRowId);
-            geoKey = specialKey.geoJSONData;
-        }
-        if (!ok)
-            return db.lastDbError;
-        key = nil;
-    } else {
-        if (key)
-            keyJSON = toJSONString(key);
-        LogTo(View, @" %@ emit(%@, %@)", _name, keyJSON, valueJSON);
-    }
+//    if ([key isKindOfClass: [CBLSpecialKey class]]) {
+//        CBLSpecialKey *specialKey = key;
+//        LogTo(View, @" %@ emit( %@, %@)", _name, specialKey, valueJSON);
+//        BOOL ok;
+//        NSString* text = specialKey.text;
+//        if (text) {
+//            ok = [fmdb executeUpdate: @"INSERT INTO fulltext (content) VALUES (?)", text];
+//            fullTextID = @(fmdb.lastInsertRowId);
+//        } else {
+//            CBLGeoRect rect = specialKey.rect;
+//            ok = [fmdb executeUpdate: @"INSERT INTO bboxes (x0,y0,x1,y1) VALUES (?,?,?,?)",
+//                  @(rect.min.x), @(rect.min.y), @(rect.max.x), @(rect.max.y)];
+//            bboxID = @(fmdb.lastInsertRowId);
+//            geoKey = specialKey.geoJSONData;
+//        }
+//        if (!ok)
+//            return db.lastDbError;
+//        key = nil;
+//    } else {
+//        if (key)
+//            keyJSON = toJSONString(key);
+//        LogTo(View, @" %@ emit(%@, %@)", _name, keyJSON, valueJSON);
+//    }
 
+    NSString* keyJSON = key ? toJSONString(key) : @"null";
+    
     if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "
                                    "fulltext_id, bbox_id, geokey) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                   @(self.viewID), @(sequence), keyJSON, valueJSON,
