@@ -342,6 +342,16 @@
     return kCBLStatusOK;
 }
 
+- (CBLStatus) do_GET_view_cleanup: (CBLDatabase*)db {
+    // http://wiki.apache.org/couchdb/HTTP_view_API#View_Cleanup
+    // removes all view indexes
+    NSArray* views = [db allViews];
+    for (CBLView* view in views) {
+        [view deleteIndex];
+    }
+    return kCBLStatusOK;
+}
+
 
 #pragma mark - REPLICATION & ACTIVE TASKS
 
