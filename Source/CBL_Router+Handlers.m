@@ -594,7 +594,8 @@
     options.contentOptions = [self contentOptions];
     options.sortBySequence = !options.includeConflicts;
     options.limit = [self intQuery: @"limit" defaultValue: options.limit];
-    int since = [[self query: @"since"] intValue];
+    
+    SequenceNumber since = $equal([self query: @"since"], @"now") ? db.lastSequenceNumber : (SequenceNumber)[[self query: @"since"] intValue];
     
     NSString* filterName = [self query: @"filter"];
     if (filterName) {
