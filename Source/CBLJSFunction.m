@@ -359,7 +359,8 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
 	else if( [obj isKindOfClass:NSArray.class] ) {
 		NSArray *array = (NSArray *)obj;
 		JSValueRef *args = malloc(array.count * sizeof(JSValueRef));
-		for( int i = 0; i < array.count; i++ ) {
+        NSUInteger count = array.count;
+		for( NSUInteger i = 0; i < count; i++ ) {
 			args[i] = NSObjectToJSValue(ctx, array[i] );
 		}
 		ret = JSObjectMakeArray(ctx, array.count, args, NULL);
@@ -373,7 +374,7 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
 		for( NSString *key in dict ) {
 			JSStringRef jsKey = JSStringCreateWithUTF8CString(key.UTF8String);
 			JSValueRef value = NSObjectToJSValue(ctx, dict[key]);
-			JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, value, NULL, NULL);
+			JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, value, kJSPropertyAttributeNone, NULL);
 			JSStringRelease(jsKey);
 		}
 	}
@@ -405,7 +406,7 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 			// Array
 			JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
             JSValueRef lengthValue = JSObjectGetProperty(ctx, jsObj, lengthName, NULL);
-			int count = JSValueToNumber(ctx, lengthValue, NULL);
+			int count = (int)JSValueToNumber(ctx, lengthValue, NULL);
 			JSStringRelease(lengthName);
 			
 			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
