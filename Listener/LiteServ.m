@@ -162,7 +162,7 @@ int main (int argc, const char * argv[])
         EnableLog(YES);
         EnableLogTo(CBLListener, YES);
         EnableLogTo(View, YES);
-        //EnableLogTo(ViewVerbose, NO);
+        //EnableLogTo(ViewIndexVerbose, NO);
 #endif
 
         [CBLView setCompiler: [[CBLJSViewCompiler alloc] init]];

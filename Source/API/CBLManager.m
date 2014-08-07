@@ -84,6 +84,12 @@ static NSCharacterSet* kIllegalNameChars;
         _EnableLogTo(type, YES);
 }
 
++ (void) disableLogging: (NSString*)type {
+    EnableLog(YES);
+    if (type != nil)
+        _EnableLogTo(type, NO);
+    
+}
 
 + (NSString*) defaultDirectory {
     NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,

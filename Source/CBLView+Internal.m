@@ -170,7 +170,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 //    }
 
     NSString* keyJSON = key ? toJSONString(key) : @"null";
-    LogTo(ViewVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
+    LogTo(ViewIndexVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
     
     if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "
                                    "fulltext_id, bbox_id, geokey) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -341,7 +341,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 }
                 
                 // Call the user-defined map() to emit new key/value pairs from this revision:
-                LogTo(ViewVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
+                LogTo(ViewIndexVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
                       _name, docID, sequence);
                 @try {
                     mapBlock(properties, emit);
