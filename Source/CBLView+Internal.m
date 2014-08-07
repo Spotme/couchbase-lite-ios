@@ -170,6 +170,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 //    }
 
     NSString* keyJSON = key ? toJSONString(key) : @"null";
+    LogTo(ViewVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
     
     if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "
                                    "fulltext_id, bbox_id, geokey) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -184,7 +185,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 - (CBLStatus) updateIndex {
     LogTo(View, @"Re-indexing view %@ ...", _name);
     CBLMapBlock mapBlock = self.mapBlock;
-    Assert(mapBlock, @"Cannot reindex view '%@' which has no map block set", _name);
+    Assert(mapBlock, @"Cannot reindex view %@ which has no map block set", _name);
     
     int viewID = self.viewID;
     if (viewID <= 0)
@@ -196,9 +197,12 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         const SequenceNumber lastSequence = self.lastSequenceIndexed;
         const SequenceNumber dbMaxSequence = db.lastSequenceNumber;
         if (lastSequence == dbMaxSequence) {
+            LogTo(View, @"...View %@ is up-to-date, sequence=%lld", _name, dbMaxSequence);
             return kCBLStatusNotModified;
         }
-
+        
+        NSDate *updateIndexStart = [NSDate date];
+        
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
         CBL_FMDatabase* fmdb = db.fmdb;
@@ -337,7 +341,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 }
                 
                 // Call the user-defined map() to emit new key/value pairs from this revision:
-                LogTo(View, @" %@ call map for sequence=%lld...", _name, sequence);
+                LogTo(ViewVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
+                      _name, docID, sequence);
                 @try {
                     mapBlock(properties, emit);
                 } @catch (NSException* x) {
@@ -357,8 +362,10 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                                    @(dbMaxSequence), @(viewID)])
             return db.lastDbError;
         
-        LogTo(View, @"...Finished re-indexing view %@ to #%lld (deleted %u, added %u)",
-              _name, dbMaxSequence, deleted, inserted);
+        NSDate *updateIndexEnd = [NSDate date];
+        
+        LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (deleted %u, added %u), took %3.3fsec",
+              _name, dbMaxSequence, deleted, inserted, [updateIndexEnd timeIntervalSinceDate:updateIndexStart]);
         return kCBLStatusOK;
     }];
     

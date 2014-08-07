@@ -40,6 +40,7 @@
     EnableLogTo(CBLRouter, YES);
     EnableLogTo(Sync, YES);
     EnableLogTo(View, YES);
+    EnableLogTo(ViewVerbose, NO);
     EnableLogTo(RemoteRequest, YES);
 #endif
     
