@@ -165,6 +165,8 @@ static id fromJSON( NSData* json ) {
     if (!r)
         return nil;
     
+    NSDate *queryStart = [NSDate date];
+    
     NSMutableArray* rows;
 
     unsigned groupLevel = options->groupLevel;
@@ -249,7 +251,10 @@ static id fromJSON( NSData* json ) {
 
     [r close];
     *outStatus = kCBLStatusOK;
-    LogTo(View, @"Query %@: Returning %u rows", _name, (unsigned)rows.count);
+    
+    NSDate *queryEnd = [NSDate date];
+    LogTo(View, @"Query %@: Returning %u rows, took %3.3fsec",
+          _name, (unsigned)rows.count, [queryEnd timeIntervalSinceDate:queryStart]);
     return rows;
 }
 
