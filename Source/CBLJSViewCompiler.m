@@ -44,9 +44,21 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 {
     id key = nil, value = nil;
     if (argumentCount > 0) {
-        key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
-        if (argumentCount > 1)
-            value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
+        //key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
+        {
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[0], 0, NULL);
+            key = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
+            JSStringRelease(jsStr);
+        }
+        
+        if (argumentCount > 1) {
+            //value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
+            {
+                JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[1], 0, NULL);
+                value = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
+                JSStringRelease(jsStr);
+            }
+        }
     }
     sCurrentEmitBlock(key, value);
     return JSValueMakeUndefined(ctx);

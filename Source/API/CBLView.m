@@ -41,6 +41,7 @@
             _collation = 0;
             _mapContentOptions = 0;
         }
+        _expectsJSONStringsInEmit = NO;
     }
     return self;
 }

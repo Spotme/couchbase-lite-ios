@@ -121,6 +121,9 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
     NSDictionary* options = $castIf(NSDictionary, viewProps[@"options"]);
     _collation = ($equal(options[@"collation"], @"raw")) ? kCBLViewCollationRaw
                                                              : kCBLViewCollationUnicode;
+    
+    _expectsJSONStringsInEmit = [language isEqual:@"javascript"];
+    
     return YES;
 }
 
@@ -141,7 +144,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 - (CBLStatus) _emitKey: (__unsafe_unretained id)key value: (__unsafe_unretained id)value forSequence: (SequenceNumber)sequence {
     CBLDatabase* db = _weakDB;
     CBL_FMDatabase* fmdb = db.fmdb;
-    NSString* valueJSON = toJSONString(value);
+    //NSString* valueJSON = toJSONString(value);
     NSNumber* fullTextID = nil, *bboxID = nil;
     //NSString* keyJSON = @"null";
     NSData* geoKey = nil;
@@ -168,8 +171,13 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 //            keyJSON = toJSONString(key);
 //        LogTo(View, @" %@ emit(%@, %@)", _name, keyJSON, valueJSON);
 //    }
-
-    NSString* keyJSON = key ? toJSONString(key) : @"null";
+    
+    NSString* valueJSON = _expectsJSONStringsInEmit ? value : toJSONString(value);
+    valueJSON = (valueJSON != nil) ? valueJSON : @"null";
+    
+    NSString* keyJSON = _expectsJSONStringsInEmit ? key : toJSONString(key);
+    keyJSON = (keyJSON != nil) ? keyJSON : @"null";
+    
     LogTo(ViewIndexVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
     
     if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "

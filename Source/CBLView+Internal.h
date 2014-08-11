@@ -55,6 +55,7 @@ typedef enum {
     int _viewID;
     uint8_t _collation;
     CBLContentOptions _mapContentOptions;
+    BOOL _expectsJSONStringsInEmit;
 }
 
 - (instancetype) initWithDatabase: (CBLDatabase*)db name: (NSString*)name;
