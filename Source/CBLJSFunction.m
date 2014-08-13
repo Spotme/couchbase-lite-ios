@@ -330,6 +330,10 @@ void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
 }
 
 JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
+    if (ctx == NULL) { return NULL; }
+    
+    if (obj == nil) { return JSValueMakeUndefined(ctx); }
+    
 	JSValueRef ret = NULL;
 	
 	// String
@@ -378,11 +382,26 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
 			JSStringRelease(jsKey);
 		}
 	}
+    
+    // ObjC null
+    else if (![obj isEqual:[NSNull null]]) {
+        ret = JSValueMakeNull(ctx);
+    }
+    
+    // anything else: will make a string representation
+    else {
+        ret = NSStringToJSValue(ctx, [NSString stringWithFormat:@"%@", obj]);
+    }
 	
-	return ret ? ret : JSValueMakeNull(ctx);
+    // just in case
+    if (!ret) { ret = JSValueMakeUndefined(ctx); }
+    
+	return ret;
 }
 
 NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
+    if (ctx == NULL || value == NULL) { return nil; }
+    
 	JSType type = JSValueGetType(ctx, value);
 	
 	switch( type ) {
