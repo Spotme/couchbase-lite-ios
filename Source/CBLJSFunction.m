@@ -90,6 +90,140 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
     return JSValueMakeUndefined(ctx);
 }
 
+// This is the body of the JavaScript "isArray()" function.
+static JSValueRef IsArrayCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
+                              size_t argumentCount, const JSValueRef arguments[],
+                              JSValueRef* outException)
+{
+    if (argumentCount < 1) {
+        return JSValueMakeBoolean(ctx, false);
+    }
+    
+    JSObjectRef jsObj = (JSObjectRef)arguments[0];
+	JSType type = JSValueGetType(ctx, jsObj);
+    if (type != kJSTypeObject) {
+        return JSValueMakeBoolean(ctx, false);
+    }
+    
+    JSValueRef exception = NULL;
+    
+    // Get the Array constructor to check if this Object is an Array
+    JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+    JSObjectRef arrayConstructor = (JSObjectRef)JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx), arrayName, &exception);
+    JSStringRelease(arrayName);
+    if (exception) {
+        WarnJSException(ctx, @"JS function threw exception", exception);
+        if (outException) // bloody pointers
+            *outException = exception;
+        return JSValueMakeUndefined(ctx);
+    }
+    
+    BOOL isArray = JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, &exception);
+    if (exception) {
+        WarnJSException(ctx, @"JS function threw exception", exception);
+        if (outException) // bloody pointers
+            *outException = exception;
+        return JSValueMakeUndefined(ctx);
+    }
+    
+    return JSValueMakeBoolean(ctx, isArray);
+}
+
+// This is the body of the JavaScript "toJSON()" function.
+static JSValueRef ToJSONCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
+                                  size_t argumentCount, const JSValueRef arguments[],
+                                  JSValueRef* outException)
+{
+    if (argumentCount < 1) {
+        return JSValueMakeBoolean(ctx, false);
+    }
+    
+    JSValueRef exception = NULL;
+    JSStringRef str = JSValueCreateJSONString(ctx, arguments[0], 0, &exception);
+    if (exception) {
+        WarnJSException(ctx, @"JS function threw exception", exception);
+        if (outException) // bloody pointers
+            *outException = exception;
+        return JSValueMakeUndefined(ctx);
+    }
+    
+    JSValueRef jsonStr = JSValueMakeString(ctx, str);
+    JSStringRelease(str);
+    
+    return jsonStr;
+}
+
+// This is the body of the JavaScript "sum()" function.
+static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
+                                 size_t argumentCount, const JSValueRef arguments[],
+                                 JSValueRef* outException)
+{
+    double ret = 0;
+    for (size_t i = 0; i < argumentCount; i++) {
+        JSValueRef value = arguments[i];
+        JSType type = JSValueGetType(ctx, value);
+        JSValueRef exception = NULL;
+        
+        if (type == kJSTypeObject) {
+            JSObjectRef jsObj = (JSObjectRef)value;
+            // Get the Array constructor to check if this Object is an Array
+            JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+            JSObjectRef arrayConstructor = (JSObjectRef)JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx), arrayName, NULL);
+            JSStringRelease(arrayName);
+
+            if( JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, NULL) ) {
+                // Array
+                JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
+                JSValueRef lengthValue = JSObjectGetProperty(ctx, jsObj, lengthName, &exception);
+                if (exception) {
+                    WarnJSException(ctx, @"JS function threw exception", exception);
+                    if (outException) // bloody pointers
+                        *outException = exception;
+                    return JSValueMakeUndefined(ctx);
+                }
+
+                size_t count = (size_t)JSValueToNumber(ctx, lengthValue, NULL);
+                JSStringRelease(lengthName);
+
+                for ( size_t i = 0; i < count; i++ ) {
+                    JSValueRef obj = JSObjectGetPropertyAtIndex(ctx, jsObj, (unsigned)i, &exception);
+                    if (exception) {
+                        WarnJSException(ctx, @"JS function threw exception", exception);
+                        if (outException) // bloody pointers
+                            *outException = exception;
+                        return JSValueMakeUndefined(ctx);
+                    }
+                    
+                    if (JSValueGetType(ctx, obj) == kJSTypeNumber) {
+                        double valueDbl = JSValueToNumber(ctx, obj, &exception);
+                        if (exception) {
+                            WarnJSException(ctx, @"JS function threw exception", exception);
+                            if (outException) // bloody pointers
+                                *outException = exception;
+                            return JSValueMakeUndefined(ctx);
+                        }
+                        
+                        ret += valueDbl;
+                    }
+                }
+            }
+        }
+        else if (type == kJSTypeNumber || type == kJSTypeString || type == kJSTypeBoolean) {
+            double valueDbl = JSValueToNumber(ctx, value, &exception);
+            if (exception) {
+                WarnJSException(ctx, @"JS function threw exception", exception);
+                if (outException) // bloody pointers
+                    *outException = exception;
+                return JSValueMakeUndefined(ctx);
+            }
+            
+            ret += valueDbl;
+        }
+    }
+
+    return JSValueMakeNumber(ctx, ret);
+}
+
 @implementation CBLJSCompiler
 {
     JSGlobalContextRef _context;
@@ -123,6 +257,33 @@ static JSValueRef LogCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                             kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
                             NULL);
         JSStringRelease(requireName);
+        
+        // callback for isArray
+        JSStringRef isArrayName = JSStringCreateWithCFString(CFSTR("isArray"));
+        JSObjectRef isArrayFn = JSObjectMakeFunctionWithCallback(_context, isArrayName, &IsArrayCallback);
+        JSObjectSetProperty(_context, JSContextGetGlobalObject(_context),
+                            isArrayName, isArrayFn,
+                            kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
+                            NULL);
+        JSStringRelease(isArrayName);
+        
+        // callback for toJSON
+        JSStringRef toJSONName = JSStringCreateWithCFString(CFSTR("toJSON"));
+        JSObjectRef toJSONFn = JSObjectMakeFunctionWithCallback(_context, toJSONName, &ToJSONCallback);
+        JSObjectSetProperty(_context, JSContextGetGlobalObject(_context),
+                            toJSONName, toJSONFn,
+                            kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
+                            NULL);
+        JSStringRelease(toJSONName);
+        
+        // callback for sum
+        JSStringRef sumName = JSStringCreateWithCFString(CFSTR("sum"));
+        JSObjectRef sumFn = JSObjectMakeFunctionWithCallback(_context, sumName, &SumCallback);
+        JSObjectSetProperty(_context, JSContextGetGlobalObject(_context),
+                            sumName, sumFn,
+                            kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
+                            NULL);
+        JSStringRelease(sumName);
     }
     return self;
 }
