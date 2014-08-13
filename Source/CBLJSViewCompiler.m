@@ -113,12 +113,23 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 - (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource language: (NSString*)language userInfo: (NSDictionary*)userInfo {
     if (![language isEqualToString: @"javascript"])
         return nil;
-
+    
+    // i shall not be burned for this
+    NSArray* paramNames = @[@"keys", @"values", @"rereduce"];
+    if ([reduceSource isEqual:@"_sum"])
+        reduceSource = @"function(keys, values, rereduce) { return sum(values); }";
+    else if ([reduceSource isEqual:@"_count"])
+        reduceSource = @"function(keys, values, rereduce) { if (rereduce) { return sum(values); } else { return values.length; } }";
+    else if ([reduceSource isEqual:@"_stats"]) {
+        reduceSource = @"function(e,t,n){if(n){return{sum:t.reduce(function(e,t){return e+t.sum},0),min:t.reduce(function(e,t){return Math.min(e,t.min)},Infinity),max:t.reduce(function(e,t){return Math.max(e,t.max)},-Infinity),count:t.reduce(function(e,t){return e+t.count},0),sumsqr:t.reduce(function(e,t){return e+t.sumsqr},0)}}else{return{sum:sum(t),min:Math.min.apply(null,t),max:Math.max.apply(null,t),count:t.length,sumsqr:function(){var e=0;t.forEach(function(t){e+=t*t});return e}()}}}";
+        paramNames = @[@"e", @"t", @"n"];
+    }
+    
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
-                                                   sourceCode: reduceSource
-                                                   paramNames: @[@"keys", @"values", @"rereduce"]
-                                               requireContext: userInfo];
+                                                     sourceCode: reduceSource
+                                                     paramNames: paramNames
+                                                 requireContext: userInfo];
     if (!fn)
         return nil;
 
