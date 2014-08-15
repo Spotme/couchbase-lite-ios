@@ -97,7 +97,7 @@
     BOOL trusted = [_client changeTrackerApproveSSLTrust:challenge.protectionSpace.serverTrust
                                                  forHost:_databaseURL.host
                                                     port:(UInt16)_databaseURL.port.intValue];
-    if (!trusted) {
+    if (trusted) {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
             [challenge.sender useCredential:[NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust] forAuthenticationChallenge:challenge];
         
