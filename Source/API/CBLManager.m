@@ -642,7 +642,9 @@ static NSDictionary* parseSourceOrTarget(NSDictionary* properties, NSString* key
     repl.authorizer = authorizer;
     if (push)
         ((CBL_Pusher*)repl).createTarget = createTarget;
-
+    
+    repl.strictSSL = [$castIf(NSNumber, properties[@"strict_ssl"]) boolValue];
+    
     // If this is a duplicate, reuse an existing replicator:
     CBL_Replicator* existing = [db activeReplicatorLike: repl];
     if (existing)

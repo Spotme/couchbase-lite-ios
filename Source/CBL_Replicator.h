@@ -34,6 +34,7 @@ extern NSString* CBL_ReplicatorStoppedNotification;
     NSDictionary* _options;
     NSDictionary* _requestHeaders;
     NSString* _serverType;
+    BOOL _strictSSL;
 #if TARGET_OS_IPHONE
     NSUInteger /*UIBackgroundTaskIdentifier*/ _bgTask;
 #endif
@@ -44,8 +45,6 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 
 /** Adds to (or replaces) the system list of trusted root certs. */
 + (void) setAnchorCerts: (NSArray*)certs onlyThese: (BOOL)onlyThese;
-+ (void) setShouldCheckSSL:(BOOL)shouldCheckSLL;
-+ (BOOL) shouldCheckSSL;
 
 - (instancetype) initWithDB: (CBLDatabase*)db
                      remote: (NSURL*)remote
@@ -65,6 +64,8 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 @property (copy) NSDictionary* requestHeaders;
 
 @property (strong) id<CBLAuthorizer> authorizer;
+
+@property (assign) BOOL strictSSL;
 
 /** Do these two replicators have identical settings? */
 - (bool) hasSameSettingsAs: (CBL_Replicator*)other;

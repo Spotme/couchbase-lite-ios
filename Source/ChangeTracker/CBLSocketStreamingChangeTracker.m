@@ -142,7 +142,8 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
         // workaround taken from Apple technote TN2287:
         // http://developer.apple.com/library/ios/#technotes/tn2287/
         NSDictionary *settings = $dict({(id)kCFStreamSSLLevel,
-                                        @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3"});
+                                        @"kCFStreamSocketSecurityLevelTLSv1_0SSLv3"},
+                                       {(id)kCFStreamSSLValidatesCertificateChain, @NO});
         CFReadStreamSetProperty(cfInputStream,
                                 kCFStreamPropertySSLSettings, (CFTypeRef)settings);
     }
@@ -193,26 +194,23 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
 
 
 - (BOOL) checkSSLCert {
-    if ([CBL_Replicator shouldCheckSSL]) {
-        SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
-                                                                      kCFStreamPropertySSLPeerTrust);
-        if (sslTrust) {
-            NSURL* url = CFBridgingRelease(CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
-                                                                    kCFStreamPropertyHTTPFinalURL));
-            BOOL trusted = [_client changeTrackerApproveSSLTrust: sslTrust
-                                                         forHost: url.host
-                                                            port: (UInt16)url.port.intValue];
-            CFRelease(sslTrust);
-            if (!trusted) {
-                //TODO: This error could be made more precise
-                self.error = [NSError errorWithDomain: NSURLErrorDomain
-                                                 code: NSURLErrorServerCertificateUntrusted
-                                             userInfo: nil];
-                return NO;
-            }
+    SecTrustRef sslTrust = (SecTrustRef) CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
+                                                                  kCFStreamPropertySSLPeerTrust);
+    if (sslTrust) {
+        NSURL* url = CFBridgingRelease(CFReadStreamCopyProperty((CFReadStreamRef)_trackingInput,
+                                                                kCFStreamPropertyHTTPFinalURL));
+        BOOL trusted = [_client changeTrackerApproveSSLTrust: sslTrust
+                                                     forHost: url.host
+                                                        port: (UInt16)url.port.intValue];
+        CFRelease(sslTrust);
+        if (!trusted) {
+            //TODO: This error could be made more precise
+            [self failedWithError: [NSError errorWithDomain: NSURLErrorDomain
+                                                       code: NSURLErrorServerCertificateUntrusted
+                                                   userInfo: nil]];
+            return NO;
         }
     }
-    
     return YES;
 }
 

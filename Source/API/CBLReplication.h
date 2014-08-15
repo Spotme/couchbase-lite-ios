@@ -122,6 +122,7 @@ typedef enum {
     that should last significantly longer before needing to be renewed. */
 - (BOOL) registerPersonaAssertion: (NSString*)assertion               __attribute__((nonnull));
 
+#pragma mark -  SSL Check
 /** Adds additional SSL root certificates to be trusted by the replicator, or entirely overrides the
     OS's default list of trusted root certs.
     @param certs  An array of SecCertificateRefs of root certs that should be trusted. Most often
@@ -130,8 +131,8 @@ typedef enum {
         root certs; if YES, it replaces them (so *only* the given certs will be trusted.) */
 + (void) setAnchorCerts: (NSArray*)certs onlyThese: (BOOL)onlyThese;
 
-#pragma mark -  SSL Check
-+ (void) setShouldCheckSSL:(BOOL)shouldCheckSSL;
+@property (nonatomic, assign) BOOL strictSSL;
+
 
 #pragma mark - STATUS:
 

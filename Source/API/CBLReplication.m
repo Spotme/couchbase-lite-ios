@@ -58,6 +58,7 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
 @synthesize headers=_headers, OAuth=_OAuth, facebookEmailAddress=_facebookEmailAddress;
 @synthesize personaEmailAddress=_personaEmailAddress, customProperties=_customProperties;
 @synthesize running = _running, completedChangesCount=_completedChangesCount, changesCount=_changesCount, lastError=_lastError, status=_status;
+@synthesize strictSSL = _strictSSL;
 
 
 - (instancetype) initWithDatabase: (CBLDatabase*)database
@@ -71,6 +72,7 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
         _database = database;
         _remoteURL = remote;
         _pull = pull;
+        _strictSSL = YES;
     }
     return self;
 }
@@ -126,6 +128,12 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
     }
 }
 
+- (void)setStrictSSL:(BOOL)strictSSL {
+    if (strictSSL != _strictSSL) {
+        _strictSSL = strictSSL;
+        [self restart];
+    }
+}
 
 #pragma mark - AUTHENTICATION:
 
@@ -212,7 +220,9 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
         props[@"source"] = _database.name;
         props[@"target"] = remote;
     }
-
+    
+    props[@"strict_ssl"] = @(_strictSSL);
+    
     if (_customProperties)
         [props addEntriesFromDictionary: _customProperties];
     return props;
@@ -397,10 +407,4 @@ NSString* const kCBLReplicationChangeNotification = @"CBLReplicationChange";
 - (unsigned) total      {return self.changesCount;}
 #endif
 
-
-
-#pragma mark - should check SSL
-+ (void)setShouldCheckSSL:(BOOL)shouldCheckSSL {
-    [CBL_Replicator setShouldCheckSSL:shouldCheckSSL];
-}
 @end

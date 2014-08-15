@@ -113,6 +113,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
         // Keeps static analyzer from complaining this ivar is unused:
         _bgTask = 0;
 #endif
+        _strictSSL = YES;
     }
     return self;
 }
@@ -151,6 +152,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 @synthesize remoteCheckpoint=_remoteCheckpoint;
 @synthesize authorizer=_authorizer;
 @synthesize requestHeaders = _requestHeaders;
+@synthesize strictSSL = _strictSSL;
 
 
 - (BOOL) isPush {
@@ -162,7 +164,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     // Needs to be consistent with -remoteCheckpointDocID:
     // If a.remoteCheckpointID == b.remoteCheckpointID then [a hasSameSettingsAs: b]
     return _db == other->_db && $equal(_remote, other->_remote) && self.isPush == other.isPush
-        && $equal(self.remoteCheckpointDocID, other.remoteCheckpointDocID);
+        && $equal(self.remoteCheckpointDocID, other.remoteCheckpointDocID) && self.strictSSL == other.strictSSL;
 }
 
 
@@ -609,6 +611,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 - (void) addRemoteRequest: (CBLRemoteRequest*)request {
     if (!_remoteRequests)
         _remoteRequests = [[NSMutableArray alloc] init];
+    request.delegate = self;
     [_remoteRequests addObject: request];
 }
 
@@ -634,7 +637,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 static NSArray* sAnchorCerts; // TODO: Add API to set these
 static BOOL sOnlyTrustAnchorCerts;
-static BOOL sShouldCheckSLL;
 
 + (void) setAnchorCerts:(NSArray*)certs onlyThese:(BOOL)onlyThese {
     @synchronized(self) {
@@ -643,18 +645,10 @@ static BOOL sShouldCheckSLL;
     }
 }
 
-+ (void) setShouldCheckSSL:(BOOL)shouldCheckSLL {
-    sShouldCheckSLL = shouldCheckSLL;
-}
-
-+ (BOOL) shouldCheckSSL {
-    return sShouldCheckSLL;
-}
-
 - (BOOL) checkSSLServerTrust: (SecTrustRef)trust
                      forHost: (NSString*)host port: (UInt16)port
 {
-    if ([[self class] shouldCheckSSL]) {
+    if (self.strictSSL) {
         @synchronized([self class]) {
             if (sAnchorCerts.count > 0) {
                 SecTrustSetAnchorCertificates(trust, (__bridge CFArrayRef)sAnchorCerts);
