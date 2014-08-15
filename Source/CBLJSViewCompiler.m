@@ -44,17 +44,27 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 {
     id key = nil, value = nil;
     if (argumentCount > 0) {
-        //key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
         {
-            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[0], 0, NULL);
-            key = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
-            JSStringRelease(jsStr);
+            JSValueRef exception = NULL;
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[0], 0, &exception);
+            if (exception) {
+                WarnJSException(ctx, @"JS function threw exception", exception);
+                key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
+            }
+            else {
+                key = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
+                JSStringRelease(jsStr);
+            }
         }
         
         if (argumentCount > 1) {
-            //value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
-            {
-                JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[1], 0, NULL);
+            JSValueRef exception = NULL;
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[1], 0, &exception);
+            if (exception) {
+                WarnJSException(ctx, @"JS function threw exception", exception);
+                value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
+            }
+            else {
                 value = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
                 JSStringRelease(jsStr);
             }
