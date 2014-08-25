@@ -493,18 +493,26 @@ static NSArray* splitPath( NSURL* url ) {
         //If app current request is custom API
         if (_isCurrentRequestCustomAPI) {
             CBLManager *instanceDBManager = [CBLManager sharedInstance];
-            [instanceDBManager.customAPIRouteDelegate processOperationsForRequest:_request];
-            _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate responseBodyForRequest:_request]];
-            _response.status = [instanceDBManager.customAPIRouteDelegate statusForRequest:_request];
-            _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate httpHeadersForRequest:_request]];
-            [instanceDBManager.customAPIRouteDelegate finishedWithHanderForRequest:_request];
+            _waiting = YES;
+            [instanceDBManager.customAPIRouteDelegate processOperationsForRequest:_request completion:^{
+                _waiting = NO;
+                _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate responseBodyForRequest:_request]];
+                _response.status = [instanceDBManager.customAPIRouteDelegate statusForRequest:_request];
+                _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate httpHeadersForRequest:_request]];
+                [instanceDBManager.customAPIRouteDelegate finishedWithHandlerForRequest:_request];
+                
+                [self sendResponseHeaders];
+                [self sendResponseBodyAndFinish: !_waiting];
+                [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(dbClosing:)
+                                                             name: CBL_DatabaseWillCloseNotification
+                                                           object: _db];
+            }];
         } else {
             _response.internalStatus = status;
             [self processRequestRanges];
+            [self sendResponseHeaders];
+            [self sendResponseBodyAndFinish: !_waiting];
         }
-            
-        [self sendResponseHeaders];
-        [self sendResponseBodyAndFinish: !_waiting];
     } else {
         _waiting = YES;
     }

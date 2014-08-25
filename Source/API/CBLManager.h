@@ -15,8 +15,8 @@
 - (CBLStatus)statusForRequest:(NSURLRequest*)request;
 - (NSDictionary*)httpHeadersForRequest:(NSURLRequest*)request;
 - (NSData*)responseBodyForRequest:(NSURLRequest*)request;;
-- (void)processOperationsForRequest:(NSURLRequest*)request;
-- (void)finishedWithHanderForRequest:(NSURLRequest*)request;
+- (void)processOperationsForRequest:(NSURLRequest*)request completion:(void(^)())completionBlock;
+- (void)finishedWithHandlerForRequest:(NSURLRequest*)request;
 - (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request eid:(NSString*)eid customAPI:(NSString*)customAPI;
 @end
 
