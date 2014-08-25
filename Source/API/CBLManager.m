@@ -65,6 +65,8 @@ static const CBLManagerOptions kCBLManagerDefaultOptions;
 @synthesize customHTTPHeaders = _customHTTPHeaders;
 @synthesize encryptionKey = _encryptionKey;
 
+@synthesize customAPIRouteDelegate = _customAPIRouteDelegate;
+
 
 // http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
 #define kLegalChars @"abcdefghijklmnopqrstuvwxyz0123456789_$()+-/"

@@ -7,8 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-@class CBLDatabase;
 
+@class CBLManager;
+@protocol CBLCustomAPIRouteDelegate <NSObject>
+- (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request;
+@end
+
+@class CBLDatabase;
 
 /** Option flags for CBLManager initialization. */
 typedef struct CBLManagerOptions {
@@ -124,6 +129,9 @@ typedef struct CBLManagerOptions {
 + (void) disableLogging: (NSString*)type;
 
 @property (readonly, nonatomic) NSMutableDictionary* customHTTPHeaders;
+
+#pragma mark - Custom API selector
+@property (nonatomic, strong) id <CBLCustomAPIRouteDelegate> customAPIRouteDelegate;
 
 #ifdef CBL_DEPRECATED
 - (CBLDatabase*) createDatabaseNamed: (NSString*)name

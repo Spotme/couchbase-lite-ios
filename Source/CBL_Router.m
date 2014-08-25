@@ -332,8 +332,19 @@ static NSArray* splitPath( NSURL* url ) {
     _path = [splitPath(_request.URL) mutableCopy];
     if (!_path)
         return kCBLStatusBadRequest;
-        
+    
     NSUInteger pathLen = _path.count;
+    
+    if (pathLen > 0) {
+        NSString* apiPath = _path[0];
+        CBLManager *instanceDBManager = [CBLManager sharedInstance];
+        if ([apiPath isEqualToString:@"_api"] && [instanceDBManager customAPIRouteDelegate]) {
+            
+            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager catchedCustomAPIRouteWithRequest:_request];
+            return kCBLStatusOK;
+        }
+    }
+    
     if (pathLen > 0) {
         NSString* dbName = _path[0];
         BOOL validName = [CBLManager isValidDatabaseName: dbName];
