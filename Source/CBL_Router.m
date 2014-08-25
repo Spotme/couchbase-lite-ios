@@ -59,6 +59,7 @@
             _changesFilter = NULL;
             _changesFilterParams = nil;
         }
+        _isCurrentRequestCustomAPI = NO;
     }
     return self;
 }
@@ -335,13 +336,17 @@ static NSArray* splitPath( NSURL* url ) {
     
     NSUInteger pathLen = _path.count;
     
-    if (pathLen > 0) {
+    if (pathLen >= 3) {
         NSString* apiPath = _path[0];
         CBLManager *instanceDBManager = [CBLManager sharedInstance];
         if ([apiPath isEqualToString:@"_api"] && [instanceDBManager customAPIRouteDelegate]) {
-            
-            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager catchedCustomAPIRouteWithRequest:_request];
+            NSString *eventId = _path[1];
+            NSString *customAPI = _path[2];
+            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager catchedCustomAPIRouteWithRequest:_request eid:eventId customAPI:customAPI];
+            _isCurrentRequestCustomAPI = YES;
             return kCBLStatusOK;
+        } else {
+            _isCurrentRequestCustomAPI = NO;
         }
     }
     
@@ -485,8 +490,19 @@ static NSArray* splitPath( NSURL* url ) {
     
     // If response is ready (nonzero status), tell my client about it:
     if (status > 0) {
-        _response.internalStatus = status;
-        [self processRequestRanges];
+        //If app current request is custom API
+        if (_isCurrentRequestCustomAPI) {
+            CBLManager *instanceDBManager = [CBLManager sharedInstance];
+            [instanceDBManager.customAPIRouteDelegate processOperationsForRequest:_request];
+            _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate responseBodyForRequest:_request]];
+            _response.status = [instanceDBManager.customAPIRouteDelegate statusForRequest:_request];
+            _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate httpHeadersForRequest:_request]];
+            [instanceDBManager.customAPIRouteDelegate finishedWithHanderForRequest:_request];
+        } else {
+            _response.internalStatus = status;
+            [self processRequestRanges];
+        }
+            
         [self sendResponseHeaders];
         [self sendResponseBodyAndFinish: !_waiting];
     } else {

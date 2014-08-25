@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CBLStatus.h"
+
 @class CBLManager;
 @protocol CBLCustomAPIRouteDelegate <NSObject>
-- (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request;
+- (CBLStatus)statusForRequest:(NSURLRequest*)request;
+- (NSDictionary*)httpHeadersForRequest:(NSURLRequest*)request;
+- (NSData*)responseBodyForRequest:(NSURLRequest*)request;;
+- (void)processOperationsForRequest:(NSURLRequest*)request;
+- (void)finishedWithHanderForRequest:(NSURLRequest*)request;
+- (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request eid:(NSString*)eid customAPI:(NSString*)customAPI;
 @end
 
 @class CBLDatabase;
