@@ -495,64 +495,92 @@ void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
 JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
     if (ctx == NULL) { return NULL; }
     
+    // method 1
+    if (obj == nil) {
+        return JSValueMakeNull(ctx);
+    } else if (obj == (id)kCFBooleanFalse || obj == (id)kCFBooleanTrue) {
+        return JSValueMakeBoolean(ctx, obj == (id)kCFBooleanTrue);
+    } else if (obj == [NSNull null]) {
+        return JSValueMakeNull(ctx);
+    } else if ([obj isKindOfClass: [NSNumber class]]) {
+        return JSValueMakeNumber(ctx, [(NSNumber *)obj doubleValue]);
+    } else if ([obj isKindOfClass: [NSString class]]) {
+        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)obj);
+        JSValueRef value = JSValueMakeString(ctx, jsStr);
+        JSStringRelease(jsStr);
+        return value;
+    } else {
+        //FIX: Going through JSON is inefficient.
+        NSData* json = [NSJSONSerialization dataWithJSONObject: obj options: 0 error: NULL];
+        if (!json)
+            return NULL;
+        NSString* jsonStr = [[NSString alloc] initWithData: json encoding: NSUTF8StringEncoding];
+        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)jsonStr);
+        JSValueRef value = JSValueMakeFromJSONString(ctx, jsStr);
+        JSStringRelease(jsStr);
+        return value;
+    }
+
+    // method 2
     // TODO: test carefully and only enable then!
     //if (obj == nil) { return JSValueMakeUndefined(ctx); }
-    
-	JSValueRef ret = NULL;
-	
-	// String
-	if( [obj isKindOfClass:NSString.class] ) {
-		ret = NSStringToJSValue(ctx, (NSString *)obj);
-	}
-	
-	// Number or Bool
-	else if( [obj isKindOfClass:NSNumber.class] ) {
-		NSNumber *number = (NSNumber *)obj;
-		if( strcmp(number.objCType, @encode(BOOL)) == 0 ) {
-			ret = JSValueMakeBoolean(ctx, number.boolValue);
-		}
-		else {
-			ret = JSValueMakeNumber(ctx, number.doubleValue);
-		}
-	}
-	
-	// Date
-	else if( [obj isKindOfClass:NSDate.class] ) {
-		NSDate *date = (NSDate *)obj;
-		JSValueRef timestamp = JSValueMakeNumber(ctx, date.timeIntervalSince1970 * 1000.0);
-		ret = JSObjectMakeDate(ctx, 1, &timestamp, NULL);
-	}
-	
-	// Array
-	else if( [obj isKindOfClass:NSArray.class] ) {
-		NSArray *array = (NSArray *)obj;
-		JSValueRef *args = malloc(array.count * sizeof(JSValueRef));
-        NSUInteger count = array.count;
-		for( NSUInteger i = 0; i < count; i++ ) {
-			args[i] = NSObjectToJSValue(ctx, array[i] );
-		}
-		ret = JSObjectMakeArray(ctx, array.count, args, NULL);
-		free(args);
-	}
-	
-	// Dictionary
-	else if( [obj isKindOfClass:NSDictionary.class] ) {
-		NSDictionary *dict = (NSDictionary *)obj;
-		ret = JSObjectMake(ctx, NULL, NULL);
-		for( NSString *key in dict ) {
-			JSStringRef jsKey = JSStringCreateWithUTF8CString(key.UTF8String);
-			JSValueRef value = NSObjectToJSValue(ctx, dict[key]);
-			JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, value, kJSPropertyAttributeNone, NULL);
-			JSStringRelease(jsKey);
-		}
-	}
-    
-    // ObjC null
-    else if ([obj isEqual:[NSNull null]]) {
-        ret = JSValueMakeNull(ctx);
-    }
-    
-    return ret ? ret : JSValueMakeNull(ctx);
+    //
+    //JSValueRef ret = NULL;
+    //
+    //// String
+    //if( [obj isKindOfClass:NSString.class] ) {
+    //    ret = NSStringToJSValue(ctx, (NSString *)obj);
+    //}
+    //
+    //// Number or Bool
+    //else if( [obj isKindOfClass:NSNumber.class] ) {
+    //    NSNumber *number = (NSNumber *)obj;
+    //    if( strcmp(number.objCType, @encode(BOOL)) == 0 ) {
+    //        ret = JSValueMakeBoolean(ctx, number.boolValue);
+    //    }
+    //    else {
+    //        ret = JSValueMakeNumber(ctx, number.doubleValue);
+    //    }
+    //}
+    //
+    //// Date
+    //else if( [obj isKindOfClass:NSDate.class] ) {
+    //    NSDate *date = (NSDate *)obj;
+    //    JSValueRef timestamp = JSValueMakeNumber(ctx, date.timeIntervalSince1970 * 1000.0);
+    //    ret = JSObjectMakeDate(ctx, 1, &timestamp, NULL);
+    //}
+    //
+    //// Array
+    //else if( [obj isKindOfClass:NSArray.class] ) {
+    //    NSArray *array = (NSArray *)obj;
+    //    NSUInteger count = array.count;
+    //    JSValueRef *args = malloc(count * sizeof(JSValueRef));
+    //    for( NSUInteger i = 0; i < count; i++ ) {
+    //        args[i] = NSObjectToJSValue(ctx, array[i] );
+    //    }
+    //    ret = JSObjectMakeArray(ctx, count, args, NULL);
+    //    free(args);
+    //}
+    //
+    //// Dictionary
+    //else if( [obj isKindOfClass:NSDictionary.class] ) {
+    //    NSDictionary *dict = (NSDictionary *)obj;
+    //    ret = JSObjectMake(ctx, NULL, NULL);
+    //    for( NSString *key in dict ) {
+    //        NSString *value = dict[key];
+    //        JSStringRef jsKey = JSStringCreateWithUTF8CString(key.UTF8String);
+    //        JSValueRef jsValue = NSObjectToJSValue(ctx, value);
+    //        JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, jsValue, kJSPropertyAttributeNone, NULL);
+    //        JSStringRelease(jsKey);
+    //    }
+    //}
+    //
+    //// ObjC null
+    //else if ([obj isEqual:[NSNull null]]) {
+    //    ret = JSValueMakeNull(ctx);
+    //}
+    //
+    //return ret ? ret : JSValueMakeNull(ctx);
 }
 
 NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
@@ -598,10 +626,15 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 			
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
 			for( size_t i = 0; i < count; i++ ) {
-				JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
-				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+				JSStringRef propName = JSPropertyNameArrayGetNameAtIndex(properties, i);
+                NSString *name = (__bridge NSString *)JSStringCopyCFString( kCFAllocatorDefault, propName );
+                
+                JSValueRef exception = NULL;
+                JSValueRef propValue = JSObjectGetProperty(ctx, jsObj, propName, &exception);
+                
+				NSObject *obj = JSValueToNSObject(ctx, propValue);
 				if (!obj) continue;
-				NSString *name = (__bridge NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
+                
 				dict[name] = obj;//obj ? obj : NSNull.null;
 				//[name release];
 			}
