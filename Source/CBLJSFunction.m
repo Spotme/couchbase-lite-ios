@@ -465,6 +465,8 @@ void WarnJSException(JSContextRef context, NSString* warning, JSValueRef excepti
 //}
 
 NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v ) {
+    if (ctx == NULL || v == NULL) return nil;
+    
 	JSStringRef jsString = JSValueToStringCopy( ctx, v, NULL );
 	if( !jsString ) return nil;
 	

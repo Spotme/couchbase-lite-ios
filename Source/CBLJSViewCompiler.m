@@ -45,28 +45,34 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
     id key = nil, value = nil;
     if (argumentCount > 0) {
         {
+            JSValueRef arg = arguments[0];
             JSValueRef exception = NULL;
-            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[0], 0, &exception);
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arg, 0, &exception);
             if (exception) {
                 WarnJSException(ctx, @"JS function threw exception", exception);
-                key = JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
             }
-            else {
+            else if (jsStr != NULL) {
                 key = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
                 JSStringRelease(jsStr);
+            }
+            else {
+                LogTo(JS, @"could not convert to JSON, using null as emit key: %@", JSValueToNSString(ctx, arg));
             }
         }
         
         if (argumentCount > 1) {
+            JSValueRef arg = arguments[1];
             JSValueRef exception = NULL;
-            JSStringRef jsStr = JSValueCreateJSONString(ctx, arguments[1], 0, &exception);
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arg, 0, &exception);
             if (exception) {
                 WarnJSException(ctx, @"JS function threw exception", exception);
-                value = JSValueToNSObject/*ValueToID*/(ctx, arguments[1]);
             }
-            else {
+            else if (jsStr != NULL) {
                 value = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
                 JSStringRelease(jsStr);
+            }
+            else {
+                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", JSValueToNSString(ctx, arg));
             }
         }
     }
