@@ -12,12 +12,14 @@
 
 @class CBLManager;
 @protocol CBLCustomAPIRouteDelegate <NSObject>
-- (CBLStatus)statusForRequest:(NSURLRequest*)request;
-- (NSDictionary*)httpHeadersForRequest:(NSURLRequest*)request;
-- (NSData*)responseBodyForRequest:(NSURLRequest*)request;;
-- (void)processOperationsForRequest:(NSURLRequest*)request completion:(void(^)())completionBlock;
-- (void)finishedWithHandlerForRequest:(NSURLRequest*)request;
 - (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request eid:(NSString*)eid customAPI:(NSString*)customAPI;
+- (void)CBLManager:(CBLManager*)manager processOperationsForRequest:(NSURLRequest*)request completion:(void(^)())completionBlock;
+
+- (CBLStatus)CBLManager:(CBLManager*)manager statusForRequest:(NSURLRequest*)request;
+- (NSDictionary*)CBLManager:(CBLManager*)manager httpHeadersForRequest:(NSURLRequest*)request;
+- (NSData*)CBLManager:(CBLManager*)manager responseBodyForRequest:(NSURLRequest*)request;;
+
+- (void)CBLManager:(CBLManager*)manager finishedWithHandlerForRequest:(NSURLRequest*)request;
 @end
 
 @class CBLDatabase;

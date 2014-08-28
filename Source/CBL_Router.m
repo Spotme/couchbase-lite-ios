@@ -494,12 +494,12 @@ static NSArray* splitPath( NSURL* url ) {
         if (_isCurrentRequestCustomAPI) {
             CBLManager *instanceDBManager = [CBLManager sharedInstance];
             _waiting = YES;
-            [instanceDBManager.customAPIRouteDelegate processOperationsForRequest:_request completion:^{
+            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager processOperationsForRequest:_request completion:^{
                 _waiting = NO;
-                _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate responseBodyForRequest:_request]];
-                _response.status = [instanceDBManager.customAPIRouteDelegate statusForRequest:_request];
-                _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate httpHeadersForRequest:_request]];
-                [instanceDBManager.customAPIRouteDelegate finishedWithHandlerForRequest:_request];
+                _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate  CBLManager:instanceDBManager responseBodyForRequest:_request]];
+                _response.status = [instanceDBManager.customAPIRouteDelegate  CBLManager:instanceDBManager statusForRequest:_request];
+                _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager httpHeadersForRequest:_request]];
+                [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager finishedWithHandlerForRequest:_request];
                 
                 [self sendResponseHeaders];
                 [self sendResponseBodyAndFinish: !_waiting];
