@@ -908,14 +908,14 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
 
 - (CBLStatus) readDocumentBodyThen: (CBLStatus(^)(CBL_Body*))block {
     CBLStatus status;
-    NSString* contentType = [_request valueForHTTPHeaderField: @"Content-Type"];
+    NSDictionary* headers = _request.allHTTPHeaderFields;
     NSInputStream* bodyStream = _request.HTTPBodyStream;
     if (bodyStream) {
         block = [block copy];
         status = [CBLMultipartDocumentReader readStream: bodyStream
-                                                ofType: contentType
-                                            toDatabase: _db
-                                                  then: ^(CBLMultipartDocumentReader* reader) {
+                                                headers: headers
+                                             toDatabase: _db
+                                                   then: ^(CBLMultipartDocumentReader* reader) {
             // Called when the reader is done reading/parsing the stream:
             CBLStatus status = reader.status;
             if (!CBLStatusIsError(status)) {
@@ -936,9 +936,9 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
 
     } else {
         NSDictionary* properties = [CBLMultipartDocumentReader readData: _request.HTTPBody
-                                                                ofType: contentType
-                                                            toDatabase: _db
-                                                                status: &status];
+                                                                headers: headers
+                                                             toDatabase: _db
+                                                                 status: &status];
         if (CBLStatusIsError(status))
             return status;
         else if (!properties)
