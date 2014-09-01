@@ -164,6 +164,8 @@
 
 
 - (void) cancelWithStatus: (int)status {
+    if (!_connection)
+        return;
     [_connection cancel];
     [self connection: _connection didFailWithError: CBLStatusToNSError(status, _request.URL)];
 }

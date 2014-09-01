@@ -48,6 +48,8 @@
 
 - (void) setupRequest: (NSMutableURLRequest*)request withBody: (id)body {
     [request setValue: @"multipart/related, application/json" forHTTPHeaderField: @"Accept"];
+    [request setValue: @"gzip" forHTTPHeaderField: @"X-Accept-Part-Encoding"];
+
     request.HTTPBody = body;
 }
 
@@ -66,13 +68,17 @@
     _reader = [[CBLMultipartDocumentReader alloc] initWithDatabase: _db];
     CBLStatus status = (CBLStatus) ((NSHTTPURLResponse*)response).statusCode;
     if (status < 300) {
-        // Check the content type to see whether it's a multipart response:
         NSDictionary* headers = [(NSHTTPURLResponse*)response allHeaderFields];
-        NSString* contentType = headers[@"Content-Type"];
-        if ([contentType hasPrefix: @"text/plain"])
-            contentType = nil;      // Workaround for CouchDB returning JSON docs with text/plain type
-        if (![_reader setContentType: contentType]) {
-            LogTo(RemoteRequest, @"%@ got invalid Content-Type '%@'", self, contentType);
+        // If we let the reader see the Content-Encoding header it might decide to un-gzip the
+        // data, but it's already been decoded by NSURLConnection! So remove that header:
+        if (headers[@"Content-Encoding"]) {
+            NSMutableDictionary* nuHeaders = [headers mutableCopy];
+            [nuHeaders removeObjectForKey: @"Content-Encoding"];
+            headers = nuHeaders;
+        }
+        // Check the content type to see whether it's a multipart response:
+        if (![_reader setHeaders: headers]) {
+            LogTo(RemoteRequest, @"%@ got invalid Content-Type", self);
             [self cancelWithStatus: _reader.status];
             return;
         }
