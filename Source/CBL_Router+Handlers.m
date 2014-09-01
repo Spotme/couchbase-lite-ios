@@ -1250,7 +1250,7 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
     params[@"requested_path"] = _path ? _path : @[];
     params[@"raw_path"] = _path ? [_path componentsJoinedByString:@"/"] : @"";
     // secObj and userCtx are skipped
-    params[@"uudi"] = [CBLDatabase generateDocumentID];
+    params[@"uuid"] = [CBLDatabase generateDocumentID];
     
     return params;
 }
