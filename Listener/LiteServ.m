@@ -26,6 +26,7 @@
 #import "CBLJSShowFunctionCompiler.h"
 #import "CBLJSListFunctionCompiler.h"
 #import <Security/Security.h>
+#import "MYBlockUtils.h"
 
 #if DEBUG
 #import "Logging.h"
@@ -229,6 +230,32 @@ int main (int argc, const char * argv[])
             Warn(@"FATAL: Error initializing CouchbaseLite: %@", error);
             exit(1);
         }
+        
+        server.customHTTPRouteHandler = ^(NSURLRequest *request, void(^responseHandler)(CBLStatus status, NSDictionary* headers, NSData* body)){
+            BOOL handled = NO;
+            if ([request.URL.path hasPrefix:@"/_api"]) {
+                handled = YES;
+                
+                NSThread *callThread = [NSThread currentThread];
+                
+                // responseHandler MUST be called async!
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    MYOnThread(callThread, ^{
+                        CBLStatus status = kCBLStatusOK;
+                        NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithDictionary:request.allHTTPHeaderFields];
+                        
+                        id bodyObject = @{@"method":request.HTTPMethod, @"path":request.URL.path};
+                        // TODO: handle errors
+                        id body = [NSJSONSerialization dataWithJSONObject:bodyObject options:NSJSONWritingPrettyPrinted error:NULL];
+                        
+                        [headers setValue:@"Content-Type" forKey:@"application/json"];
+                        
+                        responseHandler(status, headers, body);
+                    });
+                });
+            }
+            return handled;
+        };
 
         // Start a listener socket:
         CBLListener* listener = [[CBLListener alloc] initWithManager: server port: port];

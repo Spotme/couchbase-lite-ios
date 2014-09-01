@@ -10,17 +10,12 @@
 
 #import "CBLStatus.h"
 
-@class CBLManager;
-@protocol CBLCustomAPIRouteDelegate <NSObject>
-- (void)CBLManager:(CBLManager*)manager catchedCustomAPIRouteWithRequest:(NSURLRequest*)request eid:(NSString*)eid customAPI:(NSString*)customAPI;
-- (void)CBLManager:(CBLManager*)manager processOperationsForRequest:(NSURLRequest*)request completion:(void(^)())completionBlock;
-
-- (CBLStatus)CBLManager:(CBLManager*)manager statusForRequest:(NSURLRequest*)request;
-- (NSDictionary*)CBLManager:(CBLManager*)manager httpHeadersForRequest:(NSURLRequest*)request;
-- (NSData*)CBLManager:(CBLManager*)manager responseBodyForRequest:(NSURLRequest*)request;;
-
-- (void)CBLManager:(CBLManager*)manager finishedWithHandlerForRequest:(NSURLRequest*)request;
-@end
+/** block that allows to hook custom HTTP routes into router
+    @param request incoming URLRequest
+    @param responseHandler callback block to call. *must* be called on the same thread
+    @return boolean if this block will handle the HTTP request
+ */
+typedef BOOL (^CBLCustomHTTPRouteHandler)(NSURLRequest* request, void(^responseHandler)(CBLStatus status, NSDictionary* headers, NSData* body));
 
 @class CBLDatabase;
 
@@ -139,8 +134,7 @@ typedef struct CBLManagerOptions {
 
 @property (readonly, nonatomic) NSMutableDictionary* customHTTPHeaders;
 
-#pragma mark - Custom API selector
-@property (nonatomic, strong) id <CBLCustomAPIRouteDelegate> customAPIRouteDelegate;
+@property (nonatomic, copy) CBLCustomHTTPRouteHandler customHTTPRouteHandler;
 
 #ifdef CBL_DEPRECATED
 - (CBLDatabase*) createDatabaseNamed: (NSString*)name

@@ -59,7 +59,6 @@
             _changesFilter = NULL;
             _changesFilterParams = nil;
         }
-        _isCurrentRequestCustomAPI = NO;
     }
     return self;
 }
@@ -336,20 +335,6 @@ static NSArray* splitPath( NSURL* url ) {
     
     NSUInteger pathLen = _path.count;
     
-    if (pathLen >= 3) {
-        NSString* apiPath = _path[0];
-        CBLManager *instanceDBManager = [CBLManager sharedInstance];
-        if ([apiPath isEqualToString:@"_api"] && [instanceDBManager customAPIRouteDelegate]) {
-            NSString *eventId = _path[1];
-            NSString *customAPI = _path[2];
-            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager catchedCustomAPIRouteWithRequest:_request eid:eventId customAPI:customAPI];
-            _isCurrentRequestCustomAPI = YES;
-            return kCBLStatusOK;
-        } else {
-            _isCurrentRequestCustomAPI = NO;
-        }
-    }
-    
     if (pathLen > 0) {
         NSString* dbName = _path[0];
         BOOL validName = [CBLManager isValidDatabaseName: dbName];
@@ -438,6 +423,30 @@ static NSArray* splitPath( NSURL* url ) {
     // Send myself a message based on the components:
     SEL sel = NSSelectorFromString(message);
     if (!sel || ![self respondsToSelector: sel]) {
+        CBLCustomHTTPRouteHandler customHTTPRouteHandler = _dbManager.customHTTPRouteHandler;
+        if (customHTTPRouteHandler) {
+            BOOL handled = customHTTPRouteHandler(_request, ^(CBLStatus status, NSDictionary* headers, NSData* body){
+                _waiting = NO;
+                
+                _response.status = status;
+                _response.headers = [NSMutableDictionary dictionaryWithDictionary:headers];
+                _response.body = [CBL_Body bodyWithJSON:body];
+                
+                [self sendResponseHeaders];
+                [self sendResponseBodyAndFinish: !_waiting];
+                [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(dbClosing:)
+                                                             name: CBL_DatabaseWillCloseNotification
+                                                           object: _db];
+
+            });
+            if (handled) {
+                LogTo(CBL_Router, @"routed to custom HTTP handler: %@ %@", _request.HTTPMethod, _request.URL.path);
+                // just like with continuous _changes, don't closing connection here
+                // it will be dont in completion handler right abouve
+                return 0;
+            }
+        }
+        
         LogMY(@"CBL_Router: unknown request type: %@ %@ (mapped to %@)",
              _request.HTTPMethod, _request.URL.path, message);
         Assert([self respondsToSelector: @selector(do_GETRoot)],
@@ -490,29 +499,11 @@ static NSArray* splitPath( NSURL* url ) {
     
     // If response is ready (nonzero status), tell my client about it:
     if (status > 0) {
-        //If app current request is custom API
-        if (_isCurrentRequestCustomAPI) {
-            CBLManager *instanceDBManager = [CBLManager sharedInstance];
-            _waiting = YES;
-            [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager processOperationsForRequest:_request completion:^{
-                _waiting = NO;
-                _response.body = [CBL_Body bodyWithJSON:[instanceDBManager.customAPIRouteDelegate  CBLManager:instanceDBManager responseBodyForRequest:_request]];
-                _response.status = [instanceDBManager.customAPIRouteDelegate  CBLManager:instanceDBManager statusForRequest:_request];
-                _response.headers = [NSMutableDictionary dictionaryWithDictionary:[instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager httpHeadersForRequest:_request]];
-                [instanceDBManager.customAPIRouteDelegate CBLManager:instanceDBManager finishedWithHandlerForRequest:_request];
-                
-                [self sendResponseHeaders];
-                [self sendResponseBodyAndFinish: !_waiting];
-                [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(dbClosing:)
-                                                             name: CBL_DatabaseWillCloseNotification
-                                                           object: _db];
-            }];
-        } else {
-            _response.internalStatus = status;
-            [self processRequestRanges];
-            [self sendResponseHeaders];
-            [self sendResponseBodyAndFinish: !_waiting];
-        }
+        _response.internalStatus = status;
+        [self processRequestRanges];
+        [self sendResponseHeaders];
+        [self sendResponseBodyAndFinish: !_waiting];
+        //}
     } else {
         _waiting = YES;
     }

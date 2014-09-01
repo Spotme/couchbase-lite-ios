@@ -65,8 +65,19 @@ static const CBLManagerOptions kCBLManagerDefaultOptions;
 @synthesize customHTTPHeaders = _customHTTPHeaders;
 @synthesize encryptionKey = _encryptionKey;
 
-@synthesize customAPIRouteDelegate = _customAPIRouteDelegate;
-
+@dynamic customHTTPRouteHandler;
+- (CBLCustomHTTPRouteHandler)customHTTPRouteHandler {
+    CBLCustomHTTPRouteHandler customHTTPRouteHandler = [_shared valueForType: @"CBLCustomHTTPRouteHandler"
+                                                                        name: @"customHTTPRouteHandler"
+                                                             inDatabaseNamed: @"_custom_http_handlers"];
+    return customHTTPRouteHandler;
+}
+- (void)setCustomHTTPRouteHandler:(CBLCustomHTTPRouteHandler)customHTTPRouteHandler {
+    [_shared setValue: [customHTTPRouteHandler copy]
+              forType: @"CBLCustomHTTPRouteHandler"
+                 name: @"customHTTPRouteHandler"
+      inDatabaseNamed: @"_custom_http_handlers"];
+}
 
 // http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
 #define kLegalChars @"abcdefghijklmnopqrstuvwxyz0123456789_$()+-/"

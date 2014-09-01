@@ -43,8 +43,6 @@ typedef void (^OnFinishedBlock)();
     NSDictionary* _changesFilterParams;
     BOOL _changesIncludeDocs;
     BOOL _changesIncludeConflicts;
-    
-    BOOL _isCurrentRequestCustomAPI;
 }
 
 - (instancetype) initWithServer: (CBL_Server*)server
