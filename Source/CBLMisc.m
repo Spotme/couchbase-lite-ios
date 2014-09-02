@@ -436,6 +436,33 @@ NSData* CBLDataDecode(NSData *data, NSString *key) {
     return nil;
 }
 
+NSArray* CBLSplitURLPath(NSURL *URL) {
+    // Unfortunately can't just call url.path because that converts %2F to a '/'.
+#ifdef GNUSTEP
+    NSString* pathString = [url pathWithEscapes];
+#else
+#ifdef __OBJC_GC__
+    NSString* pathString = NSMakeCollectable(CFURLCopyPath((CFURLRef)url));
+#else
+    NSString* pathString = (__bridge_transfer NSString *)CFURLCopyPath((__bridge CFURLRef)URL);
+#endif
+#endif
+    NSMutableArray* path = $marray();
+    for (NSString* comp in [pathString componentsSeparatedByString: @"/"]) {
+        if ([comp length] > 0) {
+            NSString* unescaped = [comp stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            if (!unescaped) {
+                path = nil;     // bad URL
+                break;
+            }
+            [path addObject: unescaped];
+        }
+    }
+#ifndef GNUSTEP
+#endif
+    return path;
+}
+
 TestCase(CBLQuoteString) {
     CAssertEqual(CBLQuoteString(@""), @"\"\"");
     CAssertEqual(CBLQuoteString(@"foo"), @"\"foo\"");

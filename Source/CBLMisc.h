@@ -73,3 +73,6 @@ NSURL* CBLAppendToURL(NSURL* baseURL, NSString* toAppend) __attribute__((nonnull
 /** Encodes and decodes NSData objects using AES-256 */
 NSData* CBLDataEncode(NSData *data, NSString *key);
 NSData* CBLDataDecode(NSData *data, NSString *key);
+
+/** splits a URL path into array, skips empty items */
+NSArray* CBLSplitURLPath(NSURL *URL);

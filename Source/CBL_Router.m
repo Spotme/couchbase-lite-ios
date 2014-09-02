@@ -289,35 +289,6 @@
     return kCBLStatusOK;
 }
 
-
-static NSArray* splitPath( NSURL* url ) {
-    // Unfortunately can't just call url.path because that converts %2F to a '/'.
-#ifdef GNUSTEP
-    NSString* pathString = [url pathWithEscapes];
-#else
-    #ifdef __OBJC_GC__
-    NSString* pathString = NSMakeCollectable(CFURLCopyPath((CFURLRef)url));
-    #else
-    NSString* pathString = (__bridge_transfer NSString *)CFURLCopyPath((__bridge CFURLRef)url);
-    #endif
-#endif
-    NSMutableArray* path = $marray();
-    for (NSString* comp in [pathString componentsSeparatedByString: @"/"]) {
-        if ([comp length] > 0) {
-            NSString* unescaped = [comp stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            if (!unescaped) {
-                path = nil;     // bad URL
-                break;
-            }
-            [path addObject: unescaped];
-        }
-    }
-#ifndef GNUSTEP
-#endif
-    return path;
-}
-
-
 - (CBLStatus) route {
     // Refer to: http://wiki.apache.org/couchdb/Complete_HTTP_API_Reference
     
@@ -329,7 +300,7 @@ static NSArray* splitPath( NSURL* url ) {
     NSMutableString* message = [NSMutableString stringWithFormat: @"do_%@", method];
     
     // First interpret the components of the request:
-    _path = [splitPath(_request.URL) mutableCopy];
+    _path = [CBLSplitURLPath(_request.URL) mutableCopy];
     if (!_path)
         return kCBLStatusBadRequest;
     
