@@ -505,7 +505,7 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
     } else if ([obj isKindOfClass: [NSNumber class]]) {
         return JSValueMakeNumber(ctx, [(NSNumber *)obj doubleValue]);
     } else if ([obj isKindOfClass: [NSString class]]) {
-        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)obj);
+        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)(NSString *)obj);
         JSValueRef value = JSValueMakeString(ctx, jsStr);
         JSStringRelease(jsStr);
         return value;
