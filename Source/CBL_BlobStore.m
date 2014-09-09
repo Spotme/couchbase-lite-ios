@@ -161,7 +161,8 @@
         if ([[self class] getKey: &key forFilename: filename])
             return [NSData dataWithBytes: &key length: sizeof(key)];
         else
-            return (id)nil;
+            /*return (id)nil;*/
+            return (NSData*)nil;
     }];
 }
 
