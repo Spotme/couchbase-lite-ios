@@ -120,3 +120,4 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 #define kCBLReplicatorOption_Heartbeat @"heartbeat"         // NSNumber, in ms
 #define kCBLReplicatorOption_PollInterval @"poll"           // NSNumber, in ms
 #define kCBLReplicatorOption_Network @"network"             // "WiFi" or "Cell"
+#define kCBLReplicatorOption_RemoteUUID @"remote_uuid"      // To override remote database's UUID to avoid _replication_id collision in case host/dbname hasn't changed

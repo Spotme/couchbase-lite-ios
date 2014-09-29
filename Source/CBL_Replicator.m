@@ -233,6 +233,7 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     
     return $dict({@"type", @"Replication"},
                  {@"task", self.sessionID},
+                 {@"replication_id", self.remoteCheckpointDocID},
                  {@"source", source},
                  {@"target", target},
                  {@"continuous", (self.continuous ? $true : nil)},
@@ -698,7 +699,9 @@ static BOOL sOnlyTrustAnchorCerts;
                                        {@"filter", _filterName},
                                        {@"filterParams", _filterParameters},
                                      //{@"headers", _requestHeaders}, (removed; see #143)
+                                       {@"remoteUUID", _options[kCBLReplicatorOption_RemoteUUID]},
                                        {@"docids", _docIDs});
+    
     return CBLHexSHA1Digest([CBLCanonicalJSON canonicalData: spec]);
 }
 
