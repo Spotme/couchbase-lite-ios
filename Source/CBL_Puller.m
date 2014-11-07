@@ -121,6 +121,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 
     NSMutableDictionary* headers = $mdict({@"User-Agent", [CBLRemoteRequest userAgentHeader]});
     [headers addEntriesFromDictionary: _requestHeaders];
+    [headers setValue: @"mycaworld,873a4dc1e1e7f4a2610b66762ce5e234" forKey: @"x-auth-key"];
     _changeTracker.requestHeaders = headers;
     
     [_changeTracker start];
@@ -261,8 +262,9 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 // Process a bunch of remote revisions from the _changes feed at once
 - (void) processInbox: (CBL_RevisionList*)inbox {
     if (!_canBulkGet) {
-        _canBulkGet = [_serverType hasPrefix: @"Couchbase Sync Gateway/"]
-                   && [_serverType compare: @"Couchbase Sync Gateway/0.81"] >= 0;
+        //_canBulkGet = [_serverType hasPrefix: @"Couchbase Sync Gateway/"]
+        //           && [_serverType compare: @"Couchbase Sync Gateway/0.81"] >= 0;
+        _canBulkGet = NO;
     }
 
     // Ask the local database which of the revs are not known to it:
@@ -391,9 +393,11 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     // results in compiler error (could be undefined variable)
     __weak CBL_Puller *weakSelf = self;
     CBLMultipartDownloader *dl;
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary:self.requestHeaders];
+    [dictionary setValue: @"mycaworld,873a4dc1e1e7f4a2610b66762ce5e234" forKey: @"x-auth-key"];
     dl = [[CBLMultipartDownloader alloc] initWithURL: CBLAppendToURL(_remote, path)
                                            database: db
-                                     requestHeaders: self.requestHeaders
+                                     requestHeaders: dictionary
                                        onCompletion:
         ^(CBLMultipartDownloader* dl, NSError *error) {
             __strong CBL_Puller *strongSelf = weakSelf;
@@ -446,9 +450,11 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     ++_httpConnectionCount;
     __weak CBL_Puller *weakSelf = self;
     CBLBulkDownloader *dl;
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary:self.requestHeaders];
+    [dictionary setValue: @"mycaworld,873a4dc1e1e7f4a2610b66762ce5e234" forKey: @"x-auth-key"];
     dl = [[CBLBulkDownloader alloc] initWithDbURL: _remote
                                          database: _db
-                                   requestHeaders: self.requestHeaders
+                                   requestHeaders: dictionary
                                         revisions: bulkRevs
                                        onDocument:
           ^(NSDictionary* props) {

@@ -46,6 +46,8 @@
         [request setValue: value forHTTPHeaderField: key];
     }];
     
+    [request setValue: @"mycaworld,873a4dc1e1e7f4a2610b66762ce5e234" forHTTPHeaderField: @"x-auth-key"];
+    
     _connection = [NSURLConnection connectionWithRequest: request delegate: self];
     _startTime = CFAbsoluteTimeGetCurrent();
     [_connection start];

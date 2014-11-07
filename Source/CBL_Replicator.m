@@ -586,10 +586,12 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     // under ARC, using variable req used directly inside the block results in a compiler error (it could have undefined value).
     __weak CBL_Replicator *weakSelf = self;
     __block CBLRemoteJSONRequest *req = nil;
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary:self.requestHeaders];
+    [dictionary setValue: @"mycaworld,873a4dc1e1e7f4a2610b66762ce5e234" forKey: @"x-auth-key"];
     req = [[CBLRemoteJSONRequest alloc] initWithMethod: method
                                                   URL: url
                                                  body: body
-                                       requestHeaders: self.requestHeaders
+                                       requestHeaders: dictionary
                                          onCompletion: ^(id result, NSError* error) {
         CBL_Replicator *strongSelf = weakSelf;
         [strongSelf removeRemoteRequest: req];
