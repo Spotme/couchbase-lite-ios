@@ -261,8 +261,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 // Process a bunch of remote revisions from the _changes feed at once
 - (void) processInbox: (CBL_RevisionList*)inbox {
     if (!_canBulkGet) {
-        _canBulkGet = [_serverType hasPrefix: @"Couchbase Sync Gateway/"]
-                   && [_serverType compare: @"Couchbase Sync Gateway/0.81"] >= 0;
+        _canBulkGet = [_options[kCBLReplicatorOption_BulkGet] boolValue];
     }
 
     // Ask the local database which of the revs are not known to it:
