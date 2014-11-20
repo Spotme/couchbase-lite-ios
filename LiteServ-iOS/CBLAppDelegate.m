@@ -41,7 +41,7 @@
     EnableLogTo(Sync, YES);
     EnableLogTo(View, YES);
     EnableLogTo(ViewIndexVerbose, NO);
-    EnableLogTo(RemoteRequest, YES);
+    EnableLogTo(RemoteRequest, NO);
 #endif
     
     [CBLView setCompiler: [[CBLJSViewCompiler alloc] init]];
