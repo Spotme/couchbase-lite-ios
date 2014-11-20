@@ -95,13 +95,15 @@ TestCase(DictOf) {
                                  docID:(NSString *)docID
                                 revIDs:(NSArray *)revIDs
                                deleted:(BOOL)deleted
+                               removed:(BOOL)removed
 {
     if (!_changes)
         _changes = [[NSMutableArray alloc] init];
     [_changes addObject: $dict({@"seq", sequence},
                                {@"id", docID},
                                {@"revs", revIDs},
-                               {@"deleted", (deleted ? $true : nil)})];
+                               {@"deleted", (deleted ? $true : nil)},
+                               {@"removed", (removed ? $true : nil)})];
 }
 
 - (void) changeTrackerFinished {

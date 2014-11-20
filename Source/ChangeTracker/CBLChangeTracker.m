@@ -252,7 +252,15 @@
         if ([[change objectForKey: @"deleted"] respondsToSelector: @selector(boolValue)])
             deleted = [[change objectForKey: @"deleted"] boolValue];
         
-        [self.client changeTrackerReceivedSequence:sequence docID:docID revIDs:revIDs deleted:deleted];
+        BOOL removed = NO;
+        if ([[change objectForKey: @"removed"] respondsToSelector: @selector(boolValue)])
+            removed = [[change objectForKey: @"removed"] boolValue];
+        
+        [self.client changeTrackerReceivedSequence: sequence
+                                             docID: docID
+                                            revIDs: revIDs
+                                           deleted: deleted
+                                           removed: removed];
         
         lastSequence = sequence;
     }];

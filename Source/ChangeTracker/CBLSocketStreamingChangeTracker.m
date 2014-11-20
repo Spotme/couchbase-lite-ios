@@ -29,7 +29,7 @@
 
 #define kReadLength 4096u
 
-typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* revs, bool deleted);
+typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* revs, bool deleted, bool removed);
 
 @interface CBLChangeMatcher : CBLJSONDictMatcher
 + (CBLJSONMatcher*) changesFeedMatcherWithClient: (CBLChangeMatcherClient)client;
@@ -48,14 +48,15 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
     
     __weak CBLSocketStreamingChangeTracker* weakSelf = self;
     CBLJSONMatcher* root = [CBLChangeMatcher changesFeedMatcherWithClient:
-                            ^(id sequence, NSString *docID, NSArray *revs, bool deleted) {
+                            ^(id sequence, NSString *docID, NSArray *revs, bool deleted, bool removed) {
                                 // Callback when the parser reads another change from the feed:
                                 CBLSocketStreamingChangeTracker* strongSelf = weakSelf;
                                 strongSelf.lastSequenceID = sequence;
                                 [strongSelf.client changeTrackerReceivedSequence: sequence
                                                                            docID: docID
                                                                           revIDs: revs
-                                                                         deleted: deleted];
+                                                                         deleted: deleted
+                                                                         removed: removed];
                             }];
     _parser = [[CBLJSONReader alloc] initWithMatcher: root];
     
@@ -463,6 +464,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
     NSString* _docID;
     NSMutableArray* _revs;
     bool _deleted;
+    bool _removed;
     CBLTemplateMatcher* _revsMatcher;
     CBLChangeMatcherClient _client;
 }
@@ -487,6 +489,8 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
 - (bool) matchValue:(id)value forKey:(NSString *)key {
     if ([key isEqualToString: @"deleted"])
         _deleted = [value boolValue];
+    if ([key isEqualToString: @"removed"])
+        _removed = [value boolValue];
     else if ([key isEqualToString: @"seq"])
         _sequence = value;
     else if ([self.key isEqualToString: @"id"])
@@ -504,7 +508,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
     //Log(@"Ended ChangeMatcher with seq=%@, id='%@', deleted=%d, revs=%@", _sequence, _docID, _deleted, _revs);
     if (!_sequence || !_docID || _revs.count == 0)
         return nil;
-    _client(_sequence, _docID, [_revs copy], _deleted);
+    _client(_sequence, _docID, [_revs copy], _deleted, _removed);
     _sequence = nil;
     _docID = nil;
     _deleted = false;
@@ -522,7 +526,7 @@ TestCase(CBLChangeMatcher) {
     {\"seq\":3,\"id\":\"100\",\"changes\":[{\"rev\":\"2-ec2e4d1833099b8a131388b628fbefbf\"}],\"deleted\":true}]}";
     NSMutableArray* docIDs = $marray();
     CBLJSONMatcher* root = [CBLChangeMatcher changesFeedMatcherWithClient:
-                            ^(id sequence, NSString *docID, NSArray *revs, bool deleted) {
+                            ^(id sequence, NSString *docID, NSArray *revs, bool deleted, bool removed) {
                                 [docIDs addObject: docID];
                             }];
     CBLJSONReader* parser = [[CBLJSONReader alloc] initWithMatcher: root];

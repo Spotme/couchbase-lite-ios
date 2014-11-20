@@ -200,9 +200,14 @@ static NSString* joinQuotedEscaped(NSArray* strings);
                                  docID: (NSString*)docID
                                 revIDs: (NSArray*)revIDs
                                deleted: (BOOL)deleted
+                               removed:(BOOL)removed
 {
     // Process each change from the feed:
     if (![CBLDatabase isValidDocumentID: docID])
+        return;
+    
+    // Ignoring 'removed:true' changes (rcouch-sync feature)
+    if (removed)
         return;
     
     self.changesTotal += revIDs.count;

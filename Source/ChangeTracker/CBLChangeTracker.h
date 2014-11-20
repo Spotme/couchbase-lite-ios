@@ -25,7 +25,8 @@
 - (void) changeTrackerReceivedSequence: (id)sequence
                                  docID: (NSString*)docID
                                 revIDs: (NSArray*)revIDs
-                               deleted: (BOOL)deleted;
+                               deleted: (BOOL)deleted
+                               removed: (BOOL)removed;
 - (void) changeTrackerFinished;
 @optional
 - (void) changeTrackerStopped: (CBLChangeTracker*)tracker;
