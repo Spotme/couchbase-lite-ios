@@ -18,6 +18,7 @@
 #import "CBLRevision.h"
 #import <JavaScriptCore/JavaScript.h>
 #import <JavaScriptCore/JSStringRefCF.h>
+#import "Logging.h"
 
 
 /* NOTE: JavaScriptCore is not a public system framework on iOS, so you'll need to link your iOS app
