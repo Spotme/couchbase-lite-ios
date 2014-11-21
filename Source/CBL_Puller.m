@@ -207,7 +207,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
         return;
     
     // Ignoring 'removed:true' changes (rcouch-sync feature)
-    if (removed)
+    if (removed && [_options[kCBLReplicatorOption_IgnoreRemoved] boolValue])
         return;
     
     self.changesTotal += revIDs.count;

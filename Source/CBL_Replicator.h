@@ -122,3 +122,4 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 #define kCBLReplicatorOption_Network @"network"             // "WiFi" or "Cell"
 #define kCBLReplicatorOption_RemoteUUID @"remote_uuid"      // To override remote database's UUID to avoid _replication_id collision in case host/dbname hasn't changed
 #define kCBLReplicatorOption_BulkGet @"bulk_get"            // Force using the non-standard _bulk_get call which speeds-up replication
+#define kCBLReplicatorOption_IgnoreRemoved @"ignore_removed"// Ignore items in changes feed with removed:true
