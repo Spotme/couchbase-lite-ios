@@ -35,10 +35,6 @@
 // run out, even if the CBL thread doesn't always have time to run.)
 #define kMaxOpenHTTPConnections 12
 
-// Maximum number of revs to fetch in a single bulk request
-#define kMaxRevsToGetInBulk 50u
-
-
 @interface CBL_Puller () <CBLChangeTrackerClient>
 @end
 
@@ -58,7 +54,8 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     if (!_downloadsToInsert) {
         // Note: This is a ref cycle, because the block has a (retained) reference to 'self',
         // and _downloadsToInsert retains the block, and of course I retain _downloadsToInsert.
-        _downloadsToInsert = [[CBLBatcher alloc] initWithCapacity: 200 delay: 1.0
+        NSUInteger inboxCapacity = [_options[kCBLReplicatorOption_BatchSize] respondsToSelector:@selector(unsignedIntegerValue)] ? [_options[kCBLReplicatorOption_BatchSize] unsignedIntegerValue] : 200;
+        _downloadsToInsert = [[CBLBatcher alloc] initWithCapacity: inboxCapacity delay: 1.0
                                                   processor: ^(NSArray *downloads) {
                                                       [self insertDownloads: downloads];
                                                   }];
@@ -340,7 +337,8 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 // Start up some HTTP GETs, within our limit on the maximum simultaneous number
 - (void) pullRemoteRevisions {
     while (_db && _httpConnectionCount < kMaxOpenHTTPConnections) {
-        NSUInteger nBulk = MIN(_bulkRevsToPull.count, kMaxRevsToGetInBulk);
+        NSUInteger maxRevsToGetInBulk = [_options[kCBLReplicatorOption_BatchSize] respondsToSelector:@selector(unsignedIntegerValue)] ? [_options[kCBLReplicatorOption_BatchSize] unsignedIntegerValue] : 200;
+        NSUInteger nBulk = MIN(_bulkRevsToPull.count, maxRevsToGetInBulk);
         if (nBulk == 1) {
             // Rather than pulling a single revision in 'bulk', just pull it normally:
             [self queueRemoteRevision: _bulkRevsToPull[0]];

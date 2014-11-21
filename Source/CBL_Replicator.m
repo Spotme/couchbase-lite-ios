@@ -29,9 +29,6 @@
 #import "MYURLUtils.h"
 
 
-#define kProcessDelay 0.5
-#define kInboxCapacity 100
-
 #define kRetryDelay 60.0
 
 #define kDefaultRequestTimeout 60.0
@@ -248,8 +245,8 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     if (WillLogTo(Sync)) {
         if (processed/100 != _changesProcessed/100
                     || (processed == _changesTotal && _changesTotal > 0))
-            LogTo(Sync, @"%@ Progress: %lu / %lu",
-                  self, (unsigned long)processed, (unsigned long)_changesTotal);
+            LogTo(Sync, @"%@ Progress: %lu (+ %lu) / %lu",
+                  self, (unsigned long)processed, (unsigned long)processed - _changesProcessed, (unsigned long)_changesTotal);
     }
     if ((NSInteger)processed < 0)
         Warn(@"Suspicious changesProcessed value: %llu", (UInt64)processed);
@@ -259,8 +256,8 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
 
 - (void) setChangesTotal: (NSUInteger)total {
     if (WillLogTo(Sync) && total/100 != _changesTotal/100) {
-        LogTo(Sync, @"%@ Progress: %lu / %lu",
-              self, (unsigned long)_changesProcessed, (unsigned long)total);
+        LogTo(Sync, @"%@ Progress: %lu / %lu (+ %lu)",
+              self, (unsigned long)_changesProcessed, (unsigned long)total, (unsigned long)total - _changesTotal);
     }
     if ((NSInteger)total < 0)
         Warn(@"Suspicious changesTotal value: %llu", (UInt64)total);
@@ -302,7 +299,8 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     // Note: This is actually a ref cycle, because the block has a (retained) reference to 'self',
     // and _batcher retains the block, and of course I retain _batcher.
     // The cycle is broken in -stopped when I release _batcher.
-    _batcher = [[CBLBatcher alloc] initWithCapacity: kInboxCapacity delay: kProcessDelay
+    NSUInteger inboxCapacity = [_options[kCBLReplicatorOption_BatchSize] respondsToSelector:@selector(unsignedIntegerValue)] ? [_options[kCBLReplicatorOption_BatchSize] unsignedIntegerValue] : 200;
+    _batcher = [[CBLBatcher alloc] initWithCapacity: inboxCapacity delay: 1.0
                  processor:^(NSArray *inbox) {
                      LogTo(SyncVerbose, @"*** %@: BEGIN processInbox (%u sequences)",
                            self, (unsigned)inbox.count);
