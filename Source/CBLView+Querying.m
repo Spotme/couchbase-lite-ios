@@ -155,6 +155,8 @@ static id fromJSON( NSData* json ) {
 - (NSArray*) _queryWithOptions: (const CBLQueryOptions*)options
                         status: (CBLStatus*)outStatus
 {
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+
     if (!options)
         options = &kDefaultCBLQueryOptions;
 
@@ -164,8 +166,6 @@ static id fromJSON( NSData* json ) {
     CBL_FMResultSet* r = [self resultSetWithOptions: options status: outStatus];
     if (!r)
         return nil;
-    
-    NSDate *queryStart = [NSDate date];
     
     NSMutableArray* rows;
 
@@ -252,9 +252,9 @@ static id fromJSON( NSData* json ) {
     [r close];
     *outStatus = kCBLStatusOK;
     
-    NSDate *queryEnd = [NSDate date];
+    CFAbsoluteTime duration = CFAbsoluteTimeGetCurrent() - start;
     LogTo(View, @"Query %@: Returning %u rows, took %3.3fsec",
-          _name, (unsigned)rows.count, [queryEnd timeIntervalSinceDate:queryStart]);
+          _name, (unsigned)rows.count, duration);
     return rows;
 }
 
