@@ -209,7 +209,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
             return kCBLStatusNotModified;
         }
         
-        NSDate *updateIndexStart = [NSDate date];
+        CFAbsoluteTime updateIndexStart = CFAbsoluteTimeGetCurrent();
         
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
@@ -370,10 +370,10 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                                    @(dbMaxSequence), @(viewID)])
             return db.lastDbError;
         
-        NSDate *updateIndexEnd = [NSDate date];
+        CFAbsoluteTime updateIndexEnd = CFAbsoluteTimeGetCurrent();
         
         LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (deleted %u, added %u), took %3.3fsec",
-              _name, dbMaxSequence, deleted, inserted, [updateIndexEnd timeIntervalSinceDate:updateIndexStart]);
+              _name, dbMaxSequence, deleted, inserted, (updateIndexEnd - updateIndexStart));
         return kCBLStatusOK;
     }];
     

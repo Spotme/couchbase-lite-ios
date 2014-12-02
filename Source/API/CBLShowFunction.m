@@ -61,7 +61,14 @@
 }
 
 - (CBLFunctionResult*)runWithRevisionProperties: (NSDictionary *)revisionProperties params: (NSDictionary *)params {
+    LogTo(Show, @"Executing show function %@ ...", _name);
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
+    
     CBLFunctionResult* result = self.showFunctionBlock(revisionProperties, params);
+    
+    CFAbsoluteTime end = CFAbsoluteTimeGetCurrent();
+    LogTo(Show, @"...Finished executing show function %@, took %3.3fsec", _name, (end - start));
+    
     return result;
 }
 

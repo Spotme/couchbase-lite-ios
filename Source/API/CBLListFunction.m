@@ -54,6 +54,8 @@
 }
 
 - (CBLFunctionResult*) runWithQueryEnumenator: (CBLQueryEnumerator *)queryEnumenator head: (NSDictionary*)head params: (NSDictionary*)params {
+    LogTo(List, @"Executing list function %@ ...", _name);
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
     
     CBLListFunctionGetRowBlock getRowBlock = ^CBLQueryRow*(){
         CBLQueryRow *row = [queryEnumenator nextRow];
@@ -61,11 +63,16 @@
     };
     
     CBLFunctionResult *resut = self.listFunctionBlock(head, params, getRowBlock);
+
+    CFAbsoluteTime end = CFAbsoluteTimeGetCurrent();
+    LogTo(List, @"...Finished executing list function %@, took %3.3fsec", _name, (end - start));
     
     return resut;
 }
 
 - (CBLFunctionResult*) runWithRows: (NSArray*)rows head: (NSDictionary*)head params: (NSDictionary*)params {
+    LogTo(List, @"Executing list function %@ ...", _name);
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
     
     NSUInteger count = rows.count;
     __block NSUInteger idx = 0;
@@ -80,6 +87,9 @@
     };
     
     CBLFunctionResult *resut = self.listFunctionBlock(head, params, getRowBlock);
+    
+    CFAbsoluteTime end = CFAbsoluteTimeGetCurrent();
+    LogTo(List, @"...Finished executing list function %@, took %3.3fsec", _name, (end - start));
     
     return resut;
 }
