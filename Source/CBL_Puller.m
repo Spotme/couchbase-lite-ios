@@ -566,9 +566,9 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 
 // This will be called when _downloadsToInsert fills up:
 - (void) insertDownloads:(NSArray *)downloads {
-    LogTo(SyncVerbose, @"%@ inserting %u revisions...", self, (unsigned)downloads.count);
+    LogTo(Sync, @"%@ inserting %u revisions...", self, (unsigned)downloads.count);
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent();
-        
+    __block NSUInteger totalHistory = 0;
     downloads = [downloads sortedArrayUsingSelector: @selector(compareSequences:)];
     [_db _inTransaction: ^CBLStatus {
         for (CBL_Revision* rev in downloads) {
@@ -583,7 +583,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
                 }
                 LogTo(SyncVerbose, @"%@ inserting %@ %@",
                       self, rev.docID, [history my_compactDescription]);
-
+                totalHistory += history.count;
                 // Insert the revision:
                 int status = [_db forceInsert: rev revisionHistory: history source: _remote];
                 if (CBLStatusIsError(status)) {
@@ -614,8 +614,8 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     self.lastSequence = _pendingSequences.checkpointedValue;
 
     time = CFAbsoluteTimeGetCurrent() - time;
-    LogTo(Sync, @"%@ inserted %u revs in %.3f sec (%.1f/sec)",
-          self, (unsigned)downloads.count, time, downloads.count/time);
+    LogTo(Sync, @"%@ inserted %u revs (%u in history) in %.3f sec (%.1f/sec)",
+          self, (unsigned)downloads.count, (unsigned)totalHistory, time, downloads.count/time);
     
     [self asyncTasksFinished: downloads.count];
     self.changesProcessed += downloads.count;
