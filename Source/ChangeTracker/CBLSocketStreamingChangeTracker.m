@@ -512,6 +512,7 @@ typedef void (^CBLChangeMatcherClient)(id sequence, NSString* docID, NSArray* re
     _sequence = nil;
     _docID = nil;
     _deleted = false;
+    _removed = false;
     [_revs removeAllObjects];
     return self;
 }
