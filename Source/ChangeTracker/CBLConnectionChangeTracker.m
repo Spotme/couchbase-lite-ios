@@ -31,7 +31,38 @@
     [super start];
     _inputBuffer = [[NSMutableData alloc] init];
 
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: self.changesFeedURL];
+    NSMutableURLRequest* request = nil;
+    if (self.docIDs) {
+        NSMutableString* path = [NSMutableString string];
+        [path appendString:@"_changes?feed=normal&filter=_doc_ids"];
+        if (_includeConflicts)
+            [path appendString: @"&style=all_docs"];
+        id seq = _lastSequenceID;
+        if (seq) {
+            // BigCouch is now using arrays as sequence IDs. These need to be sent back JSON-encoded.
+            if ([seq isKindOfClass: [NSArray class]] || [seq isKindOfClass: [NSDictionary class]])
+                seq = [CBLJSON stringWithJSONObject: seq options: 0 error: nil];
+            [path appendFormat: @"&since=%@", CBLEscapeURLParam([seq description])];
+        }
+        if (_limit > 0)
+            [path appendFormat: @"&limit=%u", _limit];
+        
+        request = [NSMutableURLRequest requestWithURL: CBLAppendToURL(_databaseURL, path)];
+        request.HTTPMethod = @"POST";
+        
+        NSError* error;
+        NSString* body = [CBLJSON stringWithJSONObject: @{@"doc_ids":self.docIDs} options: CBLJSONWritingAllowFragments
+                                                 error: &error];
+        
+        request.HTTPBody = [body dataUsingEncoding:NSUTF8StringEncoding];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    }
+    else {
+        request = [NSMutableURLRequest requestWithURL: self.changesFeedURL];
+    }
+    
+    //NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL: self.changesFeedURL];
     request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     //request.timeoutInterval = 6.02e23;
     
