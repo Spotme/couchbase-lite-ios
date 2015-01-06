@@ -263,6 +263,7 @@ static id fromJSON( NSData* json ) {
 - (NSArray*) _queryFullText: (const CBLQueryOptions*)options
                      status: (CBLStatus*)outStatus
 {
+    CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
     NSMutableString* sql = [@"SELECT docs.docid, maps.sequence, maps.fulltext_id, maps.value, "
                              "offsets(fulltext)" mutableCopy];
     if (options->fullTextSnippets)
@@ -279,7 +280,9 @@ static id fromJSON( NSData* json ) {
         [sql appendString: @" DESC"];
     [sql appendString: @" LIMIT ? OFFSET ?"];
     int limit = (options->limit != kDefaultCBLQueryOptions.limit) ? options->limit : -1;
-
+    
+    LogTo(View, @"Query %@: %@\n\tArguments: %@", _name, sql, @[options->fullTextQuery, @(self.viewID),
+                                                                @(limit), @(options->skip)]);
     CBLDatabase* db = _weakDB;
     CBL_FMResultSet* r = [db.fmdb executeQuery: sql, options->fullTextQuery, @(self.viewID),
                                                 @(limit), @(options->skip)];
@@ -303,6 +306,8 @@ static id fromJSON( NSData* json ) {
             row.snippet = [r stringForColumnIndex: 5];
         [rows addObject: row];
     }
+    LogTo(View, @"Query %@ FULL-TEXT(%@): Returning %u rows, took %3.3fsec",
+          _name, options->fullTextQuery, (unsigned)rows.count, (CFAbsoluteTimeGetCurrent() - start));
     return rows;
 }
 

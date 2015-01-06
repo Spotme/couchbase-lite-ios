@@ -81,11 +81,51 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
     return JSValueMakeUndefined(ctx);
 }
 
+// This is the body of the JavaScript "emit_fts(key,value)" function.
+static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
+                                  size_t argumentCount, const JSValueRef arguments[],
+                                  JSValueRef* exception)
+{
+    id key = nil, value = nil;
+    if (argumentCount > 0) {
+        {
+            JSValueRef arg = arguments[0];
+            NSObject* obj = JSValueToNSObject(ctx, arg);
+            if ([obj isKindOfClass:[NSString class]]) {
+                key = obj;
+            } else if ([obj respondsToSelector:@selector(stringValue)]) {
+                key = [obj performSelector:@selector(stringValue)];
+            } else {
+                key = [NSString stringWithFormat:@"%@",obj];
+            }
+        }
+        
+        if (argumentCount > 1) {
+            JSValueRef arg = arguments[1];
+            JSValueRef exception = NULL;
+            JSStringRef jsStr = JSValueCreateJSONString(ctx, arg, 0, &exception);
+            if (exception) {
+                WarnJSException(ctx, @"JS function threw exception", exception);
+            }
+            else if (jsStr != NULL) {
+                value = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
+                JSStringRelease(jsStr);
+            }
+            else {
+                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", JSValueToNSString(ctx, arg));
+            }
+        }
+    }
+    sCurrentEmitBlock(CBLTextKey(key), value);
+    return JSValueMakeUndefined(ctx);
+}
+
 
 - (instancetype) init {
     self = [super init];
     if (self) {
         JSGlobalContextRef context = self.context;
+        {
         // Install the "emit" function in the context's namespace:
         JSStringRef name = JSStringCreateWithCFString(CFSTR("emit"));
         JSObjectRef fn = JSObjectMakeFunctionWithCallback(context, name, &EmitCallback);
@@ -94,6 +134,18 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                             kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
                             NULL);
         JSStringRelease(name);
+        }
+        
+        {
+        // Install the "emit_fts" function in the context's namespace:
+        JSStringRef name = JSStringCreateWithCFString(CFSTR("emit_fts"));
+        JSObjectRef fn = JSObjectMakeFunctionWithCallback(context, name, &EmitFTSCallback);
+        JSObjectSetProperty(context, JSContextGetGlobalObject(context),
+                            name, fn,
+                            kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontDelete,
+                            NULL);
+        JSStringRelease(name);
+        }
     }
     return self;
 }
