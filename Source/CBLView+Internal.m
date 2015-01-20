@@ -252,7 +252,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                                  @(lastSequence)];
         if (!r)
             return db.lastDbError;
-
+        
+        unsigned total = 0;
         BOOL keepGoing = [r next]; // Go to first result row
         while (keepGoing) {
             @autoreleasepool {
@@ -349,6 +350,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                       _name, docID, sequence);
                 @try {
                     mapBlock(properties, emit);
+                    total++;
                 } @catch (NSException* x) {
                     MYReportException(x, @"map block of view '%@'", _name);
                     emitStatus = kCBLStatusCallbackError;
@@ -368,8 +370,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         
         CFAbsoluteTime updateIndexEnd = CFAbsoluteTimeGetCurrent();
         
-        LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (deleted %u, added %u), took %3.3fsec",
-              _name, dbMaxSequence, deleted, inserted, (updateIndexEnd - updateIndexStart));
+        LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (total %u, deleted %u, added %u), took %3.3fsec",
+              _name, dbMaxSequence, total, deleted, inserted, (updateIndexEnd - updateIndexStart));
         return kCBLStatusOK;
     }];
     
