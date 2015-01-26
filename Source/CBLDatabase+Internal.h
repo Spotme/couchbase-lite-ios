@@ -61,6 +61,7 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
     NSString* _path;
     NSString* _name;
     CBLManager* _manager;
+    NSString* _encryptionKey;
     CBL_FMDatabase *_fmdb;
     BOOL _readOnly;
     BOOL _isOpen;

@@ -140,6 +140,9 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
             // Appease the static analyzer by using these category ivars in this source file:
             _pendingAttachmentsByDigest = nil;
         }
+        
+        _encryptionKey = [_manager.shared valueForType: @"encryptionKey" name: @""
+                                       inDatabaseNamed: _name];
     }
     return self;
 }
@@ -192,7 +195,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     else
         flags |= SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     LogTo(CBLDatabase, @"Open %@ (flags=%X)", _path, flags);
-    if (![_fmdb openWithFlags: flags encryptionKey: _manager.encryptionKey]) {
+    if (![_fmdb openWithFlags: flags]) {
         if (outError) *outError = self.fmdbError;
         return NO;
     }
@@ -208,6 +211,28 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
                              NULL, CBLCollateRevIDs);
 
     [CBLView registerFunctions: self];
+    
+    // Give SQLCipher the encryption key, if provided:
+    if (_encryptionKey) {
+        // http://sqlcipher.net/sqlcipher-api/#key
+        NSString* pragma = $sprintf(@"PRAGMA key = '%@'", [_encryptionKey stringByReplacingOccurrencesOfString: @"'" withString: @"''"]);
+        
+        if (![_fmdb executeUpdate: pragma]) {
+            Warn(@"CBLDatabase: Couldn't give encryption key; SQLite may not be built with SQLCipher");
+            return NO;
+        }
+    }
+
+    // Verify that encryption key is correct (or db is unencrypted, if no key given):
+    if ([_fmdb intForQuery: @"SELECT count(*) FROM sqlite_master"] == 0 && _fmdb.lastErrorCode != 0) {
+        if (outError) {
+            if (_fmdb.lastErrorCode == SQLITE_NOTADB)
+                *outError = CBLStatusToNSError(kCBLStatusUnauthorized, nil);
+            else
+                *outError = self.fmdbError;
+        }
+        return NO;
+    }
     
     // Stuff we need to initialize every time the database opens:
     if (![self initialize: @"PRAGMA foreign_keys = ON;" error: outError])
@@ -412,7 +437,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
         [_fmdb close];
         return NO;
     }
-    _attachments.encryptionKey = self.manager.encryptionKey;
+    _attachments.encryptionKey = _encryptionKey;
 
     _isOpen = YES;
 

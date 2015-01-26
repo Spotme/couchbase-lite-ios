@@ -57,6 +57,8 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
     This method is only available if you've linked with the CouchbaseLiteListener framework. */
 @property (readonly) NSURL* internalURL;
 
+/** The database's encryption key; must be registred in CBLManager */
+@property (readonly) NSString *encryptionKey;
 
 #pragma mark - HOUSEKEEPING:
 

@@ -355,6 +355,8 @@ NSURL* CBLAppendToURL(NSURL* baseURL, NSString* toAppend) {
 }
 
 NSData* CBLDataEncode(NSData *data, NSString *key) {
+    if (!key) return data;
+    
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES256+1]; // room for terminator (unused)
     bzero(keyPtr, sizeof(keyPtr)); // fill with zeroes (for padding)
@@ -396,6 +398,8 @@ NSData* CBLDataEncode(NSData *data, NSString *key) {
 }
 
 NSData* CBLDataDecode(NSData *data, NSString *key) {
+    if (!key) return data;    
+    
     // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES256+1]; // room for terminator (unused)
     bzero(keyPtr, sizeof(keyPtr)); // fill with zeroes (for padding)

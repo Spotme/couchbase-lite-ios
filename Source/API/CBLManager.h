@@ -61,8 +61,6 @@ typedef struct CBLManagerOptions {
 /** The root directory of this manager (as specified at initialization time.) */
 @property (readonly) NSString* directory;
 
-@property (strong) NSString* encryptionKey;
-
 #pragma mark - DATABASES:
 
 /** Returns the database with the given name, creating it if it didn't already exist.
@@ -75,6 +73,15 @@ typedef struct CBLManagerOptions {
     Multiple calls with the same name will return the same CBLDatabase instance. */
 - (CBLDatabase*) existingDatabaseNamed: (NSString*)name
                                  error: (NSError**)outError             __attribute__((nonnull(1)));
+
+/** Registers an encryption key for a database. This must be called before opening an encrypted
+ database, or before creating a database that's to be encrypted.
+ If the key is incorrect (or no key is given for an encrypted database), the subsequent call
+ to open the database will fail with an error with code 401.
+ To use this API, the application must be linked with SQLCipher <http://sqlcipher.net> instead
+ of regular SQLite. Otherwise opening the database will fail with a SQLite error. */
+- (void) registerEncryptionKey: (NSString*)encryptionKey
+              forDatabaseNamed: (NSString*)name                         __attribute__((nonnull(2)));
 
 /** Same as -existingDatabaseNamed:. Enables "[]" access in Xcode 4.4+ */
 - (CBLDatabase*) objectForKeyedSubscript: (NSString*)key __attribute__((nonnull));

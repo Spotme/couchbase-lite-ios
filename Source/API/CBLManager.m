@@ -63,7 +63,6 @@ static const CBLManagerOptions kCBLManagerDefaultOptions;
 
 @synthesize dispatchQueue=_dispatchQueue, directory = _dir;
 @synthesize customHTTPHeaders = _customHTTPHeaders;
-@synthesize encryptionKey = _encryptionKey;
 
 @dynamic customHTTPRouteHandler;
 - (CBLCustomHTTPRouteHandler)customHTTPRouteHandler {
@@ -211,11 +210,10 @@ static CBLManager* sInstance;
 
 - (id) copyWithZone: (NSZone*)zone {
     CBLManager *managerCopy = [[[self class] alloc] initWithDirectory: self.directory
-                                           options: &_options
+                                                              options: &_options
                                                                shared: _shared];
     
     managerCopy.customHTTPHeaders = [self.customHTTPHeaders copy];
-    managerCopy.encryptionKey = [self.encryptionKey copy];
     
     return managerCopy;
 }
@@ -369,6 +367,14 @@ static CBLManager* sInstance;
     if (![db open: outError])
         db = nil;
     return db;
+}
+
+- (void) registerEncryptionKey: (NSString*)encryptionKey
+              forDatabaseNamed: (NSString*)name
+{
+    [self.shared setValue: encryptionKey
+                  forType: @"encryptionKey" name: @""
+          inDatabaseNamed: name];
 }
 
 #ifdef CBL_DEPRECATED

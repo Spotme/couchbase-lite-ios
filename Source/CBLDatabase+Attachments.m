@@ -284,8 +284,8 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
         return nil;
     }
     
-    if (_manager.encryptionKey) {
-        contents = CBLDataDecode(contents, _manager.encryptionKey);
+    if (_encryptionKey) {
+        contents = CBLDataDecode(contents, _encryptionKey);
     }
     
     if (outEncoding)
@@ -379,8 +379,8 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
     NSData* blob = [NSData dataWithContentsOfURL: URL
                                          options: NSDataReadingMappedIfSafe
                                            error: NULL];
-    if (_manager.encryptionKey) {
-        blob = CBLDataDecode(blob, _manager.encryptionKey);
+    if (_encryptionKey) {
+        blob = CBLDataDecode(blob, _encryptionKey);
     }
     
     return blob;
@@ -498,7 +498,7 @@ static bool digestToBlobKey(NSString* digest, CBLBlobKey* key) {
                                                        error: &error];
             if (!fileData)
                 return nil;
-            fileData = CBLDataDecode(fileData, _manager.encryptionKey);
+            fileData = CBLDataDecode(fileData, _encryptionKey);
             NSMutableDictionary* editedAttachment = [attachment mutableCopy];
             [editedAttachment removeObjectForKey: @"follows"];
             editedAttachment[@"data"] = [CBLBase64 encode: fileData];
