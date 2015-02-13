@@ -31,6 +31,9 @@
 /** Returns the CBL_Server instance that's been registered with a specific hostname. */
 + (CBL_Server*) serverForHostname: (NSString*)hostname;
 
+/** Returns the CBL_Server instance that's been registered to match specific url. */
++ (CBL_Server*) serverForURL: (NSURL*)url;
+
 /** Registers a CBL_Server instance with a new unique hostname, and returns the root URL at which the server can now be reached. */
 + (NSURL*) registerServer: (CBL_Server*)server;
 
