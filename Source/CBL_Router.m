@@ -396,11 +396,11 @@
     if (!sel || ![self respondsToSelector: sel]) {
         CBLCustomHTTPRouteHandler customHTTPRouteHandler = _dbManager.customHTTPRouteHandler;
         if (customHTTPRouteHandler) {
-            BOOL handled = customHTTPRouteHandler(_request, ^(CBLStatus status, NSDictionary* headers, NSData* body){
+            BOOL handled = customHTTPRouteHandler(_request, ^(NSHTTPURLResponse *response, NSData* body){
                 _waiting = NO;
                 
-                _response.status = status;
-                _response.headers = [NSMutableDictionary dictionaryWithDictionary:headers];
+                _response.status = (CBLStatus)response.statusCode;
+                _response.headers = [NSMutableDictionary dictionaryWithDictionary:response.allHeaderFields];
                 _response.body = [CBL_Body bodyWithJSON:body];
                 
                 [self sendResponseHeaders];

@@ -8,14 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CBLStatus.h"
-
 /** block that allows to hook custom HTTP routes into router
     @param request incoming URLRequest
     @param responseHandler callback block to call. *must* be called on the same thread
     @return boolean if this block will handle the HTTP request
  */
-typedef BOOL (^CBLCustomHTTPRouteHandler)(NSURLRequest* request, void(^responseHandler)(CBLStatus status, NSDictionary* headers, NSData* body));
+typedef BOOL (^CBLCustomHTTPRouteHandler)(NSURLRequest* request, void(^responseHandler)(NSHTTPURLResponse *response, NSData* body));
 
 @class CBLDatabase;
 
