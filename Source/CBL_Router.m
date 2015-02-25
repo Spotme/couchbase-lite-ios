@@ -613,8 +613,8 @@
 
 - (void) finished {
     if (WillLogTo(CBL_Router)) {
-        NSMutableString* output = [NSMutableString stringWithFormat: @"Response -- status=%d, body=%llu bytes",
-                                   _response.status, (uint64_t)_response.body.asJSON.length];
+        NSMutableString* output = [NSMutableString stringWithFormat: @"Response -- status=%d",
+                                   _response.status];
         NSDictionary* headers = _response.headers;
         for (NSString* key in headers)
             [output appendFormat: @"\n\t%@: %@", key, headers[key]];
