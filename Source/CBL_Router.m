@@ -53,7 +53,7 @@
         _request = request;
         _response = [[CBLResponse alloc] init];
         _local = YES;
-        _processRanges = YES;
+        _processRanges = NO;
         if (0) { // assignments just to appease static analyzer so it knows these ivars are used
             _longpoll = _changesIncludeDocs = _changesIncludeConflicts = NO;
             _changesFilter = NULL;
@@ -73,7 +73,7 @@
     if (self) {
         _server = server;
         _local = isLocal;
-        _processRanges = YES;
+        _processRanges = NO;
     }
     return self;
 }
