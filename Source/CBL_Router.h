@@ -14,6 +14,7 @@
 typedef CBLStatus (^OnAccessCheckBlock)(CBLDatabase*, NSString *docID, SEL action);
 typedef void (^OnResponseReadyBlock)(CBLResponse*);
 typedef void (^OnDataAvailableBlock)(NSData* data, BOOL finished);
+typedef void (^OnObjectAvailableBlock)(id object);
 typedef void (^OnFinishedBlock)();
 
 
@@ -36,6 +37,7 @@ typedef void (^OnFinishedBlock)();
     OnAccessCheckBlock _onAccessCheck;
     OnResponseReadyBlock _onResponseReady;
     OnDataAvailableBlock _onDataAvailable;
+    OnObjectAvailableBlock _onObjectAvailable;
     OnFinishedBlock _onFinished;
     BOOL _running;
     BOOL _longpoll;
@@ -54,6 +56,7 @@ typedef void (^OnFinishedBlock)();
 @property (copy) OnAccessCheckBlock onAccessCheck;
 @property (copy) OnResponseReadyBlock onResponseReady;
 @property (copy) OnDataAvailableBlock onDataAvailable;
+@property (copy) OnObjectAvailableBlock onObjectAvailable;
 @property (copy) OnFinishedBlock onFinished;
 
 @property (readonly) NSURLRequest* request;

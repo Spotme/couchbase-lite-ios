@@ -84,7 +84,7 @@
 
 
 @synthesize onAccessCheck=_onAccessCheck, onResponseReady=_onResponseReady,
-            onDataAvailable=_onDataAvailable, onFinished=_onFinished,
+            onDataAvailable=_onDataAvailable, onObjectAvailable=_onObjectAvailable, onFinished=_onFinished,
             request=_request, response=_response, processRanges=_processRanges;
 
 
@@ -605,6 +605,9 @@
 - (void) sendResponseBodyAndFinish: (BOOL)finished {
     if (_onDataAvailable && _response.body && !$equal(_request.HTTPMethod, @"HEAD")) {
         _onDataAvailable(_response.body.asJSON, finished);
+    }
+    if (_onObjectAvailable && _response.body && !$equal(_request.HTTPMethod, @"HEAD")) {
+        _onObjectAvailable(_response.body.asObject);
     }
     if (finished)
         [self finished];
