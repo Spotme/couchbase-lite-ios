@@ -296,6 +296,7 @@ static inline BOOL isTruthy(id value) {
     // (Don't include self in the array, because this revision doesn't really exist yet)
 }
 
+@dynamic userProperties;
 - (void) setUserProperties:(NSDictionary *)userProperties {
     NSMutableDictionary* newProps = userProperties.mutableCopy ?: $mdict();
     for (NSString* key in _properties) {
@@ -309,6 +310,7 @@ static inline BOOL isTruthy(id value) {
     [_properties setValue: object forKey: key];
 }
 
+@dynamic isDeletion;
 - (void) setIsDeletion:(BOOL)isDeleted {
     if (isDeleted)
         _properties[@"_deleted"] = $true;

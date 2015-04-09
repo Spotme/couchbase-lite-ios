@@ -178,14 +178,17 @@
 
 @implementation CBL_MutableRevision
 
+@dynamic body;
 - (void) setBody:(CBL_Body *)body {
     _body = body;
 }
 
+@dynamic properties;
 - (void) setProperties:(NSDictionary *)properties {
     self.body = [CBL_Body bodyWithProperties: properties];
 }
 
+@dynamic asJSON;
 - (void) setAsJSON:(NSData *)asJSON {
     self.body = [CBL_Body bodyWithJSON: asJSON];
 }
@@ -200,6 +203,7 @@
     _sequence = sequence;
 }
 
+@dynamic missing;
 - (void) setMissing:(bool)missing {
     _missing = missing;
 }

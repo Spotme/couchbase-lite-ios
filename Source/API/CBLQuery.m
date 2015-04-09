@@ -240,7 +240,7 @@
 
 
 @synthesize lastError=_lastError;
-
+@dynamic error;
 
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver: self];

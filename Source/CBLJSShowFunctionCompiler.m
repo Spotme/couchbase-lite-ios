@@ -37,10 +37,10 @@
                                                  requireContext: userInfo];
     if (!fn)
         return nil;
-    
+
     // Return the CBLMapBlock; the code inside will be called when CouchbaseLite wants to run the map fn:
     JSContextRef ctx = self.context;
-    CBLShowFunction* block = ^CBLFunctionResult*(NSDictionary *revision, NSDictionary *params){
+    CBLShowFunctionBlock block = ^CBLFunctionResult*(NSDictionary *revision, NSDictionary *params){
         CBLFunctionResult* result = nil;
         
         JSValueRef exception = NULL;
