@@ -488,9 +488,17 @@ static NSString* joinQuotedEscaped(NSArray* strings);
               // The entire _bulk_get is finished:
               __strong CBL_Puller *strongSelf = weakSelf;
               if (error) {
-                  strongSelf.error = error;
-                  [strongSelf revisionFailed];
-                  strongSelf.changesProcessed += remainingRevs.count;
+                  // no need to report error right away, retrying one-by-one
+                  if (remainingRevs.count) {
+                      if (!_revsToPull)
+                          _revsToPull = [[NSMutableArray alloc] initWithCapacity: 100];
+
+                      [_revsToPull addObjectsFromArray: remainingRevs];
+                  } else {
+                      strongSelf.error = error;
+                      [strongSelf revisionFailed];
+                      strongSelf.changesProcessed += remainingRevs.count;
+                  }
               }
               // Note that we've finished this task:
               [self asyncTasksFinished: 1];
