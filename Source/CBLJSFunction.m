@@ -240,6 +240,13 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
         if (!_context)
             return nil;
         
+        // debugger-freindly
+        if (JSGlobalContextSetName) {
+            JSStringRef ctxName = JSStringCreateWithCFString((__bridge CFStringRef)NSStringFromClass([self class]));
+            JSGlobalContextSetName(_context, ctxName);
+            JSStringRelease(ctxName);
+        }
+
         // callback for log
         JSStringRef logName = JSStringCreateWithCFString(CFSTR("log"));
         JSObjectRef logFn = JSObjectMakeFunctionWithCallback(_context, logName, &LogCallback);
