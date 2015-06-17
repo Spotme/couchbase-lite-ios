@@ -55,7 +55,7 @@ typedef enum {
     int _viewID;
     uint8_t _collation;
     CBLContentOptions _mapContentOptions;
-    BOOL _expectsJSONStringsInEmit;
+    BOOL _javaScriptView;
 }
 
 - (instancetype) initWithDatabase: (CBLDatabase*)db name: (NSString*)name;
@@ -74,11 +74,9 @@ typedef enum {
 - (void) setCollation: (CBLViewCollation)collation;
 #endif
 
-/** Compiles a view (using the registered CBLViewCompiler) from the properties found in a CouchDB-style design document. */
-- (BOOL) compileFromProperties: (NSDictionary*)viewProps
-                      language: (NSString*)language
-                       version: (NSString*)version
-                      userInfo: (NSDictionary*)userInfo;
+- (BOOL) compileFromDesignDoc: (NSDictionary*)designDoc 
+                     viewName: (NSString*)viewName;
+
 
 /** Updates the view's index (incrementally) if necessary.
  @return  200 if updated, 304 if already up-to-date, else an error code */

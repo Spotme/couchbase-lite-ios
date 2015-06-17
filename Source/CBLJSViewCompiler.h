@@ -16,11 +16,12 @@
 #import "CBLJSFunction.h"
 #import "CBLView.h"
 
-/** A view compiler for CouchbaseLite that compiles and runs traditional JavaScript map/reduce functions.
-    Requires the JavaScriptCore framework; this is a public system framework on Mac OS but private
-    on iOS; so on the latter platform you'll need to link your app with your own copy of
-    JavaScriptCore. See <https://github.com/phoboslab/JavaScriptCore-iOS>. */
-@interface CBLJSViewCompiler : CBLJSCompiler <CBLViewCompiler>
+@interface CBLJSViewCompiler : CBLJSCompiler
+
+- (CBLMapBlock) compileMapFunction: (NSString*)mapSource userInfo: (NSDictionary*)userInfo;
+
+- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource userInfo: (NSDictionary*)userInfo;
+
 @end
 
 

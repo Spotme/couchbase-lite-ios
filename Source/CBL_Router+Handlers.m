@@ -1121,11 +1121,11 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
     
     if ([self cacheWithEtag: $sprintf(@"%lld", _db.lastSequenceNumber)])  // conditional GET
         return kCBLStatusNotModified;
-
-    CBLView* view = [_db viewNamed: @"@@TEMPVIEW@@"];
-    if (![view compileFromProperties: props language: @"javascript" version: nil userInfo: nil])
+    
+    CBLView* view = [_db viewNamed: @"TEMPVIEW"];
+    if (![view compileFromDesignDoc:@{@"_id":@"_design/ID-TEMPVIEW",@"_rev":@"REV-TEMPVIEW",@"views":@{@"TEMPVIEW":props}} viewName:@"TEMPVIEW"])
         return kCBLStatusBadRequest;
-
+    
     @try {
         CBLStatus status = [view updateIndex];
         if (status >= kCBLStatusBadRequest)

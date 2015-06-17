@@ -45,7 +45,7 @@
         
         JSValueRef exception = NULL;
         JSValueRef fnRes = [fn callWithParams:@[revision ? revision : NSNull.null, params ? params : NSNull.null] exception:&exception];
-        id obj = JSValueToNSObject/*ValueToID*/(ctx, fnRes);
+        id obj = CBLJSValueToNSObject(ctx, fnRes);
         if (exception) {
             result = [CBLFunctionResult new];
             
