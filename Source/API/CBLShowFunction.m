@@ -72,14 +72,4 @@
     return result;
 }
 
-#pragma mark CBLShowFunctionCompiler
-static id<CBLShowFunctionCompiler> sCompiler;
-+ (void) setCompiler: (id<CBLShowFunctionCompiler>)compiler {
-    sCompiler = compiler;
-}
-
-+ (id<CBLShowFunctionCompiler>) compiler {
-    return sCompiler;
-}
-
 @end

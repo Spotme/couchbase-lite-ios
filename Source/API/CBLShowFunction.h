@@ -51,10 +51,5 @@ typedef CBLFunctionResult* (^CBLShowFunctionBlock)(NSDictionary *revision, NSDic
 
 - (CBLFunctionResult*)runWithRevisionProperties: (NSDictionary *)revisionProperties params: (NSDictionary *)params;
 
-/** Registers an object that can compile map/reduce functions from source code. */
-+ (void) setCompiler: (id<CBLShowFunctionCompiler>)compiler;
-
-/** The registered object, if any, that can compile map/reduce functions from source code. */
-+ (id<CBLShowFunctionCompiler>) compiler;
 
 @end

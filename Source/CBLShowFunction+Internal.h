@@ -28,9 +28,7 @@
 
 @interface CBLShowFunction (Internal)
 
-/** Compiles a view (using the registered CBLShowFunctionCompiler) from the properties found in a CouchDB-style design document. */
-- (BOOL) compileFromSource: (NSString*)showSource
-                  language: (NSString*)language
-                  userInfo: (NSDictionary*)userInfo;
+- (BOOL) compileFromDesignDoc: (NSDictionary*)designDoc
+                     showName: (NSString*)showName;
 
 @end
