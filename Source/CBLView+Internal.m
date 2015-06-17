@@ -225,12 +225,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         
         CFAbsoluteTime updateIndexStart = CFAbsoluteTimeGetCurrent();
         
-        JSContext *jsContext = nil;
-        if (_javaScriptView) {
-            jsContext = [self.database.manager.shared valueForType: NSStringFromClass([JSContext class])
-                                                              name: NSStringFromClass([JSContext class])
-                                                   inDatabaseNamed: self.database.name];
-        }
+        JSContext *jsContext = _javaScriptView ? self.database.JSContext : nil;
         
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
@@ -356,7 +351,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 
                 id props = nil;
                 
-                if (/*NO && */_javaScriptView) {
+                if (jsContext) {
                     JSValue *properties = [db documentValueInContext: jsContext
                                                             fromJSON: json
                                                                docID: docID
@@ -396,7 +391,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 LogTo(ViewIndexVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
                       _name, docID, sequence);
                 @try {
-                    mapBlock((NSDictionary *)props, emit);
+                    mapBlock(props, emit);
                     total++;
                 } @catch (NSException* x) {
                     MYReportException(x, @"map block of view '%@'", _name);
