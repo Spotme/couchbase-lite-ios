@@ -6,6 +6,7 @@
 //  Copyright (c) 2012-2013 Couchbase, Inc. All rights reserved.
 //
 
+#import <JavaScriptCore/JavaScriptCore.h>
 #import "CBLManager.h"
 #import "CBLStatus.h"
 @class CBLDatabase, CBL_Replicator, CBL_Shared;
@@ -24,6 +25,8 @@
 @property (readonly) NSArray* allOpenDatabases;
 
 @property (readonly) CBL_Shared* shared;
+
+@property (readonly) JSVirtualMachine *JSVirtualMachine;
 
 - (CBLStatus) validateReplicatorProperties: (NSDictionary*)properties;
 

@@ -107,21 +107,9 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
                                                                               name: NSStringFromClass([CBLJSViewCompiler class])
                                                                    inDatabaseNamed: self.database.name];
     if (!jsViewCompiler) {
-        JSContext* jsContext = [self.database.manager.shared valueForType: NSStringFromClass([JSContext class])
-                                                                     name: NSStringFromClass([JSContext class])
-                                                          inDatabaseNamed: self.database.name];
-        if (!jsContext) {
-            jsContext = [[JSContext alloc] init];
-            jsContext.name = $sprintf(@"CBL-%@", self.database.name);
-            
-            [self.database.manager.shared setValue: jsContext
-                                           forType: NSStringFromClass([JSContext class])
-                                              name: NSStringFromClass([JSContext class])
-                                   inDatabaseNamed: self.database.name];
-        }
-        
-        JSGlobalContextRef globalCtxRef = jsContext.JSGlobalContextRef;
+        JSGlobalContextRef globalCtxRef = self.database.JSContext.JSGlobalContextRef;
         jsViewCompiler = [[CBLJSViewCompiler alloc] initWithJSGlobalContextRef: globalCtxRef];
+        
         [self.database.manager.shared setValue: jsViewCompiler
                                        forType: NSStringFromClass([CBLJSViewCompiler class])
                                           name: NSStringFromClass([CBLJSViewCompiler class])

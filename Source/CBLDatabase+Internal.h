@@ -223,6 +223,8 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
 
 - (CBLView*) makeAnonymousView;
 
+@property (readonly) JSContext *JSContext;
+
 /** Returns the view with the given name. If there is none, and the name is in CouchDB
     format ("designdocname/viewname"), it attempts to load the view properties from the
     design document and compile them with the CBLViewCompiler. */
