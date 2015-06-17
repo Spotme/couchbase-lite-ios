@@ -6,9 +6,11 @@
 //  Copyright (c) 2011-2013 Couchbase, Inc. All rights reserved.
 //
 
+#import <JavaScriptCore/JavaScriptCore.h>
 #import "CBL_Revision.h"
 #import "CBLStatus.h"
 #import "CBLDatabase.h"
+
 @class CBL_FMDatabase, CBLView, CBLShowFunction, CBLListFunction, CBL_BlobStore, CBLDocument, CBLCache, CBLDatabase, CBLDatabaseChange, CBL_Shared;
 struct CBLQueryOptions;      // declared in CBLView+Internal.h
 
@@ -175,6 +177,13 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
                                             deleted: (BOOL)deleted
                                            sequence: (SequenceNumber)sequence
                                             options: (CBLContentOptions)options;
+- (JSValue*) documentValueInContext: (JSContext*)jsContext
+                           fromJSON: (NSData*)json
+                              docID: (NSString*)docID
+                              revID: (NSString*)revID
+                            deleted: (BOOL)deleted
+                           sequence: (SequenceNumber)sequence
+                            options: (CBLContentOptions)options;
 - (NSString*) winningRevIDOfDocNumericID: (SInt64)docNumericID
                                isDeleted: (BOOL*)outIsDeleted
                               isConflict: (BOOL*)outIsConflict;

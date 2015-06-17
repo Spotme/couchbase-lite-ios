@@ -21,9 +21,6 @@
 #import "Logging.h"
 
 
-/* NOTE: JavaScriptCore is not a public system framework on iOS, so you'll need to link your iOS app
-   with your own copy of it. See <https://github.com/phoboslab/JavaScriptCore-iOS>. */
-
 /* NOTE: This source file requires ARC. */
 
 @implementation CBLJSViewCompiler
@@ -57,7 +54,7 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                 JSStringRelease(jsStr);
             }
             else {
-                LogTo(JS, @"could not convert to JSON, using null as emit key: %@", JSValueToNSString(ctx, arg));
+                LogTo(JS, @"could not convert to JSON, using null as emit key: %@", CBLJSValueToNSString(ctx, arg));
             }
         }
         
@@ -73,7 +70,7 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                 JSStringRelease(jsStr);
             }
             else {
-                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", JSValueToNSString(ctx, arg));
+                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", CBLJSValueToNSString(ctx, arg));
             }
         }
     }
@@ -90,7 +87,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     if (argumentCount > 0) {
         {
             JSValueRef arg = arguments[0];
-            NSObject* obj = JSValueToNSObject(ctx, arg);
+            NSObject* obj = CBLJSValueToNSObject(ctx, arg);
             if ([obj isKindOfClass:[NSString class]]) {
                 key = obj;
             } else if ([obj respondsToSelector:@selector(stringValue)]) {
@@ -112,7 +109,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
                 JSStringRelease(jsStr);
             }
             else {
-                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", JSValueToNSString(ctx, arg));
+                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", CBLJSValueToNSString(ctx, arg));
             }
         }
     }
@@ -121,8 +118,8 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
 }
 
 
-- (instancetype) init {
-    self = [super init];
+- (instancetype) initWithJSGlobalContextRef:(JSGlobalContextRef)context {
+    self = [super initWithJSGlobalContextRef:context];
     if (self) {
         JSGlobalContextRef context = self.context;
         {
@@ -150,19 +147,12 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     return self;
 }
 
-- (CBLMapBlock) compileMapFunction: (NSString*)mapSource language: (NSString*)language {
-    return [self compileMapFunction: mapSource language: language userInfo: nil];
-}
-
-- (CBLMapBlock) compileMapFunction: (NSString*)mapSource language: (NSString*)language userInfo: (NSDictionary*)userInfo {
-    if (![language isEqualToString: @"javascript"])
-        return nil;
-
+- (CBLMapBlock) compileMapFunction: (NSString*)mapSource userInfo: (NSDictionary*)userInfo {
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
-                                                   sourceCode: mapSource
-                                                   paramNames: @[@"doc"]
-                                               requireContext: userInfo];
+                                                     sourceCode: mapSource
+                                                     paramNames: @[@"doc"]
+                                                 requireContext: userInfo];
     if (!fn)
         return nil;
 
@@ -175,14 +165,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     return [mapBlock copy];
 }
 
-- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource language: (NSString*)language {
-    return [self compileReduceFunction: reduceSource language: language userInfo: nil];
-}
-
-- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource language: (NSString*)language userInfo: (NSDictionary*)userInfo {
-    if (![language isEqualToString: @"javascript"])
-        return nil;
-    
+- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource userInfo: (NSDictionary*)userInfo {
     // i shall not be burned for this
     NSArray* paramNames = @[@"keys", @"values", @"rereduce"];
     if ([reduceSource isEqual:@"_sum"])
@@ -205,7 +188,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     // Return the CBLReduceBlock; the code inside will be called when CouchbaseLite wants to reduce:
     CBLReduceBlock reduceBlock = ^id(NSArray* keys, NSArray* values, BOOL rereduce) {
         JSValueRef result = [fn call: keys, values, @(rereduce)];
-        return JSValueToNSObject/*ValueToID*/(self.context, result);
+        return CBLJSValueToNSObject(self.context, result);
     };
     return [reduceBlock copy];
 }

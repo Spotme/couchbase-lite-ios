@@ -34,15 +34,6 @@ typedef id (^CBLReduceBlock)(NSArray* keys, NSArray* values, BOOL rereduce);
     the full-text indexer. Used inside a map block, like so: `emit(CBLTextKey(longText), value);` */
 id CBLTextKey(NSString* text);
 
-/** An external object that knows how to map source code of some sort into executable functions. */
-@protocol CBLViewCompiler <NSObject>
-- (CBLMapBlock) compileMapFunction: (NSString*)mapSource language: (NSString*)language;
-- (CBLMapBlock) compileMapFunction: (NSString*)mapSource language: (NSString*)language userInfo: (NSDictionary*)userInfo;
-- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource language: (NSString*)language;
-- (CBLReduceBlock) compileReduceFunction: (NSString*)reduceSource language: (NSString*)language userInfo: (NSDictionary*)userInfo;
-@end
-
-
 /** A "view" in a CouchbaseLite database -- essentially a persistent index managed by map/reduce.
     The view can be queried using a CBLQuery. */
 @interface CBLView : NSObject
@@ -94,12 +85,6 @@ id CBLTextKey(NSString* text);
 
 /** Utility function to use in reduce blocks. Totals an array of NSNumbers. */
 + (NSNumber*) totalValues: (NSArray*)values;
-
-/** Registers an object that can compile map/reduce functions from source code. */
-+ (void) setCompiler: (id<CBLViewCompiler>)compiler;
-
-/** The registered object, if any, that can compile map/reduce functions from source code. */
-+ (id<CBLViewCompiler>) compiler;
 
 #ifdef CBL_DEPRECATED
 - (void) removeIndex __attribute__((deprecated("renamed -deleteIndex")));
