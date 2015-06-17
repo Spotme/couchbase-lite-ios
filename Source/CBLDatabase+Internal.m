@@ -1422,6 +1422,25 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     }
 }
 
+- (JSContext *)JSContext {
+    JSContext* context = [_manager.shared valueForType: NSStringFromClass([JSContext class])
+                                                  name: NSStringFromClass([JSContext class])
+                                       inDatabaseNamed: _name];
+    if (!context) {
+        JSVirtualMachine *vm = _manager.JSVirtualMachine;
+        context = [[JSContext alloc] initWithVirtualMachine: vm];
+        if ([context respondsToSelector:@selector(setName:)])
+            [context setName: $sprintf(@"CBL-%@", _name)];
+        
+        [_manager.shared setValue: context
+                          forType: NSStringFromClass([JSContext class])
+                             name: NSStringFromClass([JSContext class])
+                  inDatabaseNamed: _name];
+    }
+    
+    return context;
+}
+
 - (CBLView*) compileViewNamed: (NSString*)tdViewName status: (CBLStatus*)outStatus {
     CBLView* view = [self existingViewNamed: tdViewName];
     if (view && view.mapBlock)
