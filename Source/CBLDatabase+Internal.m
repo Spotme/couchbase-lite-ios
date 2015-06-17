@@ -1484,10 +1484,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // No CouchbaseLite view is defined, or it hasn't had a map block assigned;
     // see if there's a CouchDB view definition we can compile:
-    if (![CBLShowFunction compiler]) {
-        *outStatus = kCBLStatusNotFound;
-        return nil;
-    }
+
     NSString* language;
     NSString* revision;
     NSDictionary *designDoc;
@@ -1509,7 +1506,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
 
     // well, compiling from source then
     showFunction = [self showFunctionNamed: showNameWithRev];
-    if (![showFunction compileFromSource: showSource language: language userInfo: designDoc]) {
+    if (![showFunction compileFromDesignDoc: designDoc showName: [cblShowName componentsSeparatedByString:@"/"].lastObject]) {
         *outStatus = kCBLStatusCallbackError;
         return nil;
     }
