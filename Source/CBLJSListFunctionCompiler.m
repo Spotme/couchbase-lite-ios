@@ -79,8 +79,8 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
     return JSValueMakeUndefined(ctx);
 }
 
-- (instancetype) init {
-    self = [super init];
+- (instancetype) initWithJSGlobalContextRef: (JSGlobalContextRef)context {
+    self = [super initWithJSGlobalContextRef: context];
     if (self) {
         JSGlobalContextRef context = self.context;
         // Install the "getRow" function in the context's namespace:
@@ -114,10 +114,7 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 }
 
 
-- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource language: (NSString*)language userInfo:(NSDictionary *)userInfo {
-    if (![language isEqualToString: @"javascript"])
-        return nil;
-    
+- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource userInfo: (NSDictionary*)userInfo {
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: listSource

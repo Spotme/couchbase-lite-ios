@@ -20,7 +20,7 @@ extern NSObject*  CBLJSValueToNSObject   ( JSContextRef ctx, JSValueRef value );
 /** Abstract base class for JavaScript-based CBL*Compilers */
 @interface CBLJSCompiler : NSObject
 
-- (instancetype) initWithJSGlobalContextRef: (JSGlobalContextRef)context;
+- (instancetype) initWithJSGlobalContextRef: (JSGlobalContextRef)context NS_DESIGNATED_INITIALIZER;
 
 @property (readonly) JSGlobalContextRef context;
 @end

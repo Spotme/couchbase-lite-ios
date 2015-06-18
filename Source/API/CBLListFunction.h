@@ -24,13 +24,6 @@ typedef CBLFunctionResult* (^CBLListFunctionBlock)(NSDictionary *head, NSDiction
 
 #define LISTBLOCK(BLOCK) ^CBLFunctionResult*(NSDictionary *head, NSDictionary *params, CBLListFunctionGetRowBlock getRowBlock){BLOCK}
 
-#pragma mark - COMPILER PROTOCOL
-/**  An external object that knows how to map source code of some sort into executable functions. Similar to the CBLViewCompiler */
-@protocol CBLListFunctionCompiler <NSObject>
-@required
-- (CBLListFunctionBlock) compileListFunction: (NSString*)showSource language: (NSString*)language userInfo: (NSDictionary*)userInfo;
-@end
-
 #pragma mark - LIST FUNCTION
 /** A "list function" in a CouchbaseLite database -- essentially a stored function used to modify view output.
  List functions doesn't make much sense to use in native code, but very useful when declared in design document. */
@@ -58,11 +51,5 @@ typedef CBLFunctionResult* (^CBLListFunctionBlock)(NSDictionary *head, NSDiction
  * @rows array for CBLQueryRow objects
  */
 - (CBLFunctionResult*) runWithRows: (NSArray*)rows head: (NSDictionary*)head params: (NSDictionary*)params;
-
-/** Registers an object that can compile map/reduce functions from source code. */
-+ (void) setCompiler: (id<CBLListFunctionCompiler>)compiler;
-
-/** The registered object, if any, that can compile map/reduce functions from source code. */
-+ (id<CBLListFunctionCompiler>) compiler;
 
 @end

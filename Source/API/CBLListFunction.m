@@ -94,15 +94,4 @@
     return resut;
 }
 
-#pragma mark CBLListFunctionCompiler
-static id<CBLListFunctionCompiler> sCompiler;
-+ (void) setCompiler: (id<CBLListFunctionCompiler>)compiler {
-    sCompiler = compiler;
-}
-
-+ (id<CBLListFunctionCompiler>) compiler {
-    return sCompiler;
-}
-
-
 @end
