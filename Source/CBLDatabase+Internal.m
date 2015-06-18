@@ -1520,10 +1520,6 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // No CouchbaseLite list function is defined, or it hasn't had a map block assigned;
     // see if there's a CouchDB view definition we can compile:
-    if (![CBLListFunction compiler]) {
-        *outStatus = kCBLStatusNotFound;
-        return nil;
-    }
     NSString* language;
     NSString* revision;
     NSDictionary* designDoc;
@@ -1544,7 +1540,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
         return listFunction;
     
     listFunction = [self listFunctionNamed: listNameWithRev];
-    if (![listFunction compileFromSource: listSource language: language userInfo: designDoc]) {
+    if (![listFunction compileFromDesignDoc: designDoc listName: [cblListName componentsSeparatedByString:@"/"].lastObject]) {
         *outStatus = kCBLStatusCallbackError;
         return nil;
     }

@@ -44,8 +44,6 @@
     EnableLogTo(RemoteRequest, NO);
 #endif
     
-    [CBLListFunction setCompiler: [CBLJSListFunctionCompiler new]];
-    
     NSString* dataPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     CBLManagerOptions options = {}; options.readOnly = NO;
     NSError* error;
