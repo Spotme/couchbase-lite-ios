@@ -444,7 +444,7 @@ JSValueRef CBLNSObjectToJSValueRef( JSContextRef ctx, NSObject *obj ) {
     if (ctx == NULL) { return NULL; }
     
     // method 1
-    if ([obj isKindOfClass:[JSValue class]] && ((JSValue*)obj).context.JSGlobalContextRef == ctx) {
+    if ([obj isKindOfClass:[JSValue class]]/* && ((JSValue*)obj).context.JSGlobalContextRef == ctx*/) {
         return ((JSValue *)obj).JSValueRef;
     } if (obj == nil) {
         return JSValueMakeNull(ctx);
@@ -595,4 +595,22 @@ NSObject *CBLJSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 	}
 	
 	return nil;
+}
+
+JSValue* CBLJSValueFromJSONData ( JSContext* context, NSData* json) {
+    NSString* jsonStr = [[NSString alloc] initWithData: json 
+                                              encoding: NSUTF8StringEncoding];
+    
+    JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)jsonStr);
+    
+    JSValueRef valueRef = JSValueMakeFromJSONString(context.JSGlobalContextRef, jsStr);
+    
+    JSStringRelease(jsStr);
+    
+    if (!valueRef)
+        return nil;
+    
+    JSValue* value = [JSValue valueWithJSValueRef: valueRef
+                                        inContext: context];
+    return value;
 }

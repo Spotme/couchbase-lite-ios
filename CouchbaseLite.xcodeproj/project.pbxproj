@@ -595,6 +595,9 @@
 		4F5FB6E31B28B1F2006FFEF0 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F1E4A7169799DA00F0E50F /* JavaScriptCore.framework */; };
 		4F5FB6E41B28B6EE006FFEF0 /* CBLJSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F7F1868B0E900DA3C3A /* CBLJSFunction.m */; };
 		4F5FB6E51B28B6EE006FFEF0 /* CBLJSViewCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F881868B13600DA3C3A /* CBLJSViewCompiler.m */; };
+		4FAA8C211B345E83005D8DE5 /* CBLJSFilterCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F7D1868B0E900DA3C3A /* CBLJSFilterCompiler.m */; };
+		4FAA8C221B345E83005D8DE5 /* CBLJSListFunctionCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F811868B0E900DA3C3A /* CBLJSListFunctionCompiler.m */; };
+		4FAA8C231B345E83005D8DE5 /* CBLJSShowFunctionCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F861868B13600DA3C3A /* CBLJSShowFunctionCompiler.m */; };
 		792867C0178DE01900248AF0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
 		792867D0178DE03E00248AF0 /* CBLJSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 792867CC178DE03E00248AF0 /* CBLJSFunction.m */; };
 		792867D2178DE03E00248AF0 /* CBLJSViewCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = 792867CF178DE03E00248AF0 /* CBLJSViewCompiler.m */; };
@@ -860,9 +863,6 @@
 		A9DD5FA61868B79400DA3C3A /* CBLListFunction+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = A9DD5FA31868B79400DA3C3A /* CBLListFunction+Internal.h */; };
 		A9DD5FA71868B79400DA3C3A /* CBLListFunction+Internal.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5FA41868B79400DA3C3A /* CBLListFunction+Internal.m */; };
 		A9DD5FA91868B79400DA3C3A /* CBLListFunction+Internal.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5FA41868B79400DA3C3A /* CBLListFunction+Internal.m */; };
-		A9DD5FAA1868BF0B00DA3C3A /* CBLJSFilterCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F7D1868B0E900DA3C3A /* CBLJSFilterCompiler.m */; };
-		A9DD5FAB1868BF0B00DA3C3A /* CBLJSListFunctionCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F811868B0E900DA3C3A /* CBLJSListFunctionCompiler.m */; };
-		A9DD5FAC1868BF0B00DA3C3A /* CBLJSShowFunctionCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9DD5F861868B13600DA3C3A /* CBLJSShowFunctionCompiler.m */; };
 		A9EDD5261A66910300C5856F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9EDD5251A66910300C5856F /* JavaScriptCore.framework */; };
 		AA1776B91857ADDB00CB01A3 /* CBLIncrementalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1776B71857ADDB00CB01A3 /* CBLIncrementalStore.m */; };
 		AA1776BA1857ADDB00CB01A3 /* CBLIncrementalStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1776B81857ADDB00CB01A3 /* CBLIncrementalStoreTests.m */; };
@@ -3544,6 +3544,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FAA8C211B345E83005D8DE5 /* CBLJSFilterCompiler.m in Sources */,
+				4FAA8C221B345E83005D8DE5 /* CBLJSListFunctionCompiler.m in Sources */,
+				4FAA8C231B345E83005D8DE5 /* CBLJSShowFunctionCompiler.m in Sources */,
 				4F5FB6E41B28B6EE006FFEF0 /* CBLJSFunction.m in Sources */,
 				4F5FB6E51B28B6EE006FFEF0 /* CBLJSViewCompiler.m in Sources */,
 				270B3E111489382F00E0A926 /* CBLDatabase+Internal.m in Sources */,
@@ -3694,9 +3697,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9DD5FAA1868BF0B00DA3C3A /* CBLJSFilterCompiler.m in Sources */,
-				A9DD5FAB1868BF0B00DA3C3A /* CBLJSListFunctionCompiler.m in Sources */,
-				A9DD5FAC1868BF0B00DA3C3A /* CBLJSShowFunctionCompiler.m in Sources */,
 				27ED9A971639D8D2000C844A /* LiteServ.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4413,7 +4413,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -4430,7 +4429,6 @@
 				);
 				INFOPLIST_FILE = "Source/CouchbaseLite-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = CouchbaseLite;
 				WRAPPER_EXTENSION = framework;
 			};
@@ -4440,7 +4438,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4458,7 +4455,6 @@
 				);
 				INFOPLIST_FILE = "Source/CouchbaseLite-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = CouchbaseLite;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = framework;
@@ -4469,7 +4465,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -4481,7 +4476,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -4490,14 +4484,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -4750,7 +4742,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4768,7 +4759,6 @@
 				);
 				INFOPLIST_FILE = "Source/CouchbaseLite-Info.plist";
 				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = CouchbaseLite;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = framework;
@@ -4986,14 +4976,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = "Release 64bit";

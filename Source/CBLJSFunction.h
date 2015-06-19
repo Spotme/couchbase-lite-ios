@@ -16,6 +16,8 @@ extern NSString* const kCBLJSFunctionCurrentRequireContextKey;
 extern NSString*  CBLJSValueToNSString   ( JSContextRef ctx, JSValueRef v );
 extern JSValueRef CBLNSObjectToJSValueRef( JSContextRef ctx, NSObject *obj );
 extern NSObject*  CBLJSValueToNSObject   ( JSContextRef ctx, JSValueRef value );
+extern JSValue*   CBLJSValueFromJSONData ( JSContext* context, NSData* json);
+
 
 /** Abstract base class for JavaScript-based CBL*Compilers */
 @interface CBLJSCompiler : NSObject

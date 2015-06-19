@@ -15,6 +15,7 @@
 
 #import "CBLJSListFunctionCompiler.h"
 #import "CBLQuery.h"
+#import "CouchbaseLitePrivate.h"
 #import "CBLFunctionResult.h"
 #import <JavaScriptCore/JavaScript.h>
 #import <JavaScriptCore/JSStringRefCF.h>
@@ -39,7 +40,7 @@ static JSValueRef GetRowCallback(JSContextRef ctx, JSObjectRef function, JSObjec
         return JSValueMakeUndefined(ctx);
     
     CBLQueryRow *row = getRowBlock();
-    JSValueRef ret = CBLNSObjectToJSValueRef(ctx, [row asJSONDictionary]);
+    JSValueRef ret = CBLNSObjectToJSValueRef(ctx, [row asJSValue]);
     return ret;
 }
 
@@ -129,14 +130,21 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
         
         [NSThread.currentThread.threadDictionary setValue:getRowBlock forKey:kCBLCurrentGetRowBlockKey];
         JSValueRef exception = NULL;
+        //CFAbsoluteTime start1 = CFAbsoluteTimeGetCurrent();
         JSValueRef fnRes = [fn callWithParams:@[head ? head : NSNull.null, params ? params : NSNull.null] exception:&exception];
+        //CFAbsoluteTime end1 = CFAbsoluteTimeGetCurrent();
         if (NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey]) {
             result = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
             [NSThread.currentThread.threadDictionary removeObjectForKey:kCBLCurrentFunctionResultKey];
         }
         [NSThread.currentThread.threadDictionary removeObjectForKey:kCBLCurrentGetRowBlockKey];
         
+        //CFAbsoluteTime start2 = CFAbsoluteTimeGetCurrent();
         id obj = CBLJSValueToNSObject(ctx, fnRes);
+        //CFAbsoluteTime end2 = CFAbsoluteTimeGetCurrent();
+        
+        //LogTo(List, @"func %3.3fsecs, ret conversion %3.3fsecs", (end1 - start1), (end2 - start2));
+        
         if (exception) {
             result = [CBLFunctionResult new];
             

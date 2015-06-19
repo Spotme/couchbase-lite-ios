@@ -42,6 +42,8 @@
     EnableLogTo(View, YES);
     EnableLogTo(ViewIndexVerbose, NO);
     EnableLogTo(RemoteRequest, NO);
+    EnableLogTo(List, YES);
+    EnableLogTo(Show, YES);
 #endif
     
     NSString* dataPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];

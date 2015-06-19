@@ -11,6 +11,7 @@
 #import "CBLDatabase.h"
 #import "CBL_Revision.h"
 #import "CBLGeometry.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 @class CBLDatabaseChange, CBL_Revision, CBLManager, CBL_Server;
 
 
@@ -108,6 +109,15 @@
                          value: (id)value
                  docProperties: (NSDictionary*)docProperties;
 @property (readonly, nonatomic) NSDictionary* asJSONDictionary;
+
+- (instancetype) initWithJSContext: (JSContext*)context
+                             docID: (NSString*)docID
+                          sequence: (SequenceNumber)sequence
+                           keyData: (NSData*)keyData
+                         valueData: (NSData*)valueData
+                        docJSValue: (JSValue*)docJSValue;
+- (JSValue*) asJSValue;
+
 @end
 
 @interface CBLFullTextQueryRow ()

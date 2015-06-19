@@ -1197,6 +1197,8 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
     if (status >= kCBLStatusBadRequest)
         return status;
     
+    options.prefersJSValues = YES;
+    
     NSArray* rows = [view _queryWithOptions: &options status: &status];
     if (!rows)
         return status;

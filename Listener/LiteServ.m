@@ -169,9 +169,6 @@ int main (int argc, const char * argv[])
         EnableLogTo(RemoteRequest, NO);
 #endif
 
-        [CBLShowFunction setCompiler: [CBLJSShowFunctionCompiler new]];
-        [CBLListFunction setCompiler: [CBLJSListFunctionCompiler new]];
-
         NSString* dataPath = nil;
         UInt16 port = kPortNumber;
         CBLManagerOptions options = {};

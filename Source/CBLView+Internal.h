@@ -35,6 +35,7 @@ typedef struct CBLQueryOptions {
     BOOL fullTextRanking;
     CBLIndexUpdateMode indexUpdateMode;
     CBLAllDocsMode allDocsMode;
+    BOOL prefersJSValues;
 } CBLQueryOptions;
 
 extern const CBLQueryOptions kDefaultCBLQueryOptions;
