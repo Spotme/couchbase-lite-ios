@@ -26,6 +26,7 @@
 #import "CBLMisc.h"
 #import "CBLDatabase.h"
 #import "CouchbaseLitePrivate.h"
+#import "CBLJSFunction.h"
 
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
@@ -862,17 +863,10 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     if (json.length == 0 || (json.length==2 && memcmp(json.bytes, "{}", 2)==0))
         docValue = [JSValue valueWithNewObjectInContext: jsContext];
     else {
-
-        NSString* jsonStr = [[NSString alloc] initWithData: json encoding: NSUTF8StringEncoding];
-        JSStringRef jsStr = JSStringCreateWithCFString((__bridge CFStringRef)jsonStr);
-        JSValueRef valueRef = JSValueMakeFromJSONString(jsContext.JSGlobalContextRef, jsStr);
-        JSStringRelease(jsStr);
-        if (!valueRef) {
+        docValue = CBLJSValueFromJSONData(jsContext, json);
+        
+        if (!docValue)
             docValue = [JSValue valueWithNewObjectInContext: jsContext];
-        } else {
-            docValue = [JSValue valueWithJSValueRef:valueRef inContext: jsContext];
-            if (!docValue) docValue = [JSValue valueWithNewObjectInContext: jsContext];
-        }
     }
     [self extraPropertiesForRevision: rev options: options intoValue: docValue];
     return docValue;

@@ -351,7 +351,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 
                 id props = nil;
                 
-                if (jsContext) {
+                if (_javaScriptView) {
                     JSValue *properties = [db documentValueInContext: jsContext
                                                             fromJSON: json
                                                                docID: docID

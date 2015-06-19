@@ -19,7 +19,7 @@
 #import "CBLDatabase.h"
 #import "CBL_Server.h"
 #import "MYBlockUtils.h"
-
+#import "CBLJSFunction.h"
 
 // Querying utilities for CBLDatabase. Defined down below.
 @interface CBLDatabase (Views)
@@ -454,6 +454,10 @@ static id fromJSON( NSData* json ) {
     NSDictionary* _documentProperties;
     @protected
     CBLDatabase* _database;
+    JSContext* _context;
+    NSData* _keyData;
+    NSData* _valueData;
+    JSValue* _docJSValue;
 }
 
 
@@ -481,6 +485,49 @@ static id fromJSON( NSData* json ) {
     return self;
 }
 
+- (instancetype) initWithJSContext: (JSContext*)context
+                             docID: (NSString*)docID
+                          sequence: (SequenceNumber)sequence
+                           keyData: (NSData*)keyData
+                         valueData: (NSData*)valueData
+                        docJSValue: (JSValue*)docJSValue
+{
+    self = [super init];
+    if (self) {
+        _context = context;
+        
+        _sourceDocID = [docID copy];
+        _sequence = sequence;
+        _keyData = [keyData copy];
+        _valueData = [valueData copy];
+        _docJSValue = docJSValue;
+    }
+    return self;
+}
+
+- (JSValue*) asJSValue {
+    // following implementation from asJSONDictionary
+    JSContext* context = _context; //_database.JSContext;
+    
+    JSValue* asJSValue = [JSValue valueWithNewObjectInContext: context];
+    
+    if (_valueData || _sourceDocID) {
+        //{@"key", self.key},
+        asJSValue[@"key"] = CBLJSValueFromJSONData(context, _keyData);
+        //{@"value", self.value},
+        asJSValue[@"value"] = CBLJSValueFromJSONData(context, _valueData);
+        //{@"id", _sourceDocID},
+        asJSValue[@"id"] = _sourceDocID;
+        //{@"doc", _documentProperties});
+        asJSValue[@"doc"] = _docJSValue;
+    } else {
+        // return $dict({@"key", self.key}, {@"error", @"not_found"});
+        asJSValue[@"error"] = @"not_found";
+        asJSValue[@"key"] = CBLJSValueFromJSONData(context, _keyData);
+    }
+    
+    return asJSValue;
+}
 
 // This is used implicitly by -[CBLLiveQuery update] to decide whether the query result has changed
 // enough to notify the client. So it's important that it not give false positives, else the app
