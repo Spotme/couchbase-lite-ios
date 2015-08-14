@@ -82,13 +82,6 @@
     return [self rowAtIndexPath: path].document;
 }
 
-
-#define TELL_DELEGATE(sel, obj) \
-    (([_tableView.delegate respondsToSelector: sel]) \
-        ? [_tableView.delegate performSelector: sel withObject: self withObject: obj] \
-        : nil)
-
-
 #pragma mark -
 #pragma mark QUERY HANDLING:
 
@@ -112,11 +105,14 @@
     if (rowEnum) {
         NSArray *oldRows = _rows;
         _rows = [rowEnum.allObjects mutableCopy];
-        TELL_DELEGATE(@selector(couchTableSource:willUpdateFromQuery:), _query);
-        
         id delegate = _tableView.delegate;
-        SEL selector = @selector(couchTableSource:updateFromQuery:previousRows:);
-        if ([delegate respondsToSelector: selector]) {
+        
+        if ([delegate respondsToSelector: @selector(couchTableSource:willUpdateFromQuery:)]) {
+            [delegate couchTableSource: self
+                   willUpdateFromQuery: _query];
+        }
+        
+        if ([delegate respondsToSelector: @selector(couchTableSource:updateFromQuery:previousRows:)]) {
             [delegate couchTableSource: self 
                        updateFromQuery: _query
                           previousRows: oldRows];
@@ -165,8 +161,14 @@
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Allow the delegate to create its own cell:
-    UITableViewCell* cell = TELL_DELEGATE(@selector(couchTableSource:cellForRowAtIndexPath:),
-                                          indexPath);
+    UITableViewCell* cell = nil;
+    
+    id delegate = _tableView.delegate;
+    if ([delegate respondsToSelector: @selector(couchTableSource:cellForRowAtIndexPath:)]) {
+        cell = [delegate couchTableSource: self
+                    cellForRowAtIndexPath: indexPath];
+    }
+    
     if (!cell) {
         // ...if it doesn't, create a cell for it:
         cell = [tableView dequeueReusableCellWithIdentifier: @"CBLUITableDelegate"];
@@ -219,7 +221,11 @@
         } else {
             NSError* error;
             if (![row.document.currentRevision deleteDocument: &error]) {
-                TELL_DELEGATE(@selector(couchTableSource:deleteFailed:), error);
+                id delegate = _tableView.delegate;
+                if ([delegate respondsToSelector: @selector(couchTableSource:deleteFailed:)]) {
+                    [delegate couchTableSource: self
+                                  deleteFailed: error];
+                }
                 return;
             }
         }
