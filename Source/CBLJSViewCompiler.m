@@ -53,9 +53,9 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                 key = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
                 JSStringRelease(jsStr);
             }
-            else {
-                LogTo(JS, @"could not convert to JSON, using null as emit key: %@", CBLJSValueToNSString(ctx, arg));
-            }
+            //else {
+            //    LogTo(JS, @"could not convert to JSON, using null as emit key: %@", CBLJSValueToNSString(ctx, arg));
+            //}
         }
         
         if (argumentCount > 1) {
@@ -69,9 +69,9 @@ static JSValueRef EmitCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                 value = CFBridgingRelease(JSStringCopyCFString(NULL, jsStr));
                 JSStringRelease(jsStr);
             }
-            else {
-                LogTo(JS, @"could not convert to JSON, using null as emit value: %@", CBLJSValueToNSString(ctx, arg));
-            }
+            //else {
+            //    LogTo(JS, @"could not convert to JSON, using null as emit value: %@", CBLJSValueToNSString(ctx, arg));
+            //}
         }
     }
     sCurrentEmitBlock(key, value);
