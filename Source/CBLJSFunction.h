@@ -37,6 +37,7 @@ extern JSValue*   CBLJSValueFromJSONData ( JSContext* context, NSData* json);
 
 - (instancetype) initWithCompiler: (CBLJSCompiler*)compiler
                        sourceCode: (NSString*)source
+                     sourceFiname: (NSString*)sourceFiname
                        paramNames: (NSArray*)paramNames
                    requireContext: (NSDictionary*)requireContext;
 

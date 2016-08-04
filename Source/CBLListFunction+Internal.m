@@ -50,7 +50,8 @@
         return NO;
     }
     
-    CBLListFunctionBlock listFunctionBlock = [listFuncCompiler compileListFunction: listSource
+    CBLListFunctionBlock listFunctionBlock = [listFuncCompiler compileListFunction: $sprintf(@"%@/_list/%@-%@", designDoc[@"_id"], listName, designDoc[@"_rev"])
+                                                                            source: listSource
                                                                           userInfo: designDoc];
     
     if (!listFunctionBlock) {

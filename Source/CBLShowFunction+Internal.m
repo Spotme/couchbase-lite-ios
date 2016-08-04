@@ -53,7 +53,8 @@
         return NO;
     }
     
-    CBLShowFunctionBlock showFunctionBlock = [showFuncCompiler compileShowFunction: showSource
+    CBLShowFunctionBlock showFunctionBlock = [showFuncCompiler compileShowFunction: $sprintf(@"%@/_show/%@-%@", designDoc[@"_id"], showName, designDoc[@"_rev"])
+                                                                            source: showSource
                                                                           userInfo: designDoc];
     
     if (!showFunctionBlock) {

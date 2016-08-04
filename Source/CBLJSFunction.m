@@ -55,8 +55,17 @@ static JSValueRef RequireCallback(JSContextRef ctx, JSObjectRef function, JSObje
     LogTo(JSVerbose, @"executing require('%@') as\n%@", moduleName, wrappedSourceCode);
     
     JSStringRef jsBody = JSStringCreateWithCFString((__bridge CFStringRef)wrappedSourceCode);
-    JSObjectRef fn = JSObjectMakeFunction(ctx, NULL, 0, NULL, jsBody, NULL, 1, exception);
+    
+    NSString *sourceFilename = [NSString stringWithFormat:@"%@/%@-%@",
+                                currentRequireContext[@"_id"],
+                                moduleName,
+                                currentRequireContext[@"_rev"]];
+    JSStringRef jsSourceURL = JSStringCreateWithCFString((__bridge CFStringRef)sourceFilename);
+    
+    JSObjectRef fn = JSObjectMakeFunction(ctx, NULL, 0, NULL, jsBody, jsSourceURL, 0, exception);
+    
     JSStringRelease(jsBody);
+    JSStringRelease(jsSourceURL);
     if (!fn || *exception) {
         WarnJSException(ctx, @"JS function compile failed", *exception);
         return JSValueMakeUndefined(ctx);
@@ -325,13 +334,15 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                        paramNames: (NSArray*)paramNames
 {
     return [self initWithCompiler: compiler 
-                       sourceCode: source 
+                       sourceCode: source
+                     sourceFiname: nil
                        paramNames:paramNames 
                    requireContext:nil];
 }
 
 - (instancetype) initWithCompiler: (CBLJSCompiler*)compiler
                        sourceCode: (NSString*)source
+                     sourceFiname: (NSString*)sourceFiname
                        paramNames: (NSArray*)paramNames
                    requireContext: (NSDictionary*)requireContext
 {
@@ -352,10 +363,12 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
         for (NSUInteger i = 0; i < _nParams; ++i)
             jsParamNames[i] = JSStringCreateWithCFString((__bridge CFStringRef)paramNames[i]);
         JSStringRef jsBody = JSStringCreateWithCFString((__bridge CFStringRef)body);
+        JSStringRef jsSourceFilename = sourceFiname ? JSStringCreateWithCFString((__bridge CFStringRef)sourceFiname) : NULL;
         JSValueRef exception;
         _fn = JSObjectMakeFunction(_compiler.context, NULL, _nParams, jsParamNames, jsBody,
-                                   NULL, 1, &exception);
+                                   jsSourceFilename, 1, &exception);
         JSStringRelease(jsBody);
+        if (jsSourceFilename != NULL) { JSStringRelease(jsSourceFilename); }
         for (NSUInteger i = 0; i < _nParams; ++i)
             JSStringRelease(jsParamNames[i]);
         

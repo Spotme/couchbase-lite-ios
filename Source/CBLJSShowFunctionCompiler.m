@@ -23,11 +23,12 @@
 
 @implementation CBLJSShowFunctionCompiler
 
-- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showSource userInfo: (NSDictionary*)userInfo {
+- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showName source: (NSString*)showSource userInfo: (NSDictionary*)userInfo {
     
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: showSource
+                                                   sourceFiname: showName
                                                      paramNames: @[@"doc", @"req"]
                                                  requireContext: userInfo];
     if (!fn)

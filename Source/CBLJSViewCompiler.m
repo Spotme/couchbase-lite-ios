@@ -151,6 +151,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: mapSource
+                                                   sourceFiname: nil
                                                      paramNames: @[@"doc"]
                                                  requireContext: userInfo];
     if (!fn)
@@ -180,6 +181,7 @@ static JSValueRef EmitFTSCallback(JSContextRef ctx, JSObjectRef function, JSObje
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: reduceSource
+                                                   sourceFiname: nil
                                                      paramNames: paramNames
                                                  requireContext: userInfo];
     if (!fn)

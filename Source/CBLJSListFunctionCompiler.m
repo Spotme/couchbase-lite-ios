@@ -115,10 +115,11 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 }
 
 
-- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource userInfo: (NSDictionary*)userInfo {
+- (CBLListFunctionBlock) compileListFunction: (NSString*)listName source: (NSString*)listSource userInfo: (NSDictionary*)userInfo {
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: listSource
+                                                   sourceFiname: listName
                                                      paramNames: @[@"head", @"req"]
                                                  requireContext: userInfo];
     if (!fn)

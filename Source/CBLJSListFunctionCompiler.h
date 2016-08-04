@@ -20,6 +20,7 @@
 /** A show function compiler for CouchbaseLite that compiles and runs traditional JavaScript filter functions. */
 @interface CBLJSListFunctionCompiler : CBLJSCompiler
 
-- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource userInfo: (NSDictionary*)userInfo;
+//- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource userInfo: (NSDictionary*)userInfo;
+- (CBLListFunctionBlock) compileListFunction: (NSString*)listName source: (NSString*)listSource userInfo: (NSDictionary*)userInfo;
 
 @end

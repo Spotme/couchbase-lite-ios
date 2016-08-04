@@ -18,6 +18,6 @@
 
 @interface CBLJSShowFunctionCompiler : CBLJSCompiler
 
-- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showSource userInfo: (NSDictionary*)userInfo;
+- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showName source: (NSString*)showSource userInfo: (NSDictionary*)userInfo;
 
 @end
