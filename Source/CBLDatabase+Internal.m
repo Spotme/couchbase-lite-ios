@@ -245,6 +245,10 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     if (_isOpen)
         return YES;
     LogTo(CBLDatabase, @"Opening %@", self);
+
+    // loading the encryption key each time before the opening the db
+    _encryptionKey = [_manager.shared valueForType: @"encryptionKey" name: @"" inDatabaseNamed: _name];
+
     if (![self openFMDB: outError])
         return NO;
     
