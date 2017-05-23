@@ -240,6 +240,12 @@
               self, (unsigned)_attachmentsByDigest.count + 1);
         _curAttachment = [_database attachmentWriter];
         
+        if (!_curAttachment) {
+            Warn(@"Cannot create a blob store writer for the attachment.");
+            _status = kCBLStatusAttachmentError;
+            return NO;
+        }
+        
         // See whether the attachment name is in the headers.
         NSString* disposition = headers[@"Content-Disposition"];
         if ([disposition hasPrefix: @"attachment; filename="]) {
