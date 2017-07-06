@@ -14,26 +14,53 @@
 //
 
 #import "CBLListFunction+Internal.h"
+#import "CBL_Shared.h"
+#import "CBLJSListFunctionCompiler.h"
 
 @implementation CBLListFunction (Internal)
 
-- (BOOL) compileFromSource: (NSString*)listSource
-                  language: (NSString*)language
-                  userInfo: (NSDictionary*)userInfo {
-    if (!language)
-        language = @"javascript";
+- (BOOL) compileFromDesignDoc: (NSDictionary*)designDoc
+                     listName: (NSString*)listName {
     
-    CBLListFunctionBlock listFunctionBlock = [CBLListFunction.compiler compileListFunction: listSource
-                                                                                  language: language
-                                                                                  userInfo: userInfo];
+    NSString* className = NSStringFromClass([CBLJSListFunctionCompiler class]);
+    CBLJSListFunctionCompiler* listFuncCompiler = [self.database.shared valueForType: className
+                                                                                name: className
+                                                                     inDatabaseNamed: self.database.name];
+    if (!listFuncCompiler) {
+        JSGlobalContextRef globalCtxRef = self.database.JSContext.JSGlobalContextRef;
+        listFuncCompiler = [[CBLJSListFunctionCompiler alloc] initWithJSGlobalContextRef: globalCtxRef];
+        
+        [self.database.shared setValue: listFuncCompiler
+                               forType: className
+                                  name: className
+                       inDatabaseNamed: self.database.name];
+    }
+    
+    NSDictionary* lists = designDoc[@"lists"];
+    if (!lists || ![lists isKindOfClass: [NSDictionary class]]) {
+        LogTo(View, @"ddoc %@ - missing list functions",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]));
+        return NO;
+    }
+    
+    NSString* listSource = lists[listName];
+    if (!listSource || ![listSource isKindOfClass: [NSString class]]) {
+        LogTo(View, @"ddoc %@ - missing list function: %@",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), listName);
+        return NO;
+    }
+    
+    CBLListFunctionBlock listFunctionBlock = [listFuncCompiler compileListFunction: $sprintf(@"%@/_list/%@-%@", designDoc[@"_id"], listName, designDoc[@"_rev"])
+                                                                            source: listSource
+                                                                          userInfo: designDoc];
+    
     if (!listFunctionBlock) {
-        Warn(@"List function %@ has unknown source function: %@", _name, listSource);
+        Warn(@"Show function %@ has unknown source function: %@", _name, listSource);
         return NO;
     }
     
     self.listFunctionBlock = listFunctionBlock;
     return YES;
 }
-
 
 @end

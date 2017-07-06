@@ -41,7 +41,7 @@
             _collation = 0;
             _mapContentOptions = 0;
         }
-        _expectsJSONStringsInEmit = NO;
+        _javaScriptView = NO;
     }
     return self;
 }
@@ -161,19 +161,6 @@
         total += value.doubleValue;
     return @(total);
 }
-
-
-static id<CBLViewCompiler> sCompiler;
-
-
-+ (void) setCompiler: (id<CBLViewCompiler>)compiler {
-    sCompiler = compiler;
-}
-
-+ (id<CBLViewCompiler>) compiler {
-    return sCompiler;
-}
-
 
 #ifdef CBL_DEPRECATED
 - (void) removeIndex    {[self deleteIndex];}

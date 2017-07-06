@@ -17,10 +17,10 @@
 #import "CBLJSFunction.h"
 #import "CBLListFunction.h"
 
-/** A show function compiler for CouchbaseLite that compiles and runs traditional JavaScript filter functions.
- Requires the JavaScriptCore framework; this is a public system framework on Mac OS but private
- on iOS; so on the latter platform you'll need to link your app with your own copy of
- JavaScriptCore. See <https://github.com/phoboslab/JavaScriptCore-iOS>. */
-@interface CBLJSListFunctionCompiler : CBLJSCompiler<CBLListFunctionCompiler>
+/** A show function compiler for CouchbaseLite that compiles and runs traditional JavaScript filter functions. */
+@interface CBLJSListFunctionCompiler : CBLJSCompiler
+
+//- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource userInfo: (NSDictionary*)userInfo;
+- (CBLListFunctionBlock) compileListFunction: (NSString*)listName source: (NSString*)listSource userInfo: (NSDictionary*)userInfo;
 
 @end

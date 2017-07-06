@@ -16,18 +16,47 @@
 
 
 #import "CBLShowFunction+Internal.h"
+#import "CBLManager+Internal.h"
+#import "CBL_Shared.h"
+#import "CBLJSShowFunctionCompiler.h"
 
 @implementation CBLShowFunction (Internal)
 
-- (BOOL) compileFromSource: (NSString*)showSource
-                  language: (NSString*)language
-                  userInfo: (NSDictionary*)userInfo {
-    if (!language)
-        language = @"javascript";
+- (BOOL) compileFromDesignDoc: (NSDictionary*)designDoc
+                     showName: (NSString*)showName {
     
-    CBLShowFunctionBlock showFunctionBlock = [CBLShowFunction.compiler compileShowFunction: showSource 
-                                                                                  language: language 
-                                                                                  userInfo: userInfo];
+    NSString* className = NSStringFromClass([CBLJSShowFunctionCompiler class]);
+    CBLJSShowFunctionCompiler* showFuncCompiler = [self.database.manager.shared valueForType: className
+                                                                                        name: className
+                                                                             inDatabaseNamed: self.database.name];
+    if (!showFuncCompiler) {
+        JSGlobalContextRef globalCtxRef = self.database.JSContext.JSGlobalContextRef;
+        showFuncCompiler = [[CBLJSShowFunctionCompiler alloc] initWithJSGlobalContextRef: globalCtxRef];
+        
+        [self.database.manager.shared setValue: showFuncCompiler
+                                       forType: className
+                                          name: className
+                               inDatabaseNamed: self.database.name];
+    }
+    
+    NSDictionary* shows = designDoc[@"shows"];
+    if (!shows || ![shows isKindOfClass: [NSDictionary class]]) {
+        LogTo(View, @"ddoc %@ - missing show functions",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]));
+        return NO;
+    }
+    
+    NSString* showSource = shows[showName];
+    if (!showSource || ![showSource isKindOfClass: [NSString class]]) {
+        LogTo(View, @"ddoc %@ - missing show function: %@",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), showName);
+        return NO;
+    }
+    
+    CBLShowFunctionBlock showFunctionBlock = [showFuncCompiler compileShowFunction: $sprintf(@"%@/_show/%@-%@", designDoc[@"_id"], showName, designDoc[@"_rev"])
+                                                                            source: showSource
+                                                                          userInfo: designDoc];
+    
     if (!showFunctionBlock) {
         Warn(@"Show function %@ has unknown source function: %@", _name, showSource);
         return NO;

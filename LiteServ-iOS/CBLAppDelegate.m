@@ -42,11 +42,9 @@
     EnableLogTo(View, YES);
     EnableLogTo(ViewIndexVerbose, NO);
     EnableLogTo(RemoteRequest, NO);
+    EnableLogTo(List, YES);
+    EnableLogTo(Show, YES);
 #endif
-    
-    [CBLView setCompiler: [[CBLJSViewCompiler alloc] init]];
-    [CBLShowFunction setCompiler: [CBLJSShowFunctionCompiler new]];
-    [CBLListFunction setCompiler: [CBLJSListFunctionCompiler new]];
     
     NSString* dataPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     CBLManagerOptions options = {}; options.readOnly = NO;
@@ -96,7 +94,8 @@
             exit(EXIT_FAILURE);
         }
     }
-    _manager.encryptionKey = encryptionKey;
+    // _manager.encryptionKey = encryptionKey;
+    [_manager registerEncryptionKey:encryptionKey forDatabaseNamed:@"dbdev-ev-ebd6631ea157a777c52d29b1203f3e68"];
 
     // Start a listener socket:
     _listener = [[CBLListener alloc] initWithManager: _manager port: 59840];

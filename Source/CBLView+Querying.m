@@ -192,6 +192,7 @@ static id fromJSON( NSData* json ) {
         // Regular query:
         CBLDatabase* db = _weakDB;
         rows = $marray();
+        JSContext *context = _javaScriptView ? db.JSContext : nil;
         while ([r next]) {
             @autoreleasepool {
                 NSData* keyData = [r dataForColumnIndex: 0];
@@ -211,15 +212,28 @@ static id fromJSON( NSData* json ) {
                                                           revisionID: linkedRev
                                                              options: options->content
                                                               status: &linkedStatus];
+                        // FIXME: optimise for JS
                         docContents = linked ? linked.properties : $null;
                         sequence = linked.sequence;
+                        if (options->prefersJSValues)
+                            docContents = [JSValue valueWithObject: docContents inContext: context];
                     } else {
-                        docContents = [db documentPropertiesFromJSON: [r dataNoCopyForColumnIndex: 5]
+                        if (options->prefersJSValues) {
+                            docContents = [db documentValueInContext: context
+                                                            fromJSON: [r dataNoCopyForColumnIndex: 5]
                                                                docID: docID
                                                                revID: [r stringForColumnIndex: 4]
                                                              deleted: NO
                                                             sequence: sequence
                                                              options: options->content];
+                        } else {
+                            docContents = [db documentPropertiesFromJSON: [r dataNoCopyForColumnIndex: 5]
+                                                                   docID: docID
+                                                                   revID: [r stringForColumnIndex: 4]
+                                                                 deleted: NO
+                                                                sequence: sequence
+                                                                 options: options->content];
+                        }
                     }
                 }
                 LogTo(ViewVerbose, @"Query %@: Found row with key=%@, value=%@, id=%@",
@@ -238,11 +252,20 @@ static id fromJSON( NSData* json ) {
                                                           value: valueData
                                                   docProperties: docContents];
                 } else {
-                    row = [[CBLQueryRow alloc] initWithDocID: docID
-                                                    sequence: sequence
-                                                         key: keyData
-                                                       value: valueData
-                                               docProperties: docContents];
+                    if (options->prefersJSValues) {
+                        row = [[CBLQueryRow alloc] initWithJSContext: context
+                                                               docID: docID
+                                                            sequence: sequence
+                                                             keyData: keyData
+                                                           valueData: valueData
+                                                          docJSValue: (JSValue*)docContents];
+                    } else {
+                        row = [[CBLQueryRow alloc] initWithDocID: docID
+                                                        sequence: sequence
+                                                             key: keyData
+                                                           value: valueData
+                                                   docProperties: docContents];
+                    }
                 }
                 [rows addObject: row];
             }

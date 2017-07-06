@@ -26,6 +26,7 @@
 #import "CBLMisc.h"
 #import "CBLDatabase.h"
 #import "CouchbaseLitePrivate.h"
+#import "CBLJSFunction.h"
 
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
@@ -758,6 +759,52 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     }
 }
 
+- (void) extraPropertiesForRevision: (CBL_Revision*)rev
+                            options: (CBLContentOptions)options
+                          intoValue: (JSValue*)dst
+{
+    dst[@"_id"] = rev.docID;
+    dst[@"_rev"] = rev.revID;
+    if (rev.deleted)
+        dst[@"_deleted"] = $true;
+    
+    // Get attachment metadata, and optionally the contents:
+    if (!(options & kCBLNoAttachments)) {
+        NSDictionary* attachments = [self getAttachmentDictForSequence: rev.sequence
+                                                               options: options];
+        if (attachments)
+            dst[@"_attachments"] = attachments;
+    }
+    
+    // Get more optional stuff to put in the properties:
+    //OPT: This probably ends up making redundant SQL queries if multiple options are enabled.
+    if (options & kCBLIncludeLocalSeq)
+        dst[@"_local_seq"] = @(rev.sequence);
+    
+    if (options & kCBLIncludeRevs)
+        dst[@"_revisions"] = [self getRevisionHistoryDict: rev startingFromAnyOf: nil];
+    
+    if (options & kCBLIncludeRevsInfo) {
+        dst[@"_revs_info"] = [[self getRevisionHistory: rev] my_map: ^id(CBL_Revision* rev) {
+            NSString* status = @"available";
+            if (rev.deleted)
+                status = @"deleted";
+            else if (rev.missing)
+                status = @"missing";
+            return $dict({@"rev", [rev revID]}, {@"status", status});
+        }];
+    }
+    
+    if (options & kCBLIncludeConflicts) {
+        CBL_RevisionList* revs = [self getAllRevisionsOfDocumentID: rev.docID onlyCurrent: YES];
+        if (revs.count > 1) {
+            dst[@"_conflicts"] = [revs.allRevisions my_map: ^(id aRev) {
+                return ($equal(aRev, rev) || [(CBL_Revision*)aRev deleted]) ? nil : [aRev revID];
+            }];
+        }
+    }
+}
+
 
 /** Inserts the _id, _rev and _attachments properties into the JSON data and stores it in rev.
  Rev must already have its revID and sequence properties set. */
@@ -804,6 +851,30 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     return docProperties;
 }
 
+- (JSValue*) documentValueInContext: (JSContext*)jsContext
+                           fromJSON: (NSData*)json
+                              docID: (NSString*)docID
+                              revID: (NSString*)revID
+                            deleted: (BOOL)deleted
+                           sequence: (SequenceNumber)sequence
+                            options: (CBLContentOptions)options
+{
+    CBL_MutableRevision* rev = [[CBL_MutableRevision alloc] initWithDocID: docID revID: revID
+                                                                  deleted: deleted];
+    rev.sequence = sequence;
+    rev.missing = (json == nil);
+    JSValue* docValue;
+    if (json.length == 0 || (json.length==2 && memcmp(json.bytes, "{}", 2)==0))
+        docValue = [JSValue valueWithNewObjectInContext: jsContext];
+    else {
+        docValue = CBLJSValueFromJSONData(jsContext, json);
+        
+        if (!docValue)
+            docValue = [JSValue valueWithNewObjectInContext: jsContext];
+    }
+    [self extraPropertiesForRevision: rev options: options intoValue: docValue];
+    return docValue;
+}
 
 - (CBL_Revision*) getDocumentWithID: (NSString*)docID
                        revisionID: (NSString*)revID
@@ -1349,6 +1420,25 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     }
 }
 
+- (JSContext *)JSContext {
+    JSContext* context = [_manager.shared valueForType: NSStringFromClass([JSContext class])
+                                                  name: NSStringFromClass([JSContext class])
+                                       inDatabaseNamed: _name];
+    if (!context) {
+        JSVirtualMachine *vm = _manager.JSVirtualMachine;
+        context = [[JSContext alloc] initWithVirtualMachine: vm];
+        if ([context respondsToSelector:@selector(setName:)])
+            [context setName: $sprintf(@"CBL-%@", _name)];
+        
+        [_manager.shared setValue: context
+                          forType: NSStringFromClass([JSContext class])
+                             name: NSStringFromClass([JSContext class])
+                  inDatabaseNamed: _name];
+    }
+    
+    return context;
+}
+
 - (CBLView*) compileViewNamed: (NSString*)tdViewName status: (CBLStatus*)outStatus {
     CBLView* view = [self existingViewNamed: tdViewName];
     if (view && view.mapBlock)
@@ -1356,10 +1446,6 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // No CouchbaseLite view is defined, or it hasn't had a map block assigned;
     // see if there's a CouchDB view definition we can compile:
-    if (![CBLView compiler]) {
-        *outStatus = kCBLStatusNotFound;
-        return nil;
-    }
     NSString* language;
     NSString* revision;
     NSDictionary* designDoc;
@@ -1381,7 +1467,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // no luck, creating a new view from code from ddoc
     view = [self viewNamed: viewNameWithRev];
-    if (![view compileFromProperties: viewProps language: language version: revision userInfo: designDoc]) {
+    if (![view compileFromDesignDoc: designDoc viewName: [tdViewName componentsSeparatedByString: @"/"].lastObject]) {
         *outStatus = kCBLStatusCallbackError;
         return nil;
     }
@@ -1396,10 +1482,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // No CouchbaseLite view is defined, or it hasn't had a map block assigned;
     // see if there's a CouchDB view definition we can compile:
-    if (![CBLShowFunction compiler]) {
-        *outStatus = kCBLStatusNotFound;
-        return nil;
-    }
+
     NSString* language;
     NSString* revision;
     NSDictionary *designDoc;
@@ -1421,7 +1504,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
 
     // well, compiling from source then
     showFunction = [self showFunctionNamed: showNameWithRev];
-    if (![showFunction compileFromSource: showSource language: language userInfo: designDoc]) {
+    if (![showFunction compileFromDesignDoc: designDoc showName: [cblShowName componentsSeparatedByString:@"/"].lastObject]) {
         *outStatus = kCBLStatusCallbackError;
         return nil;
     }
@@ -1435,10 +1518,6 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     
     // No CouchbaseLite list function is defined, or it hasn't had a map block assigned;
     // see if there's a CouchDB view definition we can compile:
-    if (![CBLListFunction compiler]) {
-        *outStatus = kCBLStatusNotFound;
-        return nil;
-    }
     NSString* language;
     NSString* revision;
     NSDictionary* designDoc;
@@ -1459,7 +1538,7 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
         return listFunction;
     
     listFunction = [self listFunctionNamed: listNameWithRev];
-    if (![listFunction compileFromSource: listSource language: language userInfo: designDoc]) {
+    if (![listFunction compileFromDesignDoc: designDoc listName: [cblListName componentsSeparatedByString:@"/"].lastObject]) {
         *outStatus = kCBLStatusCallbackError;
         return nil;
     }

@@ -28,6 +28,10 @@
 
 #include "sqlite3_unicodesn_tokenizer.h"
 
+#import "CBLJSViewCompiler.h"
+#import "CBLDatabase.h"
+#import "CBL_Shared.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 
 static void CBLComputeFTSRank(sqlite3_context *pCtx, int nVal, sqlite3_value **apVal);
 
@@ -82,51 +86,65 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
 }
 #endif
 
-//- (void) setMapContentOptions:(CBLContentOptions)mapContentOptions {
-//    _mapContentOptions = (uint8_t)mapContentOptions;
-//}
-//
-//- (CBLContentOptions) mapContentOptions {
-//    return _mapContentOptions;
-//}
-
-
-- (BOOL) compileFromProperties: (NSDictionary*)viewProps language: (NSString*)language version: (NSString*)version userInfo: (NSDictionary*)userInfo {
-    if (!language)
-        language = @"javascript";
-    NSString* mapSource = viewProps[@"map"];
-    if (!mapSource)
-        return NO;
-    CBLMapBlock mapBlock = [[CBLView compiler] compileMapFunction: mapSource language: language userInfo: userInfo];
-    if (!mapBlock) {
-        Warn(@"View %@ has unknown map function: %@", _name, mapSource);
+- (BOOL) compileFromDesignDoc: (NSDictionary*)designDoc
+                     viewName: (NSString*)viewName
+{
+    NSDictionary* viewProps = [designDoc valueForKeyPath: $sprintf(@"views.%@", viewName)];
+    if (![viewProps isKindOfClass:[NSDictionary class]]) {
+        LogTo(View, @"ddoc %@ - missing view props for %@",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), viewName);
         return NO;
     }
+    
+    NSString* mapSource = viewProps[@"map"];
+    if (!mapSource) {
+        LogTo(View, @"ddoc %@ - missing map src for %@",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), viewName);
+        return NO;
+    }
+    
+    CBLJSViewCompiler* jsViewCompiler = [self.database.manager.shared valueForType: NSStringFromClass([CBLJSViewCompiler class])
+                                                                              name: NSStringFromClass([CBLJSViewCompiler class])
+                                                                   inDatabaseNamed: self.database.name];
+    if (!jsViewCompiler) {
+        JSGlobalContextRef globalCtxRef = self.database.JSContext.JSGlobalContextRef;
+        jsViewCompiler = [[CBLJSViewCompiler alloc] initWithJSGlobalContextRef: globalCtxRef];
+        
+        [self.database.manager.shared setValue: jsViewCompiler
+                                       forType: NSStringFromClass([CBLJSViewCompiler class])
+                                          name: NSStringFromClass([CBLJSViewCompiler class])
+                               inDatabaseNamed: self.database.name];
+    }
+    
+    CBLMapBlock mapBlock = [jsViewCompiler compileMapFunction: mapSource userInfo: designDoc];
+    if (!mapBlock) {
+        LogTo(View, @"ddoc %@ - unable to compile map func of %@",
+              $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), viewName);
+        return NO;
+    }
+    
     NSString* reduceSource = viewProps[@"reduce"];
     CBLReduceBlock reduceBlock = NULL;
     if (reduceSource) {
-        reduceBlock =[[CBLView compiler] compileReduceFunction: reduceSource language: language userInfo: userInfo];
+        reduceBlock = [jsViewCompiler compileReduceFunction: reduceSource userInfo: designDoc];
         if (!reduceBlock) {
-            Warn(@"View %@ has unknown reduce function: %@", _name, reduceSource);
+            LogTo(View, @"ddoc %@ - unable to compile reduce func of %@",
+                  $sprintf(@"%@-%@", designDoc[@"_id"], designDoc[@"_rev"]), viewName);
             return NO;
         }
     }
-
-    // Version string is based on a digest of the properties:
-    if (!version)
-        version = CBLHexSHA1Digest([CBLCanonicalJSON canonicalData: viewProps]);
+    
+    NSString* version = designDoc[@"_rev"];
 
     [self setMapBlock: mapBlock reduceBlock: reduceBlock version: version];
 
     NSDictionary* options = $castIf(NSDictionary, viewProps[@"options"]);
-    _collation = ($equal(options[@"collation"], @"raw")) ? kCBLViewCollationRaw
-                                                             : kCBLViewCollationUnicode;
+    _collation = ($equal(options[@"collation"], @"raw")) ? kCBLViewCollationRaw : kCBLViewCollationUnicode;
     
-    _expectsJSONStringsInEmit = [language isEqual:@"javascript"];
+    _javaScriptView = YES;
     
     return YES;
 }
-
 
 #pragma mark - INDEXING:
 
@@ -167,11 +185,11 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
             return db.lastDbError;
         keyJSON = @"null";
     } else {
-        keyJSON = _expectsJSONStringsInEmit ? key : toJSONString(key);
+        keyJSON = _javaScriptView ? key : toJSONString(key);
         keyJSON = (keyJSON != nil) ? keyJSON : @"null";
     }
     
-    NSString* valueJSON = _expectsJSONStringsInEmit ? value : toJSONString(value);
+    NSString* valueJSON = _javaScriptView ? value : toJSONString(value);
     valueJSON = (valueJSON != nil) ? valueJSON : @"null";
     
     LogTo(ViewIndexVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
@@ -206,6 +224,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         }
         
         CFAbsoluteTime updateIndexStart = CFAbsoluteTimeGetCurrent();
+        
+        JSContext *jsContext = _javaScriptView ? self.database.JSContext : nil;
         
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
@@ -328,28 +348,50 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 CBLContentOptions contentOptions = _mapContentOptions;
                 if (noAttachments)
                     contentOptions |= kCBLNoAttachments;
-                NSDictionary* properties = [db documentPropertiesFromJSON: json
-                                                                     docID: docID revID:revID
-                                                                   deleted: NO
-                                                                  sequence: sequence
-                                                                   options: contentOptions];
-                if (!properties) {
-                    Warn(@"Failed to parse JSON of doc %@ rev %@", docID, revID);
-                    continue;
-                }
                 
-                if (conflicts) {
-                    // Add a "_conflicts" property if there were conflicting revisions:
-                    NSMutableDictionary* mutableProps = [properties mutableCopy];
-                    mutableProps[@"_conflicts"] = conflicts;
-                    properties = mutableProps;
+                id props = nil;
+                
+                if (_javaScriptView) {
+                    JSValue *properties = [db documentValueInContext: jsContext
+                                                            fromJSON: json
+                                                               docID: docID
+                                                               revID: revID
+                                                             deleted: NO
+                                                            sequence: sequence
+                                                             options: contentOptions];
+                    if (conflicts) {
+                        // Add a "_conflicts" property if there were conflicting revisions:
+                        properties[@"_conflicts"] = conflicts;
+                    }
+                    
+                    props = properties;
+                    
+                } else {
+                    NSDictionary* properties = [db documentPropertiesFromJSON: json
+                                                                        docID: docID revID:revID
+                                                                      deleted: NO
+                                                                     sequence: sequence
+                                                                      options: contentOptions];
+                    if (!properties) {
+                        Warn(@"Failed to parse JSON of doc %@ rev %@", docID, revID);
+                        continue;
+                    }
+                    
+                    if (conflicts) {
+                        // Add a "_conflicts" property if there were conflicting revisions:
+                        NSMutableDictionary* mutableProps = [properties mutableCopy];
+                        mutableProps[@"_conflicts"] = conflicts;
+                        properties = mutableProps;
+                    }
+                    
+                    props = properties;
                 }
                 
                 // Call the user-defined map() to emit new key/value pairs from this revision:
                 LogTo(ViewIndexVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
                       _name, docID, sequence);
                 @try {
-                    mapBlock(properties, emit);
+                    mapBlock(props, emit);
                     total++;
                 } @catch (NSException* x) {
                     MYReportException(x, @"map block of view '%@'", _name);

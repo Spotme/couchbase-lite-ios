@@ -19,20 +19,16 @@
 #import <JavaScriptCore/JavaScript.h>
 #import <JavaScriptCore/JSStringRefCF.h>
 
-/* NOTE: JavaScriptCore is not a public system framework on iOS, so you'll need to link your iOS app
- with your own copy of it. See <https://github.com/phoboslab/JavaScriptCore-iOS>. */
-
 /* NOTE: This source file requires ARC. */
 
 @implementation CBLJSShowFunctionCompiler
 
-- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showSource language: (NSString*)language userInfo:(NSDictionary *)userInfo {
-    if (![language isEqualToString: @"javascript"])
-        return nil;
+- (CBLShowFunctionBlock) compileShowFunction: (NSString*)showName source: (NSString*)showSource userInfo: (NSDictionary*)userInfo {
     
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: showSource
+                                                   sourceFiname: showName
                                                      paramNames: @[@"doc", @"req"]
                                                  requireContext: userInfo];
     if (!fn)
@@ -45,7 +41,7 @@
         
         JSValueRef exception = NULL;
         JSValueRef fnRes = [fn callWithParams:@[revision ? revision : NSNull.null, params ? params : NSNull.null] exception:&exception];
-        id obj = JSValueToNSObject/*ValueToID*/(ctx, fnRes);
+        id obj = CBLJSValueToNSObject(ctx, fnRes);
         if (exception) {
             result = [CBLFunctionResult new];
             

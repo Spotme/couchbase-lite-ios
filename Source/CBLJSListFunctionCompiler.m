@@ -15,6 +15,7 @@
 
 #import "CBLJSListFunctionCompiler.h"
 #import "CBLQuery.h"
+#import "CouchbaseLitePrivate.h"
 #import "CBLFunctionResult.h"
 #import <JavaScriptCore/JavaScript.h>
 #import <JavaScriptCore/JSStringRefCF.h>
@@ -39,7 +40,7 @@ static JSValueRef GetRowCallback(JSContextRef ctx, JSObjectRef function, JSObjec
         return JSValueMakeUndefined(ctx);
     
     CBLQueryRow *row = getRowBlock();
-    JSValueRef ret = NSObjectToJSValue(ctx, [row asJSONDictionary]);//IDToValue(ctx, [row asJSONDictionary]);
+    JSValueRef ret = CBLNSObjectToJSValueRef(ctx, [row asJSValue]);
     return ret;
 }
 
@@ -51,7 +52,7 @@ static JSValueRef StartCallback(JSContextRef ctx, JSObjectRef function, JSObject
     CBLFunctionResult* currentFunctionResult = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
     // by this we're limiting start() to be only called once
     if (!currentFunctionResult && argumentCount > 0) {
-        NSDictionary* startDict = (NSDictionary*)JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
+        NSDictionary* startDict = (NSDictionary*)CBLJSValueToNSObject(ctx, arguments[0]);
         currentFunctionResult = [[CBLFunctionResult alloc] initWithResultObject: startDict];
         NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey] = currentFunctionResult;
     }
@@ -65,7 +66,7 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
                                 JSValueRef* exception)
 {
     if (argumentCount > 0) {
-        NSString* chunk = (NSString*)JSValueToNSObject/*ValueToID*/(ctx, arguments[0]);
+        NSString* chunk = (NSString*)CBLJSValueToNSObject(ctx, arguments[0]);
         
         CBLFunctionResult* currentFunctionResult = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
         if (!currentFunctionResult) {
@@ -79,8 +80,8 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
     return JSValueMakeUndefined(ctx);
 }
 
-- (instancetype) init {
-    self = [super init];
+- (instancetype) initWithJSGlobalContextRef: (JSGlobalContextRef)context {
+    self = [super initWithJSGlobalContextRef: context];
     if (self) {
         JSGlobalContextRef context = self.context;
         // Install the "getRow" function in the context's namespace:
@@ -114,13 +115,11 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
 }
 
 
-- (CBLListFunctionBlock) compileListFunction: (NSString*)listSource language: (NSString*)language userInfo:(NSDictionary *)userInfo {
-    if (![language isEqualToString: @"javascript"])
-        return nil;
-    
+- (CBLListFunctionBlock) compileListFunction: (NSString*)listName source: (NSString*)listSource userInfo: (NSDictionary*)userInfo {
     // Compile the function:
     CBLJSFunction* fn = [[CBLJSFunction alloc] initWithCompiler: self
                                                      sourceCode: listSource
+                                                   sourceFiname: listName
                                                      paramNames: @[@"head", @"req"]
                                                  requireContext: userInfo];
     if (!fn)
@@ -132,14 +131,21 @@ static JSValueRef SendCallback(JSContextRef ctx, JSObjectRef function, JSObjectR
         
         [NSThread.currentThread.threadDictionary setValue:getRowBlock forKey:kCBLCurrentGetRowBlockKey];
         JSValueRef exception = NULL;
+        //CFAbsoluteTime start1 = CFAbsoluteTimeGetCurrent();
         JSValueRef fnRes = [fn callWithParams:@[head ? head : NSNull.null, params ? params : NSNull.null] exception:&exception];
+        //CFAbsoluteTime end1 = CFAbsoluteTimeGetCurrent();
         if (NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey]) {
             result = NSThread.currentThread.threadDictionary[kCBLCurrentFunctionResultKey];
             [NSThread.currentThread.threadDictionary removeObjectForKey:kCBLCurrentFunctionResultKey];
         }
         [NSThread.currentThread.threadDictionary removeObjectForKey:kCBLCurrentGetRowBlockKey];
         
-        id obj = JSValueToNSObject/*ValueToID*/(ctx, fnRes);
+        //CFAbsoluteTime start2 = CFAbsoluteTimeGetCurrent();
+        id obj = CBLJSValueToNSObject(ctx, fnRes);
+        //CFAbsoluteTime end2 = CFAbsoluteTimeGetCurrent();
+        
+        //LogTo(List, @"func %3.3fsecs, ret conversion %3.3fsecs", (end1 - start1), (end2 - start2));
+        
         if (exception) {
             result = [CBLFunctionResult new];
             

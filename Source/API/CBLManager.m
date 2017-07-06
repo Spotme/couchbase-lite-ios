@@ -286,6 +286,22 @@ static CBLManager* sInstance;
     return shared;
 }
 
+- (JSVirtualMachine*) JSVirtualMachine {
+    CBL_Shared* shared = self.shared;
+    
+    JSVirtualMachine* virtualMachine = [shared valueForType: NSStringFromClass([JSVirtualMachine class])
+                                                       name: NSStringFromClass([JSVirtualMachine class])
+                                            inDatabaseNamed: @"_manager"];
+    if (!virtualMachine) {
+        virtualMachine = [JSVirtualMachine new];
+        
+        [shared setValue: virtualMachine
+                 forType: NSStringFromClass([JSVirtualMachine class])
+                    name: NSStringFromClass([JSVirtualMachine class]) 
+         inDatabaseNamed: @"_manager"];
+    }
+    return virtualMachine;
+}
 
 - (CBL_Server*) backgroundServer {
     CBL_Shared* shared = _shared;
