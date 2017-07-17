@@ -136,6 +136,10 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
     
     NSString* version = designDoc[@"_rev"];
 
+    if (viewProps[@"target_fp_types"] && [viewProps[@"target_fp_types"] isKindOfClass:[NSArray<NSString *> class]]) {
+        NSArray *targetFpTypes = viewProps[@"target_fp_types"];
+        //TODO:
+    }
     [self setMapBlock: mapBlock reduceBlock: reduceBlock version: version];
 
     NSDictionary* options = $castIf(NSDictionary, viewProps[@"options"]);
@@ -230,11 +234,22 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
         CBL_FMDatabase* fmdb = db.fmdb;
-        
+        NSMutableSet* docTypes = [NSMutableSet set];
+        NSMutableDictionary* viewDocTypes = [NSMutableDictionary dictionary];
         // First remove obsolete emitted results from the 'maps' table:
         __block SequenceNumber sequence = lastSequence;
         if (lastSequence < 0)
             return db.lastDbError;
+        
+        NSString* docType = self.documentType;
+        if (docType) {
+            [docTypes addObject: docType];
+            viewDocTypes[self.name] = docType;
+        }
+        else {
+            docTypes = nil; // can't filter by doc_type
+        }
+        
         BOOL ok;
         if (lastSequence == 0) {
             // If the lastSequence has been reset to 0, make sure to remove all map results:
@@ -242,9 +257,9 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         } else {
             // Delete all obsolete map results (ones from since-replaced revisions):
             ok = [fmdb executeUpdate: @"DELETE FROM maps WHERE view_id=? AND sequence IN ("
-                                            "SELECT parent FROM revs WHERE sequence>? "
-                                                "AND parent>0 AND parent<=?)",
-                                      @(_viewID), @(lastSequence), @(lastSequence)];
+                  "SELECT parent FROM revs WHERE sequence>? "
+                  "AND parent>0 AND parent<=?)",
+                  @(_viewID), @(lastSequence), @(lastSequence)];
         }
         if (!ok)
             return db.lastDbError;
@@ -261,15 +276,19 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
             else
                 inserted++;
         };
-
-        // Now scan every revision added since the last time the view was indexed:
-        CBL_FMResultSet* r;
-        r = [fmdb executeQuery: @"SELECT revs.doc_id, sequence, docid, revid, json, no_attachments "
+        NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, no_attachments, doc_type "
                                  "FROM revs, docs "
                                  "WHERE sequence>? AND current!=0 AND deleted=0 "
                                  "AND revs.doc_id = docs.doc_id "
-                                 "ORDER BY revs.doc_id, revid DESC",
-                                 @(lastSequence)];
+                                 "ORDER BY revs.doc_id, revid DESC" mutableCopy];
+        if (docTypes.count > 0) {
+            [sql appendFormat: @"AND doc_type IN (%@) ", [CBLDatabase joinQuotedStrings:docTypes.allObjects]];
+        }
+        BOOL checkDocTypes = (docTypes==nil) || (docTypes.count > 1);
+        
+        CBL_FMResultSet* r;
+        r = [fmdb executeQuery:sql, @(lastSequence)];
+        
         if (!r)
             return db.lastDbError;
         
@@ -288,7 +307,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 NSString* revID = [r stringForColumnIndex: 3];
                 NSData* json = [r dataForColumnIndex: 4];
                 BOOL noAttachments = [r boolForColumnIndex: 5];
-            
+                NSString* docType = checkDocTypes ? [r stringForColumnIndex: 7] : nil;
+                
                 // Iterate over following rows with the same doc_id -- these are conflicts.
                 // Skip them, but collect their revIDs:
                 NSMutableArray* conflicts = nil;
@@ -390,6 +410,11 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 // Call the user-defined map() to emit new key/value pairs from this revision:
                 LogTo(ViewIndexVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
                       _name, docID, sequence);
+                
+                if (docType) {
+                //TODO:
+                }
+                
                 @try {
                     mapBlock(props, emit);
                     total++;

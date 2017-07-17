@@ -421,12 +421,23 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     if (dbVersion < 11) {
         // Version 10: Add another index
         NSString* sql = @"CREATE INDEX revs_cur_deleted ON revs(current,deleted); \
-                          PRAGMA user_version = 11";
+        PRAGMA user_version = 11";
         if (![self initialize: sql error: outError])
             return NO;
         dbVersion = 11;
     }
-
+    
+    if (dbVersion < 12) {
+        //Version 11: Add column fp_type
+        NSString * const sql = @"\
+        ALTER TABLE revs ADD COLUMN doc_type TEXT;\
+        PRAGMA user_version = 12";
+        if (![self initialize:sql error: outError]) {
+            return NO;
+        }
+        dbVersion = 12;
+    }
+    
     if (isNew && ![self initialize: @"END TRANSACTION" error: outError])
         return NO;
 
