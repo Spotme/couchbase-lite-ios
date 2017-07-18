@@ -138,8 +138,9 @@ id CBLGeoJSONKey(NSDictionary* geoJSON) {
 
     if (viewProps[@"target_fp_types"] && [viewProps[@"target_fp_types"] isKindOfClass:[NSArray<NSString *> class]]) {
         NSArray *targetFpTypes = viewProps[@"target_fp_types"];
-        //TODO:
+        [self setDocumentTypes:targetFpTypes];
     }
+    
     [self setMapBlock: mapBlock reduceBlock: reduceBlock version: version];
 
     NSDictionary* options = $castIf(NSDictionary, viewProps[@"options"]);
@@ -234,21 +235,10 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         __block CBLStatus emitStatus = kCBLStatusOK;
         __block unsigned inserted = 0;
         CBL_FMDatabase* fmdb = db.fmdb;
-        NSMutableSet* docTypes = [NSMutableSet set];
-        NSMutableDictionary* viewDocTypes = [NSMutableDictionary dictionary];
         // First remove obsolete emitted results from the 'maps' table:
         __block SequenceNumber sequence = lastSequence;
         if (lastSequence < 0)
             return db.lastDbError;
-        
-        NSString* docType = self.documentType;
-        if (docType) {
-            [docTypes addObject: docType];
-            viewDocTypes[self.name] = docType;
-        }
-        else {
-            docTypes = nil; // can't filter by doc_type
-        }
         
         BOOL ok;
         if (lastSequence == 0) {
@@ -276,15 +266,19 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
             else
                 inserted++;
         };
-        NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, no_attachments, doc_type "
+        
+        BOOL checkDocTypes = [self getDocumentTypes] != nil && [self getDocumentTypes].count > 0;
+
+        NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, "
+                                 "no_attachments, deleted, doc_type "
                                  "FROM revs, docs "
-                                 "WHERE sequence>? AND current!=0 AND deleted=0 "
-                                 "AND revs.doc_id = docs.doc_id "
-                                 "ORDER BY revs.doc_id, revid DESC" mutableCopy];
-        if (docTypes.count > 0) {
-            [sql appendFormat: @"AND doc_type IN (%@) ", [CBLDatabase joinQuotedStrings:docTypes.allObjects]];
+                                 "WHERE sequence>? AND current!=0 " mutableCopy];
+        if (checkDocTypes) {
+            [sql appendFormat: @"AND doc_type IN (%@) ", [CBLDatabase joinQuotedStrings:self.getDocumentTypes]];
         }
-        BOOL checkDocTypes = (docTypes==nil) || (docTypes.count > 1);
+        
+        [sql appendString: @"AND revs.doc_id = docs.doc_id "
+         "ORDER BY revs.doc_id, deleted, revid DESC"];
         
         CBL_FMResultSet* r;
         r = [fmdb executeQuery:sql, @(lastSequence)];
@@ -307,6 +301,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 NSString* revID = [r stringForColumnIndex: 3];
                 NSData* json = [r dataForColumnIndex: 4];
                 BOOL noAttachments = [r boolForColumnIndex: 5];
+                BOOL deleted = [r boolForColumnIndex: 6];
+                #pragma unused(deleted)
                 NSString* docType = checkDocTypes ? [r stringForColumnIndex: 7] : nil;
                 
                 // Iterate over following rows with the same doc_id -- these are conflicts.
@@ -411,8 +407,9 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 LogTo(ViewIndexVerbose, @" %@ call map(...) on doc %@ for sequence=%lld...",
                       _name, docID, sequence);
                 
-                if (docType) {
-                //TODO:
+                // skip; view's documentType doesn't match this doc
+                if (checkDocTypes && ![self.getDocumentTypes containsObject:docType]) {
+                    continue;
                 }
                 
                 @try {

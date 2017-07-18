@@ -428,7 +428,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     }
     
     if (dbVersion < 12) {
-        //Version 11: Add column fp_type
+        //Version 11: Add column doc_type
         NSString * const sql = @"\
         ALTER TABLE revs ADD COLUMN doc_type TEXT;\
         PRAGMA user_version = 12";

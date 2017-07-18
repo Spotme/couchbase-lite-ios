@@ -50,9 +50,6 @@ id CBLTextKey(NSString* text);
 /** The optional reduce function, which aggregates together multiple rows. */
 @property (readonly) CBLReduceBlock reduceBlock;
 
-/** The document fp_type property values this view is filtered to (nil if none.) */
-@property (readonly) NSString *documentType;
-
 /** Defines a view's functions.
     The view's definition is given as an Objective-C block (or NULL to delete the view). The body of the block should call the 'emit' block (passed in as a paramter) for every key/value pair it wants to write to the view.
     Since the function itself is obviously not stored in the database (only a unique string idenfitying it), you must re-define the view on every launch of the app! If the database needs to rebuild the view but the function hasn't been defined yet, it will fail and the view will be empty, causing weird problems later on.
@@ -70,6 +67,10 @@ id CBLTextKey(NSString* text);
     See -setMapBlock:reduceBlock:version: for more details. */
 - (BOOL) setMapBlock: (CBLMapBlock)mapBlock
              version: (NSString*)version                            __attribute__((nonnull(1,2)));
+
+- (void)setDocumentTypes:(NSArray<NSString *> *)docTypes;
+
+- (NSArray<NSString *> *)getDocumentTypes;
 
 /** Is the view's index currently out of date? */
 @property (readonly) BOOL stale;
