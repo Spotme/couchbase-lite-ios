@@ -38,6 +38,9 @@ NSString* const CBL_DatabaseChangesNotification = @"CBLDatabaseChanges";
 NSString* const CBL_DatabaseWillCloseNotification = @"CBL_DatabaseWillClose";
 NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDeleted";
 
+NSString* const  CBL_HasFpTypesEnabledKey = @"HAS_DATA_WITHOUT_FP_TYPE";
+NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
+
 #define kDocIDCacheSize 1000
 
 #define kSQLiteBusyTimeout 5.0 // seconds
@@ -93,7 +96,8 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     return CBLRemoveFileIfExists(dbPath, outError)
         && CBLRemoveFileIfExists([dbPath stringByAppendingString: @"-wal"], outError)
         && CBLRemoveFileIfExists([dbPath stringByAppendingString: @"-shm"], outError)
-        && CBLRemoveFileIfExists([self attachmentStorePath: dbPath], outError);
+        && CBLRemoveFileIfExists([self attachmentStorePath: dbPath], outError)
+        && CBLRemoveFileIfExists([self getConfigFilePath], outError);
 }
 
 
@@ -267,7 +271,7 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
     BOOL isNew = (dbVersion == 0);
     if (isNew && ![self initialize: @"BEGIN TRANSACTION" error: outError])
         return NO;
-
+    
     if (dbVersion < 1) {
         // First-time initialization:
         // (Note: Declaring revs.sequence as AUTOINCREMENT means the values will always be
@@ -434,6 +438,12 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
         PRAGMA user_version = 12";
         if (![self initialize:sql error: outError]) {
             return NO;
+        }
+        
+        NSUInteger docCount = [self documentCount];
+        if (docCount) {
+            //do not use target_fp_types in views when there are already any docs saved in revs table without doc_type set
+            [self setDataWithoutFpType:YES];
         }
         dbVersion = 12;
     }
@@ -701,8 +711,51 @@ NSString* const CBL_DatabaseWillBeDeletedNotification = @"CBL_DatabaseWillBeDele
 }
 
 
-#pragma mark - GETTING DOCUMENTS:
+#pragma mark - HELPERS
+#pragma mark - Public
 
+- (BOOL)hasDataWithoutFpType {
+    NSString *configFilePath = [self.class getConfigFilePath];
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:configFilePath];
+    return exists;
+}
+
+#pragma mark - PRIVATE
+
++ (NSString *)getConfigFilePath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    NSString *configFilePath = [documentsPath stringByAppendingPathComponent:@"db"];
+    NSString *configFilename = [configFilePath stringByAppendingPathComponent:CBL_HasFpTypesConfigFileName];
+    return configFilename;
+}
+
+
+- (void)setDataWithoutFpType:(BOOL)hasData {
+    NSString *configFilePath = [self.class getConfigFilePath];
+    NSDictionary<NSString *, NSString *> *config = @{CBL_HasFpTypesEnabledKey : hasData ? @"YES" : @"NO"};
+    [config writeToFile:configFilePath atomically:YES];
+    BOOL success = [self addSkipBackupAttributeToItemAtPath:configFilePath];
+    LogTo(CBLDatabase, @"%d: File with fp_type setting is written: ", success);
+}
+
+
+- (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *)filePathString
+{
+    NSURL* URL= [NSURL fileURLWithPath: filePathString];
+    assert([[NSFileManager defaultManager] fileExistsAtPath: [URL path]]);
+    
+    NSError *error = nil;
+    BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    if(!success){
+        NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+    }
+    return success;
+}
+
+
+#pragma mark - GETTING DOCUMENTS:
 
 - (NSUInteger) documentCount {
     NSUInteger result = NSNotFound;

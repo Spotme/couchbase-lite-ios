@@ -267,8 +267,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 inserted++;
         };
         
-        BOOL checkDocTypes = [self getDocumentTypes] != nil && [self getDocumentTypes].count > 0;
-
+        BOOL checkDocTypes = [self getDocumentTypes] != nil && [self getDocumentTypes].count > 0 && ![self.database hasDataWithoutFpType];
+        
         NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, "
                                  "no_attachments, deleted, doc_type "
                                  "FROM revs, docs "
@@ -434,8 +434,8 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         
         CFAbsoluteTime updateIndexEnd = CFAbsoluteTimeGetCurrent();
         
-        LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (total %u, deleted %u, added %u), took %3.3fsec",
-              _name, dbMaxSequence, total, deleted, inserted, (updateIndexEnd - updateIndexStart));
+        LogTo(View, @"...Finished re-indexing view %@ to sequence=%lld (total %u, deleted %u, added %u), took %3.3fsec, fp_type is used: %d",
+              _name, dbMaxSequence, total, deleted, inserted, (updateIndexEnd - updateIndexStart), checkDocTypes);
         return kCBLStatusOK;
     }];
     
