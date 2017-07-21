@@ -270,9 +270,9 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         BOOL checkDocTypes = [self getDocumentTypes] != nil && [self getDocumentTypes].count > 0 && ![self.database hasDataWithoutFpType];
         
         NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, "
-                                 "no_attachments, deleted, doc_type "
+                                 "no_attachments, doc_type "
                                  "FROM revs, docs "
-                                 "WHERE sequence>? AND current!=0 " mutableCopy];
+                                 "WHERE sequence>? AND current!=0 AND deleted=0 " mutableCopy];
         if (checkDocTypes) {
             [sql appendFormat: @"AND doc_type IN (%@) ", [CBLDatabase joinQuotedStrings:self.getDocumentTypes]];
         }
@@ -301,9 +301,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                 NSString* revID = [r stringForColumnIndex: 3];
                 NSData* json = [r dataForColumnIndex: 4];
                 BOOL noAttachments = [r boolForColumnIndex: 5];
-                BOOL deleted = [r boolForColumnIndex: 6];
-                #pragma unused(deleted)
-                NSString* docType = checkDocTypes ? [r stringForColumnIndex: 7] : nil;
+                NSString* docType = checkDocTypes ? [r stringForColumnIndex: 6] : nil;
                 
                 // Iterate over following rows with the same doc_id -- these are conflicts.
                 // Skip them, but collect their revIDs:
