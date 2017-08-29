@@ -35,7 +35,7 @@ static inline int dcmp(double n1, double n2) {
 
 
 // Maps an ASCII character to its uppercase equivalent.
-static char kAsciiToUpper[127];
+static char kAsciiToUpper[128];
 
 static void initializeAsciiToUpper(void) {
     for (int i=0; i<=127; i++)
