@@ -116,9 +116,16 @@ static NSString* normalizeHostname( NSString* hostname ) {
 
 + (CBL_Server*) serverForURL: (NSURL*)url {
     NSString* scheme = url.scheme.lowercaseString;
-    if ([scheme isEqualToString: kScheme])
-        return [self serverForHostname: url.host];
-    if ([scheme isEqualToString: @"http"] || [scheme isEqualToString: @"https"]) {
+    if ([scheme isEqualToString: kScheme]) {
+        if ([self serverForHostname: url.host]) {
+            return [self serverForHostname: url.host];
+        }
+        NSString* host = url.host;
+        if ([host hasSuffix: @".couchbase."]) {
+            host = [host substringToIndex: host.length - 11];
+            return [self serverForHostname: host];
+        }
+    } else if ([scheme isEqualToString: @"http"] || [scheme isEqualToString: @"https"]) {
         NSString* host = url.host;
         if ([host hasSuffix: @".couchbase."]) {
             host = [host substringToIndex: host.length - 11];
