@@ -4,9 +4,6 @@
 [submodule "vendor/CocoaHTTPServer"]
 	path = vendor/CocoaHTTPServer
 	url = git://github.com/evsukov89/CocoaHTTPServer.git
-[submodule "vendor/MYUtilities"]
-	path = vendor/MYUtilities
-url=https://github.com/Spotme/MYUtilities
 [submodule "vendor/oauthconsumer"]
 	path = vendor/oauthconsumer
 	url = git://github.com/couchbaselabs/ios-oauthconsumer.git
