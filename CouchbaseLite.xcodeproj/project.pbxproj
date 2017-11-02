@@ -824,44 +824,61 @@
 		AA1776BA1857ADDB00CB01A3 /* CBLIncrementalStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1776B81857ADDB00CB01A3 /* CBLIncrementalStoreTests.m */; };
 		AA1776BC1857AE4D00CB01A3 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1776BB1857AE4D00CB01A3 /* CoreData.framework */; };
 		AA24F8E4184538AE0091D577 /* CBLDatabaseChange.h in Headers */ = {isa = PBXBuildFile; fileRef = 2776A62E16A9BCBC006FF199 /* CBLDatabaseChange.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BCB5E3581FAB581D000F824C /* CollectionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3301FAB581D000F824C /* CollectionUtils.h */; };
-		BCB5E3591FAB581D000F824C /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3311FAB581D000F824C /* CollectionUtils.m */; };
-		BCB5E35A1FAB581D000F824C /* ConcurrentOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3321FAB581D000F824C /* ConcurrentOperation.h */; };
-		BCB5E35B1FAB581D000F824C /* ConcurrentOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3331FAB581D000F824C /* ConcurrentOperation.m */; };
-		BCB5E35C1FAB581D000F824C /* ExceptionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3341FAB581D000F824C /* ExceptionUtils.h */; };
-		BCB5E35D1FAB581D000F824C /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3351FAB581D000F824C /* ExceptionUtils.m */; };
-		BCB5E35E1FAB581E000F824C /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3361FAB581D000F824C /* Logging.h */; };
-		BCB5E35F1FAB581E000F824C /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3371FAB581D000F824C /* Logging.m */; };
-		BCB5E3601FAB581E000F824C /* MYBlockUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3381FAB581D000F824C /* MYBlockUtils.h */; };
-		BCB5E3611FAB581E000F824C /* MYBlockUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3391FAB581D000F824C /* MYBlockUtils.m */; };
-		BCB5E3621FAB581E000F824C /* MYData.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E33A1FAB581D000F824C /* MYData.h */; };
-		BCB5E3631FAB581E000F824C /* MYData.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E33B1FAB581D000F824C /* MYData.m */; };
-		BCB5E3641FAB581E000F824C /* MYDynamicObject.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E33C1FAB581D000F824C /* MYDynamicObject.h */; };
-		BCB5E3651FAB581E000F824C /* MYDynamicObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E33D1FAB581D000F824C /* MYDynamicObject.m */; };
-		BCB5E3661FAB581E000F824C /* MYErrorUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E33E1FAB581D000F824C /* MYErrorUtils.h */; };
-		BCB5E3671FAB581E000F824C /* MYErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E33F1FAB581D000F824C /* MYErrorUtils.m */; };
-		BCB5E3681FAB581E000F824C /* MYRegexUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3401FAB581D000F824C /* MYRegexUtils.h */; };
-		BCB5E3691FAB581E000F824C /* MYRegexUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3411FAB581D000F824C /* MYRegexUtils.m */; };
-		BCB5E36A1FAB581E000F824C /* MYStreamUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3421FAB581D000F824C /* MYStreamUtils.h */; };
-		BCB5E36B1FAB581E000F824C /* MYStreamUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3431FAB581D000F824C /* MYStreamUtils.m */; };
-		BCB5E36C1FAB581E000F824C /* MYURLHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3441FAB581D000F824C /* MYURLHandler.h */; };
-		BCB5E36D1FAB581E000F824C /* MYURLHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3451FAB581D000F824C /* MYURLHandler.m */; };
-		BCB5E36E1FAB581E000F824C /* MYURLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3461FAB581D000F824C /* MYURLUtils.h */; };
-		BCB5E36F1FAB581E000F824C /* MYURLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3471FAB581D000F824C /* MYURLUtils.m */; };
-		BCB5E3701FAB581E000F824C /* MYUtilities.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E3481FAB581D000F824C /* MYUtilities.xcconfig */; };
-		BCB5E3711FAB581E000F824C /* MYUtilities_Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E3491FAB581D000F824C /* MYUtilities_Debug.xcconfig */; };
-		BCB5E3721FAB581E000F824C /* MYUtilities_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E34A1FAB581D000F824C /* MYUtilities_Prefix.pch */; };
-		BCB5E3731FAB581E000F824C /* MYUtilities_Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E34B1FAB581D000F824C /* MYUtilities_Release.xcconfig */; };
-		BCB5E3741FAB581E000F824C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E34C1FAB581D000F824C /* README.md */; };
-		BCB5E3751FAB581E000F824C /* setObjToARC.rb in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E34D1FAB581D000F824C /* setObjToARC.rb */; };
-		BCB5E3761FAB581E000F824C /* Target.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E34E1FAB581D000F824C /* Target.h */; };
-		BCB5E3771FAB581E000F824C /* Target.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E34F1FAB581D000F824C /* Target.m */; };
-		BCB5E3781FAB581E000F824C /* Test.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3501FAB581D000F824C /* Test.h */; };
-		BCB5E3791FAB581E000F824C /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3511FAB581D000F824C /* Test.m */; };
-		BCB5E37A1FAB581E000F824C /* GTMDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3541FAB581D000F824C /* GTMDefines.h */; };
-		BCB5E37B1FAB581E000F824C /* GTMNSData+zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3551FAB581D000F824C /* GTMNSData+zlib.h */; };
-		BCB5E37C1FAB581E000F824C /* GTMNSData+zlib.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3561FAB581D000F824C /* GTMNSData+zlib.m */; };
-		BCB5E37D1FAB581E000F824C /* README in Resources */ = {isa = PBXBuildFile; fileRef = BCB5E3571FAB581D000F824C /* README */; };
+		BCB5E4051FAB5F29000F824C /* CollectionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3DD1FAB5F29000F824C /* CollectionUtils.h */; };
+		BCB5E4061FAB5F29000F824C /* CollectionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3DD1FAB5F29000F824C /* CollectionUtils.h */; };
+		BCB5E4071FAB5F29000F824C /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4081FAB5F29000F824C /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4091FAB5F29000F824C /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E40F1FAB5F29000F824C /* ExceptionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E11FAB5F29000F824C /* ExceptionUtils.h */; };
+		BCB5E4101FAB5F29000F824C /* ExceptionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E11FAB5F29000F824C /* ExceptionUtils.h */; };
+		BCB5E4111FAB5F29000F824C /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E21FAB5F29000F824C /* ExceptionUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4121FAB5F29000F824C /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E21FAB5F29000F824C /* ExceptionUtils.m */; };
+		BCB5E4131FAB5F29000F824C /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E21FAB5F29000F824C /* ExceptionUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4141FAB5F29000F824C /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E31FAB5F29000F824C /* Logging.h */; };
+		BCB5E4151FAB5F29000F824C /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E31FAB5F29000F824C /* Logging.h */; };
+		BCB5E4161FAB5F29000F824C /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E41FAB5F29000F824C /* Logging.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4171FAB5F29000F824C /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E41FAB5F29000F824C /* Logging.m */; };
+		BCB5E4181FAB5F29000F824C /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E41FAB5F29000F824C /* Logging.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4191FAB5F29000F824C /* MYBlockUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E51FAB5F29000F824C /* MYBlockUtils.h */; };
+		BCB5E41A1FAB5F29000F824C /* MYBlockUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E51FAB5F29000F824C /* MYBlockUtils.h */; };
+		BCB5E41B1FAB5F29000F824C /* MYBlockUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E41C1FAB5F29000F824C /* MYBlockUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */; };
+		BCB5E41D1FAB5F29000F824C /* MYBlockUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4231FAB5F29000F824C /* MYDynamicObject.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E91FAB5F29000F824C /* MYDynamicObject.h */; };
+		BCB5E4241FAB5F29000F824C /* MYDynamicObject.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3E91FAB5F29000F824C /* MYDynamicObject.h */; };
+		BCB5E4251FAB5F29000F824C /* MYDynamicObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EA1FAB5F29000F824C /* MYDynamicObject.m */; };
+		BCB5E4261FAB5F29000F824C /* MYDynamicObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EA1FAB5F29000F824C /* MYDynamicObject.m */; };
+		BCB5E4271FAB5F29000F824C /* MYDynamicObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EA1FAB5F29000F824C /* MYDynamicObject.m */; };
+		BCB5E4281FAB5F29000F824C /* MYErrorUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3EB1FAB5F29000F824C /* MYErrorUtils.h */; };
+		BCB5E4291FAB5F29000F824C /* MYErrorUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3EB1FAB5F29000F824C /* MYErrorUtils.h */; };
+		BCB5E42A1FAB5F29000F824C /* MYErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EC1FAB5F29000F824C /* MYErrorUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E42B1FAB5F29000F824C /* MYErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EC1FAB5F29000F824C /* MYErrorUtils.m */; };
+		BCB5E42C1FAB5F29000F824C /* MYErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EC1FAB5F29000F824C /* MYErrorUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E42D1FAB5F29000F824C /* MYRegexUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3ED1FAB5F29000F824C /* MYRegexUtils.h */; };
+		BCB5E42E1FAB5F29000F824C /* MYRegexUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3ED1FAB5F29000F824C /* MYRegexUtils.h */; };
+		BCB5E42F1FAB5F29000F824C /* MYRegexUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */; };
+		BCB5E4301FAB5F29000F824C /* MYRegexUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */; };
+		BCB5E4311FAB5F29000F824C /* MYRegexUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */; };
+		BCB5E4321FAB5F29000F824C /* MYStreamUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3EF1FAB5F29000F824C /* MYStreamUtils.h */; };
+		BCB5E4331FAB5F29000F824C /* MYStreamUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3EF1FAB5F29000F824C /* MYStreamUtils.h */; };
+		BCB5E4341FAB5F29000F824C /* MYStreamUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F01FAB5F29000F824C /* MYStreamUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4351FAB5F29000F824C /* MYStreamUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F01FAB5F29000F824C /* MYStreamUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E4361FAB5F29000F824C /* MYStreamUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F01FAB5F29000F824C /* MYStreamUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E43C1FAB5F29000F824C /* MYURLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3F31FAB5F29000F824C /* MYURLUtils.h */; };
+		BCB5E43D1FAB5F29000F824C /* MYURLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3F31FAB5F29000F824C /* MYURLUtils.h */; };
+		BCB5E43E1FAB5F29000F824C /* MYURLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F41FAB5F29000F824C /* MYURLUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E43F1FAB5F29000F824C /* MYURLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F41FAB5F29000F824C /* MYURLUtils.m */; };
+		BCB5E4401FAB5F29000F824C /* MYURLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3F41FAB5F29000F824C /* MYURLUtils.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E44D1FAB5F29000F824C /* Test.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3FD1FAB5F29000F824C /* Test.h */; };
+		BCB5E44E1FAB5F29000F824C /* Test.h in Headers */ = {isa = PBXBuildFile; fileRef = BCB5E3FD1FAB5F29000F824C /* Test.h */; };
+		BCB5E44F1FAB5F29000F824C /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3FE1FAB5F29000F824C /* Test.m */; };
+		BCB5E4501FAB5F29000F824C /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3FE1FAB5F29000F824C /* Test.m */; };
+		BCB5E4511FAB5F29000F824C /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3FE1FAB5F29000F824C /* Test.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		BCB5E45A1FAB6126000F824C /* Test.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3FE1FAB5F29000F824C /* Test.m */; };
+		BCB5E45B1FAB6177000F824C /* MYRegexUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */; };
+		BCB5E45C1FAB618F000F824C /* MYBlockUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */; };
+		BCB5E45D1FAB619C000F824C /* CollectionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */; };
+		BCB5E45E1FAB61A3000F824C /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = BCB5E3E41FAB5F29000F824C /* Logging.m */; };
 		DA023B4614BCA94C008184BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
 		DA147C0C14BCA98A0052DA4D /* CBLListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 275315DF14ACF0A20065964D /* CBLListener.m */; };
 		DA147C0D14BCA98A0052DA4D /* CBLHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2753160B14ACFC2A0065964D /* CBLHTTPConnection.m */; };
@@ -1606,44 +1623,26 @@
 		AA1776B71857ADDB00CB01A3 /* CBLIncrementalStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLIncrementalStore.m; path = Extras/CBLIncrementalStore.m; sourceTree = "<group>"; };
 		AA1776B81857ADDB00CB01A3 /* CBLIncrementalStoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBLIncrementalStoreTests.m; path = Extras/CBLIncrementalStoreTests.m; sourceTree = "<group>"; };
 		AA1776BB1857AE4D00CB01A3 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
-		BCB5E3301FAB581D000F824C /* CollectionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionUtils.h; sourceTree = "<group>"; };
-		BCB5E3311FAB581D000F824C /* CollectionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionUtils.m; sourceTree = "<group>"; };
-		BCB5E3321FAB581D000F824C /* ConcurrentOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcurrentOperation.h; sourceTree = "<group>"; };
-		BCB5E3331FAB581D000F824C /* ConcurrentOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcurrentOperation.m; sourceTree = "<group>"; };
-		BCB5E3341FAB581D000F824C /* ExceptionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExceptionUtils.h; sourceTree = "<group>"; };
-		BCB5E3351FAB581D000F824C /* ExceptionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionUtils.m; sourceTree = "<group>"; };
-		BCB5E3361FAB581D000F824C /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
-		BCB5E3371FAB581D000F824C /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
-		BCB5E3381FAB581D000F824C /* MYBlockUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYBlockUtils.h; sourceTree = "<group>"; };
-		BCB5E3391FAB581D000F824C /* MYBlockUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYBlockUtils.m; sourceTree = "<group>"; };
-		BCB5E33A1FAB581D000F824C /* MYData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYData.h; sourceTree = "<group>"; };
-		BCB5E33B1FAB581D000F824C /* MYData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYData.m; sourceTree = "<group>"; };
-		BCB5E33C1FAB581D000F824C /* MYDynamicObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYDynamicObject.h; sourceTree = "<group>"; };
-		BCB5E33D1FAB581D000F824C /* MYDynamicObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYDynamicObject.m; sourceTree = "<group>"; };
-		BCB5E33E1FAB581D000F824C /* MYErrorUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYErrorUtils.h; sourceTree = "<group>"; };
-		BCB5E33F1FAB581D000F824C /* MYErrorUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYErrorUtils.m; sourceTree = "<group>"; };
-		BCB5E3401FAB581D000F824C /* MYRegexUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYRegexUtils.h; sourceTree = "<group>"; };
-		BCB5E3411FAB581D000F824C /* MYRegexUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYRegexUtils.m; sourceTree = "<group>"; };
-		BCB5E3421FAB581D000F824C /* MYStreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYStreamUtils.h; sourceTree = "<group>"; };
-		BCB5E3431FAB581D000F824C /* MYStreamUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYStreamUtils.m; sourceTree = "<group>"; };
-		BCB5E3441FAB581D000F824C /* MYURLHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYURLHandler.h; sourceTree = "<group>"; };
-		BCB5E3451FAB581D000F824C /* MYURLHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYURLHandler.m; sourceTree = "<group>"; };
-		BCB5E3461FAB581D000F824C /* MYURLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYURLUtils.h; sourceTree = "<group>"; };
-		BCB5E3471FAB581D000F824C /* MYURLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYURLUtils.m; sourceTree = "<group>"; };
-		BCB5E3481FAB581D000F824C /* MYUtilities.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = MYUtilities.xcconfig; sourceTree = "<group>"; };
-		BCB5E3491FAB581D000F824C /* MYUtilities_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = MYUtilities_Debug.xcconfig; sourceTree = "<group>"; };
-		BCB5E34A1FAB581D000F824C /* MYUtilities_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYUtilities_Prefix.pch; sourceTree = "<group>"; };
-		BCB5E34B1FAB581D000F824C /* MYUtilities_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = MYUtilities_Release.xcconfig; sourceTree = "<group>"; };
-		BCB5E34C1FAB581D000F824C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BCB5E34D1FAB581D000F824C /* setObjToARC.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = setObjToARC.rb; sourceTree = "<group>"; };
-		BCB5E34E1FAB581D000F824C /* Target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Target.h; sourceTree = "<group>"; };
-		BCB5E34F1FAB581D000F824C /* Target.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Target.m; sourceTree = "<group>"; };
-		BCB5E3501FAB581D000F824C /* Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test.h; sourceTree = "<group>"; };
-		BCB5E3511FAB581D000F824C /* Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Test.m; sourceTree = "<group>"; };
-		BCB5E3541FAB581D000F824C /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
-		BCB5E3551FAB581D000F824C /* GTMNSData+zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSData+zlib.h"; sourceTree = "<group>"; };
-		BCB5E3561FAB581D000F824C /* GTMNSData+zlib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSData+zlib.m"; sourceTree = "<group>"; };
-		BCB5E3571FAB581D000F824C /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		BCB5E3DD1FAB5F29000F824C /* CollectionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionUtils.h; sourceTree = "<group>"; };
+		BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionUtils.m; sourceTree = "<group>"; };
+		BCB5E3E11FAB5F29000F824C /* ExceptionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExceptionUtils.h; sourceTree = "<group>"; };
+		BCB5E3E21FAB5F29000F824C /* ExceptionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionUtils.m; sourceTree = "<group>"; };
+		BCB5E3E31FAB5F29000F824C /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
+		BCB5E3E41FAB5F29000F824C /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		BCB5E3E51FAB5F29000F824C /* MYBlockUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYBlockUtils.h; sourceTree = "<group>"; };
+		BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYBlockUtils.m; sourceTree = "<group>"; };
+		BCB5E3E91FAB5F29000F824C /* MYDynamicObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYDynamicObject.h; sourceTree = "<group>"; };
+		BCB5E3EA1FAB5F29000F824C /* MYDynamicObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYDynamicObject.m; sourceTree = "<group>"; };
+		BCB5E3EB1FAB5F29000F824C /* MYErrorUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYErrorUtils.h; sourceTree = "<group>"; };
+		BCB5E3EC1FAB5F29000F824C /* MYErrorUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYErrorUtils.m; sourceTree = "<group>"; };
+		BCB5E3ED1FAB5F29000F824C /* MYRegexUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYRegexUtils.h; sourceTree = "<group>"; };
+		BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYRegexUtils.m; sourceTree = "<group>"; };
+		BCB5E3EF1FAB5F29000F824C /* MYStreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYStreamUtils.h; sourceTree = "<group>"; };
+		BCB5E3F01FAB5F29000F824C /* MYStreamUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYStreamUtils.m; sourceTree = "<group>"; };
+		BCB5E3F31FAB5F29000F824C /* MYURLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MYURLUtils.h; sourceTree = "<group>"; };
+		BCB5E3F41FAB5F29000F824C /* MYURLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MYURLUtils.m; sourceTree = "<group>"; };
+		BCB5E3FD1FAB5F29000F824C /* Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test.h; sourceTree = "<group>"; };
+		BCB5E3FE1FAB5F29000F824C /* Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Test.m; sourceTree = "<group>"; };
 		DA023B6414BCA94C008184BB /* libCouchbaseLiteListener.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCouchbaseLiteListener.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA147C3614BCAC3B0052DA4D /* CouchbaseLiteListener.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CouchbaseLiteListener.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA147C3A14BCAC780052DA4D /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
@@ -1938,7 +1937,7 @@
 		2753154D14ACEF350065964D /* vendor */ = {
 			isa = PBXGroup;
 			children = (
-				BCB5E32F1FAB581D000F824C /* MYUtilitiesLocal */,
+				BCB5E3DC1FAB5F29000F824C /* MYUtilitiesLocal */,
 				A98764F7194EDB0400700708 /* libsqlcipher.a */,
 				277B5C5E1821A8370088881E /* yajl */,
 				27F0746C11CD51A200E9A2AB /* FMDB */,
@@ -2741,65 +2740,31 @@
 			name = JS;
 			sourceTree = "<group>";
 		};
-		BCB5E32F1FAB581D000F824C /* MYUtilitiesLocal */ = {
+		BCB5E3DC1FAB5F29000F824C /* MYUtilitiesLocal */ = {
 			isa = PBXGroup;
 			children = (
-				BCB5E3301FAB581D000F824C /* CollectionUtils.h */,
-				BCB5E3311FAB581D000F824C /* CollectionUtils.m */,
-				BCB5E3321FAB581D000F824C /* ConcurrentOperation.h */,
-				BCB5E3331FAB581D000F824C /* ConcurrentOperation.m */,
-				BCB5E3341FAB581D000F824C /* ExceptionUtils.h */,
-				BCB5E3351FAB581D000F824C /* ExceptionUtils.m */,
-				BCB5E3361FAB581D000F824C /* Logging.h */,
-				BCB5E3371FAB581D000F824C /* Logging.m */,
-				BCB5E3381FAB581D000F824C /* MYBlockUtils.h */,
-				BCB5E3391FAB581D000F824C /* MYBlockUtils.m */,
-				BCB5E33A1FAB581D000F824C /* MYData.h */,
-				BCB5E33B1FAB581D000F824C /* MYData.m */,
-				BCB5E33C1FAB581D000F824C /* MYDynamicObject.h */,
-				BCB5E33D1FAB581D000F824C /* MYDynamicObject.m */,
-				BCB5E33E1FAB581D000F824C /* MYErrorUtils.h */,
-				BCB5E33F1FAB581D000F824C /* MYErrorUtils.m */,
-				BCB5E3401FAB581D000F824C /* MYRegexUtils.h */,
-				BCB5E3411FAB581D000F824C /* MYRegexUtils.m */,
-				BCB5E3421FAB581D000F824C /* MYStreamUtils.h */,
-				BCB5E3431FAB581D000F824C /* MYStreamUtils.m */,
-				BCB5E3441FAB581D000F824C /* MYURLHandler.h */,
-				BCB5E3451FAB581D000F824C /* MYURLHandler.m */,
-				BCB5E3461FAB581D000F824C /* MYURLUtils.h */,
-				BCB5E3471FAB581D000F824C /* MYURLUtils.m */,
-				BCB5E3481FAB581D000F824C /* MYUtilities.xcconfig */,
-				BCB5E3491FAB581D000F824C /* MYUtilities_Debug.xcconfig */,
-				BCB5E34A1FAB581D000F824C /* MYUtilities_Prefix.pch */,
-				BCB5E34B1FAB581D000F824C /* MYUtilities_Release.xcconfig */,
-				BCB5E34C1FAB581D000F824C /* README.md */,
-				BCB5E34D1FAB581D000F824C /* setObjToARC.rb */,
-				BCB5E34E1FAB581D000F824C /* Target.h */,
-				BCB5E34F1FAB581D000F824C /* Target.m */,
-				BCB5E3501FAB581D000F824C /* Test.h */,
-				BCB5E3511FAB581D000F824C /* Test.m */,
-				BCB5E3521FAB581D000F824C /* vendor */,
+				BCB5E3DD1FAB5F29000F824C /* CollectionUtils.h */,
+				BCB5E3DE1FAB5F29000F824C /* CollectionUtils.m */,
+				BCB5E3E11FAB5F29000F824C /* ExceptionUtils.h */,
+				BCB5E3E21FAB5F29000F824C /* ExceptionUtils.m */,
+				BCB5E3E31FAB5F29000F824C /* Logging.h */,
+				BCB5E3E41FAB5F29000F824C /* Logging.m */,
+				BCB5E3E51FAB5F29000F824C /* MYBlockUtils.h */,
+				BCB5E3E61FAB5F29000F824C /* MYBlockUtils.m */,
+				BCB5E3E91FAB5F29000F824C /* MYDynamicObject.h */,
+				BCB5E3EA1FAB5F29000F824C /* MYDynamicObject.m */,
+				BCB5E3EB1FAB5F29000F824C /* MYErrorUtils.h */,
+				BCB5E3EC1FAB5F29000F824C /* MYErrorUtils.m */,
+				BCB5E3ED1FAB5F29000F824C /* MYRegexUtils.h */,
+				BCB5E3EE1FAB5F29000F824C /* MYRegexUtils.m */,
+				BCB5E3EF1FAB5F29000F824C /* MYStreamUtils.h */,
+				BCB5E3F01FAB5F29000F824C /* MYStreamUtils.m */,
+				BCB5E3F31FAB5F29000F824C /* MYURLUtils.h */,
+				BCB5E3F41FAB5F29000F824C /* MYURLUtils.m */,
+				BCB5E3FD1FAB5F29000F824C /* Test.h */,
+				BCB5E3FE1FAB5F29000F824C /* Test.m */,
 			);
 			path = MYUtilitiesLocal;
-			sourceTree = "<group>";
-		};
-		BCB5E3521FAB581D000F824C /* vendor */ = {
-			isa = PBXGroup;
-			children = (
-				BCB5E3531FAB581D000F824C /* google-toolbox-for-mac */,
-			);
-			path = vendor;
-			sourceTree = "<group>";
-		};
-		BCB5E3531FAB581D000F824C /* google-toolbox-for-mac */ = {
-			isa = PBXGroup;
-			children = (
-				BCB5E3541FAB581D000F824C /* GTMDefines.h */,
-				BCB5E3551FAB581D000F824C /* GTMNSData+zlib.h */,
-				BCB5E3561FAB581D000F824C /* GTMNSData+zlib.m */,
-				BCB5E3571FAB581D000F824C /* README */,
-			);
-			path = "google-toolbox-for-mac";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2813,7 +2778,7 @@
 				A9DD5F921868B38D00DA3C3A /* CBLListFunction.h in Headers */,
 				A9DD5F971868B38D00DA3C3A /* CBLShowFunction.h in Headers */,
 				270B3E201489390000E0A926 /* CouchbaseLite.h in Headers */,
-				BCB5E3781FAB581E000F824C /* Test.h in Headers */,
+				BCB5E44D1FAB5F29000F824C /* Test.h in Headers */,
 				277B5D331821A8380088881E /* yajl_bytestack.h in Headers */,
 				27821BBE14906FB60099B373 /* CouchbaseLitePrefix.h in Headers */,
 				279EB2D11491442500E74185 /* CBLInternal.h in Headers */,
@@ -2827,7 +2792,7 @@
 				27731EFF1493FA3100815D67 /* CBL_BlobStore.h in Headers */,
 				279906E3149A65B8003D4338 /* CBLRemoteRequest.h in Headers */,
 				279906EE149ABFC2003D4338 /* CBLBatcher.h in Headers */,
-				BCB5E3601FAB581E000F824C /* MYBlockUtils.h in Headers */,
+				BCB5E4191FAB5F29000F824C /* MYBlockUtils.h in Headers */,
 				277B5D3E1821A8380088881E /* yajl_parser.h in Headers */,
 				277EF3A517F4DF0600F7B7F7 /* CBLGeometry.h in Headers */,
 				277B5DCA1821A8B60088881E /* yajl_tree.h in Headers */,
@@ -2836,9 +2801,8 @@
 				2753157214ACEFC90065964D /* DDNumber.h in Headers */,
 				27E2E5A3159383E9005B9234 /* CBLAttachment.h in Headers */,
 				27E4152F154F6E8500771FC5 /* CBLStatus.h in Headers */,
-				BCB5E36C1FAB581E000F824C /* MYURLHandler.h in Headers */,
 				27E2E5CD159533A5005B9234 /* CBLReplication.h in Headers */,
-				BCB5E35E1FAB581E000F824C /* Logging.h in Headers */,
+				BCB5E4141FAB5F29000F824C /* Logging.h in Headers */,
 				270B3E231489392100E0A926 /* CBL_Body.h in Headers */,
 				27A720A0152B959100C0A0E8 /* CBL_Attachment.h in Headers */,
 				270B3E221489391E00E0A926 /* CBLDatabase+Internal.h in Headers */,
@@ -2849,16 +2813,14 @@
 				277B5D321821A8380088881E /* yajl_buf.h in Headers */,
 				2711CE0314C759BD00505D55 /* CBLDatabase+Replication.h in Headers */,
 				277EF41017F4DF3700F7B7F7 /* fts3_unicodesn.h in Headers */,
-				BCB5E36A1FAB581E000F824C /* MYStreamUtils.h in Headers */,
+				BCB5E4321FAB5F29000F824C /* MYStreamUtils.h in Headers */,
 				A9DD5F9E1868B76100DA3C3A /* CBLShowFunction+Internal.h in Headers */,
 				270B3E2B1489581E00E0A926 /* CBL_Puller.h in Headers */,
-				BCB5E3641FAB581E000F824C /* MYDynamicObject.h in Headers */,
+				BCB5E4231FAB5F29000F824C /* MYDynamicObject.h in Headers */,
 				270B3E3E148D7F0000E0A926 /* CBL_Pusher.h in Headers */,
 				27821BB7148E7D6F0099B373 /* CBL_Replicator.h in Headers */,
-				BCB5E3621FAB581E000F824C /* MYData.h in Headers */,
 				270B3E3914898DF200E0A926 /* CBL_Revision.h in Headers */,
 				270B3E251489392C00E0A926 /* CBL_Router.h in Headers */,
-				BCB5E3721FAB581E000F824C /* MYUtilities_Prefix.pch in Headers */,
 				277B5D2F1821A8380088881E /* yajl_alloc.h in Headers */,
 				270B3E241489392600E0A926 /* CBL_Server.h in Headers */,
 				270B3E211489390F00E0A926 /* CBL_URLProtocol.h in Headers */,
@@ -2866,22 +2828,19 @@
 				2753157614ACEFC90065964D /* DDRange.h in Headers */,
 				2753157A14ACEFC90065964D /* HTTPAuthenticationRequest.h in Headers */,
 				2753157E14ACEFC90065964D /* HTTPConnection.h in Headers */,
-				BCB5E3681FAB581E000F824C /* MYRegexUtils.h in Headers */,
-				BCB5E3661FAB581E000F824C /* MYErrorUtils.h in Headers */,
-				BCB5E3581FAB581D000F824C /* CollectionUtils.h in Headers */,
+				BCB5E42D1FAB5F29000F824C /* MYRegexUtils.h in Headers */,
+				BCB5E4281FAB5F29000F824C /* MYErrorUtils.h in Headers */,
+				BCB5E4051FAB5F29000F824C /* CollectionUtils.h in Headers */,
 				2753158214ACEFC90065964D /* HTTPLogging.h in Headers */,
 				2753158414ACEFC90065964D /* HTTPMessage.h in Headers */,
-				BCB5E3761FAB581E000F824C /* Target.h in Headers */,
 				2753158814ACEFC90065964D /* HTTPResponse.h in Headers */,
-				BCB5E35A1FAB581D000F824C /* ConcurrentOperation.h in Headers */,
 				2753158A14ACEFC90065964D /* HTTPServer.h in Headers */,
 				27B945B217692E2000B2DF2D /* CBLModel_Internal.h in Headers */,
-				BCB5E36E1FAB581E000F824C /* MYURLUtils.h in Headers */,
+				BCB5E43C1FAB5F29000F824C /* MYURLUtils.h in Headers */,
 				2753158E14ACEFC90065964D /* HTTPAsyncFileResponse.h in Headers */,
-				BCB5E35C1FAB581D000F824C /* ExceptionUtils.h in Headers */,
+				BCB5E40F1FAB5F29000F824C /* ExceptionUtils.h in Headers */,
 				2753159214ACEFC90065964D /* HTTPDataResponse.h in Headers */,
 				2753159614ACEFC90065964D /* HTTPDynamicFileResponse.h in Headers */,
-				BCB5E37A1FAB581E000F824C /* GTMDefines.h in Headers */,
 				2753159A14ACEFC90065964D /* HTTPFileResponse.h in Headers */,
 				2753159E14ACEFC90065964D /* HTTPRedirectResponse.h in Headers */,
 				275315A214ACEFC90065964D /* WebSocket.h in Headers */,
@@ -2914,7 +2873,6 @@
 				277B5DC71821A8B60088881E /* yajl_common.h in Headers */,
 				278B0CA0152A8B1900577747 /* CBLCanonicalJSON.h in Headers */,
 				277EF41117F4DF3700F7B7F7 /* fts3Int.h in Headers */,
-				BCB5E37B1FAB581E000F824C /* GTMNSData+zlib.h in Headers */,
 				27F128AB156AC004008465C2 /* NSMutableURLRequest+Parameters.h in Headers */,
 				27F128B1156AC1CA008465C2 /* CBLOAuth1Authorizer.h in Headers */,
 				270F5705156AE0BF000FEB8F /* CBLAuthorizer.h in Headers */,
@@ -3009,28 +2967,36 @@
 			files = (
 				A902068D188847AA00B6B6B4 /* CBLSocketChangeTracker.h in Headers */,
 				A932B2F41875F3FC001B540A /* CouchbaseLite.h in Headers */,
+				BCB5E43D1FAB5F29000F824C /* MYURLUtils.h in Headers */,
 				A932B30F1875F497001B540A /* CouchbaseLitePrivate.h in Headers */,
 				A932B3101875F497001B540A /* CBLStatus.h in Headers */,
 				A932B2F51875F3FC001B540A /* CBLManager.h in Headers */,
 				A932B2F61875F3FC001B540A /* CBLDatabase.h in Headers */,
 				A932B2F71875F3FC001B540A /* CBLDocument.h in Headers */,
 				A932B2F81875F3FC001B540A /* CBLRevision.h in Headers */,
+				BCB5E4331FAB5F29000F824C /* MYStreamUtils.h in Headers */,
 				A932B2F91875F3FC001B540A /* CBLAttachment.h in Headers */,
 				A932B2FA1875F3FC001B540A /* CBLView.h in Headers */,
 				A932B2FB1875F3FC001B540A /* CBLFunctionResult.h in Headers */,
 				A932B2FC1875F3FC001B540A /* CBLShowFunction.h in Headers */,
 				A932B2FD1875F3FC001B540A /* CBLListFunction.h in Headers */,
+				BCB5E4241FAB5F29000F824C /* MYDynamicObject.h in Headers */,
 				A932B2FE1875F3FC001B540A /* CBLQuery.h in Headers */,
 				A932B2FF1875F3FC001B540A /* CBLQuery+FullTextSearch.h in Headers */,
 				A932B3001875F3FC001B540A /* CBLQuery+Geo.h in Headers */,
 				A932B3011875F3FC001B540A /* CBLReplication.h in Headers */,
 				A932B3021875F3FC001B540A /* CBLDatabaseChange.h in Headers */,
 				A932B3031875F3FC001B540A /* CBLModel.h in Headers */,
+				BCB5E4061FAB5F29000F824C /* CollectionUtils.h in Headers */,
+				BCB5E4291FAB5F29000F824C /* MYErrorUtils.h in Headers */,
+				BCB5E41A1FAB5F29000F824C /* MYBlockUtils.h in Headers */,
 				A932B3041875F3FC001B540A /* CBLModelFactory.h in Headers */,
 				A932B3051875F3FC001B540A /* CBLJSON.h in Headers */,
 				A932B3071875F43C001B540A /* CBLGeometry.h in Headers */,
 				A932B3081875F47C001B540A /* CBLUITableSource.h in Headers */,
 				A932B3091875F47C001B540A /* CBLUICollectionSource.h in Headers */,
+				BCB5E4151FAB5F29000F824C /* Logging.h in Headers */,
+				BCB5E44E1FAB5F29000F824C /* Test.h in Headers */,
 				A932B3281875F61E001B540A /* CBLListener.h in Headers */,
 				A932B30A1875F47C001B540A /* CBLJSFunction.h in Headers */,
 				A932B30B1875F47C001B540A /* CBLJSViewCompiler.h in Headers */,
@@ -3051,6 +3017,7 @@
 				A902068618882B4100B6B6B4 /* CBLConnectionChangeTracker.h in Headers */,
 				A932B31E1875F4F7001B540A /* CBL_Revision.h in Headers */,
 				A932B31F1875F4F7001B540A /* CBL_Attachment.h in Headers */,
+				BCB5E42E1FAB5F29000F824C /* MYRegexUtils.h in Headers */,
 				A932B3201875F4F7001B540A /* CBL_Server.h in Headers */,
 				A932B3221875F557001B540A /* CBL_Router.h in Headers */,
 				A932B3231875F557001B540A /* CBL_URLProtocol.h in Headers */,
@@ -3058,6 +3025,7 @@
 				A932B3251875F557001B540A /* CBL_Puller.h in Headers */,
 				A932B3261875F557001B540A /* CBL_Pusher.h in Headers */,
 				A932B3271875F557001B540A /* CBLPersonaAuthorizer.h in Headers */,
+				BCB5E4101FAB5F29000F824C /* ExceptionUtils.h in Headers */,
 				A932B3291875F634001B540A /* CBLHTTPServer.h in Headers */,
 				A932B32A1875F634001B540A /* CBLHTTPConnection.h in Headers */,
 				A932B32B1875F634001B540A /* CBLHTTPResponse.h in Headers */,
@@ -3412,12 +3380,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCB5E37D1FAB581E000F824C /* README in Resources */,
-				BCB5E3701FAB581E000F824C /* MYUtilities.xcconfig in Resources */,
-				BCB5E3731FAB581E000F824C /* MYUtilities_Release.xcconfig in Resources */,
-				BCB5E3741FAB581E000F824C /* README.md in Resources */,
-				BCB5E3711FAB581E000F824C /* MYUtilities_Debug.xcconfig in Resources */,
-				BCB5E3751FAB581E000F824C /* setObjToARC.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3604,16 +3566,16 @@
 				4F5FB6E41B28B6EE006FFEF0 /* CBLJSFunction.m in Sources */,
 				4F5FB6E51B28B6EE006FFEF0 /* CBLJSViewCompiler.m in Sources */,
 				270B3E111489382F00E0A926 /* CBLDatabase+Internal.m in Sources */,
-				BCB5E3611FAB581E000F824C /* MYBlockUtils.m in Sources */,
+				BCB5E41B1FAB5F29000F824C /* MYBlockUtils.m in Sources */,
 				270B3E121489382F00E0A926 /* CBL_Body.m in Sources */,
 				270B3E131489382F00E0A926 /* CBL_Server.m in Sources */,
 				270B3E2C1489581E00E0A926 /* CBL_Puller.m in Sources */,
 				270B3E3A14898DF200E0A926 /* CBL_Revision.m in Sources */,
-				BCB5E36B1FAB581E000F824C /* MYStreamUtils.m in Sources */,
+				BCB5E4341FAB5F29000F824C /* MYStreamUtils.m in Sources */,
 				272A690E17B2CCF0000722FA /* CBLFacebookAuthorizer.m in Sources */,
 				270B3E3F148D7F0000E0A926 /* CBL_Pusher.m in Sources */,
 				27821BB8148E7D6F0099B373 /* CBL_Replicator.m in Sources */,
-				BCB5E3651FAB581E000F824C /* MYDynamicObject.m in Sources */,
+				BCB5E4251FAB5F29000F824C /* MYDynamicObject.m in Sources */,
 				27821BBC149001B30099B373 /* CBLReplicator_Tests.m in Sources */,
 				279EB2CF149140DE00E74185 /* CBLView+Internal.m in Sources */,
 				279EB2DC1491C34300E74185 /* CBLCollateJSON.m in Sources */,
@@ -3628,7 +3590,6 @@
 				27B945AB1768E63200B2DF2D /* CBLModelArray.m in Sources */,
 				274C391E149FAE0000A5E89B /* CBLDatabase+Attachments.m in Sources */,
 				27AA409D14AA86AE00E2A5FF /* CBLDatabase+Insertion.m in Sources */,
-				BCB5E36D1FAB581E000F824C /* MYURLHandler.m in Sources */,
 				27AA40A314AA8A6600E2A5FF /* CBLDatabase+Replication.m in Sources */,
 				2773ADC814BD1EB80027A292 /* CBLDatabase+LocalDocs.m in Sources */,
 				27A073ED14C0BB6200F52FE7 /* CBLMisc.m in Sources */,
@@ -3638,12 +3599,11 @@
 				2766EFF914DB7F9F009ECCA8 /* CBLMultipartWriter.m in Sources */,
 				2766EFFE14DC7B37009ECCA8 /* CBLMultiStreamWriter.m in Sources */,
 				27C5305514DF3A050078F886 /* CBLMultipartUploader.m in Sources */,
-				BCB5E3771FAB581E000F824C /* Target.m in Sources */,
 				276BA0AD17DD13FA00D367CB /* CBLParseDate.c in Sources */,
 				27103F8414E9CE4400DF7209 /* CBLReachability.m in Sources */,
 				279C7E2F14F424090004A1E8 /* CBLSequenceMap.m in Sources */,
 				272B85151523691700A90CB2 /* CBLJSON.m in Sources */,
-				BCB5E3671FAB581E000F824C /* MYErrorUtils.m in Sources */,
+				BCB5E42A1FAB5F29000F824C /* MYErrorUtils.m in Sources */,
 				27ADC07A152502EE001ABC1D /* CBLMultipartDocumentReader.m in Sources */,
 				A9DD5F991868B38E00DA3C3A /* CBLShowFunction.m in Sources */,
 				278B0CA1152A8B1900577747 /* CBLCanonicalJSON.m in Sources */,
@@ -3659,7 +3619,7 @@
 				27DA4309158FA35600F9E7B5 /* CBLCache.m in Sources */,
 				27DA4313158FB79F00F9E7B5 /* CBLQuery.m in Sources */,
 				27DA4346159125B500F9E7B5 /* CBLManager.m in Sources */,
-				BCB5E35F1FAB581E000F824C /* Logging.m in Sources */,
+				BCB5E4161FAB5F29000F824C /* Logging.m in Sources */,
 				277B5DCF1821AE990088881E /* CBLJSONReader.m in Sources */,
 				27DA434B15912AFD00F9E7B5 /* CBLView.m in Sources */,
 				27BDA81F181973EF00F27A11 /* CBLBulkDownloader.m in Sources */,
@@ -3668,20 +3628,19 @@
 				27E2E5A4159383E9005B9234 /* CBLAttachment.m in Sources */,
 				27E2E5CE159533A5005B9234 /* CBLReplication.m in Sources */,
 				277EF39E17F4DEDD00F7B7F7 /* CBLQuery+FullTextSearch.m in Sources */,
-				BCB5E36F1FAB581E000F824C /* MYURLUtils.m in Sources */,
+				BCB5E43E1FAB5F29000F824C /* MYURLUtils.m in Sources */,
 				277EF49417F5F3CB00F7B7F7 /* CBLView+Querying.m in Sources */,
 				277EF3A117F4DEDD00F7B7F7 /* CBLQuery+Geo.m in Sources */,
 				27B945B417692E2000B2DF2D /* CBLModel+Properties.m in Sources */,
 				27B945A51767E06B00B2DF2D /* ModelTests.m in Sources */,
 				A902068E188847AA00B6B6B4 /* CBLSocketChangeTracker.m in Sources */,
 				270D6FC2164484190081812D /* CBLSocketStreamingChangeTracker.m in Sources */,
-				BCB5E3631FAB581E000F824C /* MYData.m in Sources */,
 				27B15517164A118100DF5E2C /* CBL_Database_Tests.m in Sources */,
 				A9DD5FA01868B76100DA3C3A /* CBLShowFunction+Internal.m in Sources */,
 				2776A59316A0C3A6006FF199 /* CBLPersonaAuthorizer.m in Sources */,
 				27A98EA517BEDC9900943528 /* ReplicationAPITests.m in Sources */,
 				2776A63116A9BCBC006FF199 /* CBLDatabaseChange.m in Sources */,
-				BCB5E3591FAB581D000F824C /* CollectionUtils.m in Sources */,
+				BCB5E4071FAB5F29000F824C /* CollectionUtils.m in Sources */,
 				271C2AD516FA176300B8C9DB /* CBL_Shared.m in Sources */,
 				A9DD5FA71868B79400DA3C3A /* CBLListFunction+Internal.m in Sources */,
 				270B3E161489382F00E0A926 /* FMDatabase.m in Sources */,
@@ -3705,7 +3664,6 @@
 				277B5D391821A8380088881E /* yajl_lex.c in Sources */,
 				277B5D3C1821A8380088881E /* yajl_parser.c in Sources */,
 				277B5D2D1821A8380088881E /* yajl_alloc.c in Sources */,
-				BCB5E37C1FAB581E000F824C /* GTMNSData+zlib.m in Sources */,
 				277EF40C17F4DF3700F7B7F7 /* fts3_unicode2.c in Sources */,
 				277EF42A17F4DF3700F7B7F7 /* utilities_sq3.c in Sources */,
 				277EF48C17F4DF3700F7B7F7 /* sqlite3_unicodesn_tokenizer.c in Sources */,
@@ -3719,7 +3677,7 @@
 				277EF48317F4DF3700F7B7F7 /* stem_UTF_8_swedish.c in Sources */,
 				277EF44417F4DF3700F7B7F7 /* stem_ISO_8859_1_norwegian.c in Sources */,
 				277EF47417F4DF3700F7B7F7 /* stem_UTF_8_porter.c in Sources */,
-				BCB5E35D1FAB581D000F824C /* ExceptionUtils.m in Sources */,
+				BCB5E4111FAB5F29000F824C /* ExceptionUtils.m in Sources */,
 				277EF47A17F4DF3700F7B7F7 /* stem_UTF_8_romanian.c in Sources */,
 				277EF46517F4DF3700F7B7F7 /* stem_UTF_8_french.c in Sources */,
 				277EF48017F4DF3700F7B7F7 /* stem_UTF_8_spanish.c in Sources */,
@@ -3729,12 +3687,11 @@
 				277EF43217F4DF3700F7B7F7 /* stem_ISO_8859_1_english.c in Sources */,
 				277EF43E17F4DF3700F7B7F7 /* stem_ISO_8859_1_hungarian.c in Sources */,
 				277EF47717F4DF3700F7B7F7 /* stem_UTF_8_portuguese.c in Sources */,
-				BCB5E3691FAB581E000F824C /* MYRegexUtils.m in Sources */,
+				BCB5E42F1FAB5F29000F824C /* MYRegexUtils.m in Sources */,
 				277EF44D17F4DF3700F7B7F7 /* stem_ISO_8859_1_spanish.c in Sources */,
 				277EF44A17F4DF3700F7B7F7 /* stem_ISO_8859_1_portuguese.c in Sources */,
-				BCB5E35B1FAB581D000F824C /* ConcurrentOperation.m in Sources */,
 				277EF43817F4DF3700F7B7F7 /* stem_ISO_8859_1_french.c in Sources */,
-				BCB5E3791FAB581E000F824C /* Test.m in Sources */,
+				BCB5E44F1FAB5F29000F824C /* Test.m in Sources */,
 				277EF47D17F4DF3700F7B7F7 /* stem_UTF_8_russian.c in Sources */,
 				277EF48617F4DF3700F7B7F7 /* stem_UTF_8_turkish.c in Sources */,
 				277EF41817F4DF3700F7B7F7 /* libstemmer_utf8.c in Sources */,
@@ -3765,9 +3722,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				275315E014ACF0A20065964D /* CBLListener.m in Sources */,
+				BCB5E45E1FAB61A3000F824C /* Logging.m in Sources */,
 				2753160D14ACFC2A0065964D /* CBLHTTPConnection.m in Sources */,
 				27E11F1114AD15940006B340 /* CBLHTTPResponse.m in Sources */,
 				275315E414ACF1130065964D /* DDData.m in Sources */,
+				BCB5E45D1FAB619C000F824C /* CollectionUtils.m in Sources */,
 				275315F214ACF1130065964D /* DDLog.m in Sources */,
 				275315E514ACF1130065964D /* DDNumber.m in Sources */,
 				275315E614ACF1130065964D /* DDRange.m in Sources */,
@@ -3775,6 +3734,7 @@
 				275315E914ACF1130065964D /* HTTPMessage.m in Sources */,
 				275315E714ACF1130065964D /* HTTPAuthenticationRequest.m in Sources */,
 				275315E814ACF1130065964D /* HTTPConnection.m in Sources */,
+				BCB5E45B1FAB6177000F824C /* MYRegexUtils.m in Sources */,
 				275315EC14ACF1130065964D /* HTTPDataResponse.m in Sources */,
 				2700BC5114B3864B00B5B297 /* HTTPFileResponse.m in Sources */,
 				275315F014ACF1130065964D /* WebSocket.m in Sources */,
@@ -3836,6 +3796,7 @@
 				277EF3A717F4DF0600F7B7F7 /* CBLGeometry.m in Sources */,
 				27A073EE14C0BB6200F52FE7 /* CBLMisc.m in Sources */,
 				279CE40214D749A7009F3FA6 /* CBLMultipartReader.m in Sources */,
+				BCB5E4501FAB5F29000F824C /* Test.m in Sources */,
 				279CE40C14D8AA23009F3FA6 /* CBLMultipartDownloader.m in Sources */,
 				2766EFFA14DB7F9F009ECCA8 /* CBLMultipartWriter.m in Sources */,
 				2766EFFF14DC7B37009ECCA8 /* CBLMultiStreamWriter.m in Sources */,
@@ -3848,6 +3809,7 @@
 				27A720A2152B959100C0A0E8 /* CBL_Attachment.m in Sources */,
 				277EF39F17F4DEDD00F7B7F7 /* CBLQuery+FullTextSearch.m in Sources */,
 				272A690F17B2CCF0000722FA /* CBLFacebookAuthorizer.m in Sources */,
+				BCB5E4261FAB5F29000F824C /* MYDynamicObject.m in Sources */,
 				27CF5D2E152F514A0015D7A9 /* CBLStatus.m in Sources */,
 				A902068F188847AA00B6B6B4 /* CBLSocketChangeTracker.m in Sources */,
 				A9DD5FA21868B76100DA3C3A /* CBLShowFunction+Internal.m in Sources */,
@@ -3856,6 +3818,8 @@
 				27ED8632157D0FC600712B33 /* CBLDocument.m in Sources */,
 				27DA42FA158E66DD00F9E7B5 /* CBLRevision.m in Sources */,
 				27DA42FF158E7D3500F9E7B5 /* CBLDatabase.m in Sources */,
+				BCB5E42B1FAB5F29000F824C /* MYErrorUtils.m in Sources */,
+				BCB5E4121FAB5F29000F824C /* ExceptionUtils.m in Sources */,
 				27DA430A158FA35600F9E7B5 /* CBLCache.m in Sources */,
 				27DA4314158FB79F00F9E7B5 /* CBLQuery.m in Sources */,
 				276BA0AE17DD13FA00D367CB /* CBLParseDate.c in Sources */,
@@ -3863,6 +3827,7 @@
 				27DA4347159125B500F9E7B5 /* CBLManager.m in Sources */,
 				27DA434C15912AFD00F9E7B5 /* CBLView.m in Sources */,
 				27DA435915918C8E00F9E7B5 /* CBLModel.m in Sources */,
+				BCB5E4081FAB5F29000F824C /* CollectionUtils.m in Sources */,
 				27DA435C15918C8E00F9E7B5 /* CBLModelFactory.m in Sources */,
 				27E2E5A5159383E9005B9234 /* CBLAttachment.m in Sources */,
 				27E2E5CF159533A5005B9234 /* CBLReplication.m in Sources */,
@@ -3874,6 +3839,7 @@
 				277EF3A217F4DEDD00F7B7F7 /* CBLQuery+Geo.m in Sources */,
 				27FFE20B17BD28080040AE60 /* CBL_Replicator+Backgrounding.m in Sources */,
 				2776A59616A0C3B1006FF199 /* CBLPersonaAuthorizer.m in Sources */,
+				BCB5E4171FAB5F29000F824C /* Logging.m in Sources */,
 				2776A63216A9BCBC006FF199 /* CBLDatabaseChange.m in Sources */,
 				271C2AD616FA176300B8C9DB /* CBL_Shared.m in Sources */,
 				27FFE20617BBF20D0040AE60 /* CBLReplicator_Tests.m in Sources */,
@@ -3892,12 +3858,15 @@
 				27F128A1156ABE24008465C2 /* OAToken.m in Sources */,
 				27F128A9156ABFE0008465C2 /* NSMutableURLRequest+Parameters.m in Sources */,
 				27208F8B184D1D5D006ADBEF /* NSString+URLEncoding.m in Sources */,
+				BCB5E43F1FAB5F29000F824C /* MYURLUtils.m in Sources */,
 				A9CF4737186F28AD004DB55E /* yajl.c in Sources */,
 				A9CF4738186F28AD004DB55E /* yajl_alloc.c in Sources */,
 				A9CF4739186F28AD004DB55E /* yajl_buf.c in Sources */,
+				BCB5E41C1FAB5F29000F824C /* MYBlockUtils.m in Sources */,
 				A9CF473A186F28AD004DB55E /* yajl_encode.c in Sources */,
 				A9CF473B186F28AD004DB55E /* yajl_gen.c in Sources */,
 				A9CF473C186F28AD004DB55E /* yajl_lex.c in Sources */,
+				BCB5E4351FAB5F29000F824C /* MYStreamUtils.m in Sources */,
 				A9CF473D186F28AD004DB55E /* yajl_parser.c in Sources */,
 				A9CF473E186F28AD004DB55E /* yajl_version.c in Sources */,
 				277EF40F17F4DF3700F7B7F7 /* fts3_unicodesn.c in Sources */,
@@ -3925,6 +3894,7 @@
 				277EF41917F4DF3700F7B7F7 /* libstemmer_utf8.c in Sources */,
 				277EF47217F4DF3700F7B7F7 /* stem_UTF_8_norwegian.c in Sources */,
 				277EF47B17F4DF3700F7B7F7 /* stem_UTF_8_romanian.c in Sources */,
+				BCB5E4301FAB5F29000F824C /* MYRegexUtils.m in Sources */,
 				277EF43F17F4DF3700F7B7F7 /* stem_ISO_8859_1_hungarian.c in Sources */,
 				277EF43017F4DF3700F7B7F7 /* stem_ISO_8859_1_dutch.c in Sources */,
 				277EF40D17F4DF3700F7B7F7 /* fts3_unicode2.c in Sources */,
@@ -3978,6 +3948,7 @@
 				27C706D31488679500F0F099 /* DemoAppController.m in Sources */,
 				271EFF0C185F6A6C00142804 /* CBLIncrementalStore.m in Sources */,
 				27C706D41488679500F0F099 /* DemoQuery.m in Sources */,
+				BCB5E45C1FAB618F000F824C /* MYBlockUtils.m in Sources */,
 				27F94126176F7490007BAEBE /* CBLJSONValidatorTests.m in Sources */,
 				271EFF0D185F6A6C00142804 /* CBLIncrementalStoreTests.m in Sources */,
 				27C706D71488679500F0F099 /* ShoppingItem.m in Sources */,
@@ -4014,6 +3985,7 @@
 				A932B2DB1875EDDD001B540A /* CBLJSFunction.m in Sources */,
 				A932B2DC1875EDDD001B540A /* CBLJSViewCompiler.m in Sources */,
 				A932B2DD1875EDDD001B540A /* CBLJSFilterCompiler.m in Sources */,
+				BCB5E4271FAB5F29000F824C /* MYDynamicObject.m in Sources */,
 				A932B2DE1875EDDD001B540A /* CBLJSListFunctionCompiler.m in Sources */,
 				A9020690188847AA00B6B6B4 /* CBLSocketChangeTracker.m in Sources */,
 				A932B2DF1875EDDD001B540A /* CBLJSShowFunctionCompiler.m in Sources */,
@@ -4030,6 +4002,7 @@
 				A932B2E91875F265001B540A /* DDRange.m in Sources */,
 				A932B2E01875F0CD001B540A /* CBLListener.m in Sources */,
 				A932B2E11875F0CD001B540A /* CBLHTTPServer.m in Sources */,
+				BCB5E4511FAB5F29000F824C /* Test.m in Sources */,
 				A932B2E21875F0CD001B540A /* CBLHTTPConnection.m in Sources */,
 				A932B2E31875F0CD001B540A /* CBLHTTPResponse.m in Sources */,
 				A932B2E41875F0E2001B540A /* CBL_Router.m in Sources */,
@@ -4053,6 +4026,7 @@
 				A932B25C1875ED4B001B540A /* CBLBatcher.m in Sources */,
 				A932B25D1875ED4B001B540A /* CBLDatabase+Attachments.m in Sources */,
 				A932B25E1875ED4B001B540A /* CBLDatabase+Insertion.m in Sources */,
+				BCB5E4361FAB5F29000F824C /* MYStreamUtils.m in Sources */,
 				A932B25F1875ED4B001B540A /* CBLDatabase+Replication.m in Sources */,
 				A932B2601875ED4B001B540A /* CBLDatabase+LocalDocs.m in Sources */,
 				A932B2611875ED4B001B540A /* CBLGeometry.m in Sources */,
@@ -4060,7 +4034,9 @@
 				A932B2631875ED4B001B540A /* CBLMultipartReader.m in Sources */,
 				A932B2641875ED4B001B540A /* CBLMultipartDownloader.m in Sources */,
 				A932B2651875ED4B001B540A /* CBLMultipartWriter.m in Sources */,
+				BCB5E4131FAB5F29000F824C /* ExceptionUtils.m in Sources */,
 				A932B2661875ED4B001B540A /* CBLMultiStreamWriter.m in Sources */,
+				BCB5E4401FAB5F29000F824C /* MYURLUtils.m in Sources */,
 				A932B2671875ED4B001B540A /* CBLMultipartUploader.m in Sources */,
 				A932B2681875ED4B001B540A /* CBLReachability.m in Sources */,
 				A932B2691875ED4B001B540A /* CBLSequenceMap.m in Sources */,
@@ -4079,6 +4055,7 @@
 				A932B2761875ED4B001B540A /* CBLDatabase.m in Sources */,
 				A932B2771875ED4B001B540A /* CBLCache.m in Sources */,
 				A932B2781875ED4B001B540A /* CBLQuery.m in Sources */,
+				BCB5E42C1FAB5F29000F824C /* MYErrorUtils.m in Sources */,
 				A932B2791875ED4B001B540A /* CBLParseDate.c in Sources */,
 				A932B27A1875ED4B001B540A /* CBLUITableSource.m in Sources */,
 				A932B27B1875ED4B001B540A /* CBLManager.m in Sources */,
@@ -4086,8 +4063,10 @@
 				A932B27D1875ED4B001B540A /* CBLModel.m in Sources */,
 				A932B27E1875ED4B001B540A /* CBLModelFactory.m in Sources */,
 				A932B27F1875ED4B001B540A /* CBLAttachment.m in Sources */,
+				BCB5E4181FAB5F29000F824C /* Logging.m in Sources */,
 				A932B2801875ED4B001B540A /* CBLReplication.m in Sources */,
 				A932B2811875ED4B001B540A /* CBLModelArray.m in Sources */,
+				BCB5E4311FAB5F29000F824C /* MYRegexUtils.m in Sources */,
 				A932B2821875ED4B001B540A /* CBLView+Querying.m in Sources */,
 				A932B2841875ED4B001B540A /* CBLListFunction+Internal.m in Sources */,
 				A932B2851875ED4B001B540A /* CBLBulkDownloader.m in Sources */,
@@ -4119,6 +4098,7 @@
 				A932B2B11875ED4B001B540A /* stem_UTF_8_spanish.c in Sources */,
 				A932B2B21875ED4B001B540A /* stem_UTF_8_turkish.c in Sources */,
 				A932B2B31875ED4B001B540A /* stem_UTF_8_english.c in Sources */,
+				BCB5E4091FAB5F29000F824C /* CollectionUtils.m in Sources */,
 				A932B2B41875ED4B001B540A /* stem_ISO_8859_1_german.c in Sources */,
 				A932B2B51875ED4B001B540A /* stem_UTF_8_porter.c in Sources */,
 				A932B2B61875ED4B001B540A /* stem_ISO_8859_1_italian.c in Sources */,
@@ -4129,6 +4109,7 @@
 				A932B2BB1875ED4B001B540A /* stem_ISO_8859_1_danish.c in Sources */,
 				A932B2BC1875ED4B001B540A /* stem_KOI8_R_russian.c in Sources */,
 				A932B2BD1875ED4B001B540A /* stem_UTF_8_finnish.c in Sources */,
+				BCB5E41D1FAB5F29000F824C /* MYBlockUtils.m in Sources */,
 				A932B2BE1875ED4B001B540A /* stem_ISO_8859_1_portuguese.c in Sources */,
 				A932B2BF1875ED4B001B540A /* stem_ISO_8859_1_finnish.c in Sources */,
 				A932B2C01875ED4B001B540A /* stem_ISO_8859_1_swedish.c in Sources */,
@@ -4191,6 +4172,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCB5E45A1FAB6126000F824C /* Test.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
