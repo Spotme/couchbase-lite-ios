@@ -280,7 +280,6 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
             CREATE TABLE docs ( \
                 doc_id INTEGER PRIMARY KEY, \
                 docid TEXT UNIQUE NOT NULL); \
-            CREATE INDEX docs_docid ON docs(docid); \
             CREATE TABLE revs ( \
                 sequence INTEGER PRIMARY KEY AUTOINCREMENT, \
                 doc_id INTEGER NOT NULL REFERENCES docs(doc_id) ON DELETE CASCADE, \
@@ -296,13 +295,11 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
                 docid TEXT UNIQUE NOT NULL, \
                 revid TEXT NOT NULL COLLATE REVID, \
                 json BLOB); \
-            CREATE INDEX localdocs_by_docid ON localdocs(docid); \
             CREATE TABLE views ( \
                 view_id INTEGER PRIMARY KEY, \
                 name TEXT UNIQUE NOT NULL,\
                 version TEXT, \
                 lastsequence INTEGER DEFAULT 0); \
-            CREATE INDEX views_by_name ON views(name); \
             CREATE TABLE maps ( \
                 view_id INTEGER NOT NULL REFERENCES views(view_id) ON DELETE CASCADE, \
                 sequence INTEGER NOT NULL REFERENCES revs(sequence) ON DELETE CASCADE, \
@@ -1339,10 +1336,10 @@ const CBLChangesOptions kDefaultCBLChangesOptions = {UINT_MAX, 0, NO, NO, YES};
     if (!options) options = &kDefaultCBLChangesOptions;
     BOOL includeDocs = options->includeDocs || (filter != NULL);
 
-    NSString* sql = $sprintf(@"SELECT sequence, revs.doc_id, docid, revid, deleted %@ FROM revs, docs "
-                             "WHERE sequence > ? AND current=1 "
-                             "AND revs.doc_id = docs.doc_id "
-                             "ORDER BY revs.doc_id, revid DESC",
+    NSString* sql = $sprintf(@"SELECT sequence, revs.doc_id, docid, revid, deleted %@ FROM revs "
+                             "JOIN docs ON docs.doc_id = revs.doc_id "
+                             "WHERE sequence > ? AND +current=1 "
+                             "ORDER BY +revs.doc_id, +deleted, revid DESC",
                              (includeDocs ? @", json" : @""));
     CBL_FMResultSet* r = [_fmdb executeQuery: sql, @(lastSequence)];
     if (!r)

@@ -269,16 +269,16 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         
         BOOL checkDocTypes = [self getDocumentTypes] != nil && [self getDocumentTypes].count > 0 && ![self.database hasDataWithoutFpType];
         
-        NSMutableString *sql = 	[@"SELECT revs.doc_id, sequence, docid, revid, json, "
-                                 "no_attachments, doc_type "
-                                 "FROM revs, docs "
-                                 "WHERE sequence>? AND current!=0 AND deleted=0 " mutableCopy];
+        NSMutableString *sql =     [@"SELECT revs.doc_id, sequence, docs.docid, revid, json, "
+                                    "no_attachments, doc_type "
+                                    "FROM revs JOIN docs ON docs.doc_id = revs.doc_id "
+                                    "WHERE sequence>? AND +current>0 AND +deleted = 0 " mutableCopy];
         if (checkDocTypes) {
             [sql appendFormat: @"AND doc_type IN (%@) ", [CBLDatabase joinQuotedStrings:self.getDocumentTypes]];
         }
         
         [sql appendString: @"AND revs.doc_id = docs.doc_id "
-         "ORDER BY revs.doc_id, deleted, revid DESC"];
+         "ORDER BY +revs.doc_id, +deleted, +revid DESC"];
         
         CBL_FMResultSet* r;
         r = [fmdb executeQuery:sql, @(lastSequence)];
@@ -317,7 +317,7 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
                     BOOL first = YES;
                     CBL_FMResultSet* r2 = [fmdb executeQuery:
                                     @"SELECT revid, sequence FROM revs "
-                                     "WHERE doc_id=? AND sequence<=? AND current!=0 AND deleted=0 "
+                                     "WHERE doc_id=? AND sequence<=? AND current>0 AND deleted=0 "
                                      "ORDER BY revID DESC",
                                     @(doc_id), @(lastSequence)];
                     if (!r2) {

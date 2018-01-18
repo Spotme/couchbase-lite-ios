@@ -598,7 +598,7 @@
         // Mark the latest local rev as no longer current:
         if (localParentSequence > 0) {
             if (![_fmdb executeUpdate: @"UPDATE revs SET current=0, doc_type=null"
-                                        " WHERE sequence=? AND current!=0",
+                                        " WHERE sequence=? AND current>0",
                   @(localParentSequence)])
                 return self.lastDbError;
         }
