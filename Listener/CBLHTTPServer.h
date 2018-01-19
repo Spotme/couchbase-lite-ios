@@ -12,13 +12,9 @@
 
 /** Trivial subclass of HTTPServer that just adds synthesized `listener` and `tdServer` properties.
     (Implementation is at the end of CBLListener.m.) */
-@interface CBLHTTPServer : HTTPServer {
-@private
-    CBLListener* _listener;
-    CBL_Server* _tdServer;
-}
+@interface CBLHTTPServer : HTTPServer
 
-@property (retain) CBLListener* listener;
+@property (weak) CBLListener* listener;
 @property (retain) CBL_Server* tdServer;
 
 @end
