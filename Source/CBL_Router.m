@@ -146,7 +146,9 @@
     }
     //Add quotes tp startkey_docid and endkey_docid param values in order to fix parsing
     if ([param isEqualToString:@"startkey_docid"] || [param isEqualToString:@"endkey_docid"]) {
-        value = [NSString stringWithFormat:@"\"%@\"", value];
+        if(value.length && [value characterAtIndex:0] != '\"' && [value characterAtIndex:value.length - 1] != '\"') {
+            value = [NSString stringWithFormat:@"\"%@\"", value];
+        }
     }
     id result = [CBLJSON JSONObjectWithData: [value dataUsingEncoding: NSUTF8StringEncoding]
                                     options: CBLJSONReadingAllowFragments
