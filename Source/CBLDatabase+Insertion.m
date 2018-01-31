@@ -526,6 +526,7 @@
         // in the local history:
         SequenceNumber sequence = 0;
         SequenceNumber localParentSequence = 0;
+        SequenceNumber localParentSequenceNonDeleted = 0;
         NSString* localParentRevID = nil;
         for (NSInteger i = historyCount - 1; i>=0; --i) {
             NSString* revID = history[i];
@@ -536,6 +537,10 @@
                 Assert(sequence > 0);
                 localParentSequence = sequence;
                 localParentRevID = revID;
+                if (!localRev.deleted) {
+                    Assert(sequence > 0);
+                    localParentSequenceNonDeleted = sequence;
+                }
                 
             } else {
                 // This revision isn't known, so add it:
@@ -581,6 +586,8 @@
                     CBLStatus status;
                     NSDictionary* attachments = [self attachmentsFromRevision: rev status: &status];
                     if (attachments) {
+                        localParentSequence = localParentSequenceNonDeleted;
+                        
                         status = [self processAttachments: attachments
                                               forRevision: rev
                                        withParentSequence: localParentSequence];
