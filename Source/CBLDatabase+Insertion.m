@@ -692,11 +692,12 @@
             } else if (revIDs.count == 0) {
                 revsPurged = @[];
             } else if ([revIDs containsObject: @"*"]) {
-                // Delete all revisions if magic "*" revision ID is given:
-                if (![_fmdb executeUpdate: @"DELETE FROM revs WHERE doc_id=?",
-                                           @(docNumericID)]) {
+                // Delete all revisions if magic "*" revision ID is given. Deleting the 'docs'
+                // row will delete all 'revs' rows due to cascading.
+                if (![_fmdb executeUpdate: @"DELETE FROM docs WHERE doc_id=?", @(docNumericID)]) {
                     return self.lastDbError;
                 }
+                [self invalidateDocNumericID: docID];
                 revsPurged = @[@"*"];
                 
             } else {
@@ -796,6 +797,9 @@
     }];
 }
 
+- (void)invalidateDocNumericID:(NSString *)docID {
+    [_docIDs removeObjectForKey: docID];
+}
 
 #pragma mark - VALIDATION:
 
