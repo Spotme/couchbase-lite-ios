@@ -215,6 +215,11 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
 /** Returns the most recent member of revIDs that appears in rev's ancestry. */
 - (NSString*) findCommonAncestorOf: (CBL_Revision*)rev withRevIDs: (NSArray*)revIDs;
 
+- (BOOL) sqliteHasEncryption;
+
+- (BOOL) encryptWithEncryptionKey: ( NSString *)encryptionKey
+                 plaintextDbNamed: (NSString *)name      __attribute__((nonnull));
+
 // VIEWS & QUERIES:
 
 /** An array of all existing views. */

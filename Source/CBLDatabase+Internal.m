@@ -186,6 +186,76 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     return [_fmdb intForQuery: @"PRAGMA user_version"];
 }
 
+- (BOOL) sqliteHasEncryption {
+    static int hasRealEncryption = -1;
+    if (hasRealEncryption < 0) {
+        // Check whether SQLCipher was properly compiled with SQLite Encryption Extension (SEE)
+        // https://www.sqlite.org/see/doc/trunk/www/readme.wiki
+        hasRealEncryption = sqlite3_compileoption_used("SQLITE_HAS_CODEC") != 0;
+        if (hasRealEncryption) {
+            // Determine whether we're using SQLCipher or the SQLite Encryption Extension,
+            // by calling a SQLCipher-specific pragma https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_default_kdf_iter
+            if ([_fmdb intForQuery: @"PRAGMA cipher_default_kdf_iter"] == 0) {
+                // This isn't SQLCipher, so we can't use encryption.
+                hasRealEncryption = 0;
+            }
+        }
+    }
+    return (BOOL)hasRealEncryption;
+}
+
+- (BOOL) encryptWithEncryptionKey: ( NSString *)encryptionKey
+                 plaintextDbNamed: (NSString *)name      __attribute__((nonnull)) {
+    if (!self.sqliteHasEncryption) {
+        return NO;
+    }
+    NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: CBLCreateUUID()];
+    NSError *outError;
+    [[NSFileManager defaultManager] removeItemAtPath: tempPath error: &outError];
+    NSString* sql;
+    if (encryptionKey) {
+        sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY \"x'%@'\"", encryptionKey);
+    } else {
+        sql = @"ATTACH DATABASE ? AS rekeyed_db KEY ''";
+    }
+    [_fmdb executeUpdate:sql, tempPath];
+    [_fmdb executeUpdate: @"DETACH DATABASE rekeyed_db"];
+    
+    // Export the current database's contents to the new one:
+    // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#sqlcipher_export>
+    NSString* vers = $sprintf(@"PRAGMA rekeyed_db.user_version = %d", self.schemaVersion);
+    NSString *exportCommand = @"SELECT sqlcipher_export('rekeyed_db')";
+    BOOL exportResult = [_fmdb executeUpdate:exportCommand];
+    BOOL result = [_fmdb executeUpdate:vers] && exportResult;
+    [_fmdb close];
+    NSError *openError;
+    BOOL dbReopened = [self open:&openError];
+    _encryptionKey = encryptionKey;
+     // Overwrite the old db file with the new one:
+    [self deleteFile: _fmdb.databasePath];
+    [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
+    return result && dbReopened;
+}
+
+- (void) deleteFile: (NSString*)path {
+    Assert(path);
+    NSString* tempPath = [NSTemporaryDirectory() stringByAppendingString: [NSUUID new].UUIDString];
+    NSFileManager* fmgr = [NSFileManager defaultManager];
+    NSError* error;
+    BOOL exists = [fmgr moveItemAtPath: path toPath: tempPath error: &error];
+    if (exists){
+        NSError *outError;
+        [fmgr removeItemAtPath: tempPath error: &outError];
+    }
+}
+
+- (void) moveFile: (NSString*)srcPath toEmptyPath: (NSString*)dstPath {
+    Assert(srcPath && dstPath);
+    NSFileManager* fmgr = [NSFileManager defaultManager];
+    NSError *outError;
+    [fmgr moveItemAtPath: srcPath toPath: dstPath error: &outError];
+}
+
 
 - (BOOL) openFMDB: (NSError**)outError {
     // Without the -ObjC linker flag, object files containing only category methods, not any
