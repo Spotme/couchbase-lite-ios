@@ -205,34 +205,29 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
 }
 
 - (BOOL) encryptPlaintextDbWithEncryptionKey: (__attribute__((nonnull)) NSString *)encryptionKey {
-    if (!self.sqliteHasEncryption) {
+    if (!self.sqliteHasEncryption || !encryptionKey) {
         return NO;
     }
     NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: CBLCreateUUID()];
-    NSString* sql;
-    if (encryptionKey) {
-        sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY \"x'%@'\"", encryptionKey);
-    } else {
-        sql = @"ATTACH DATABASE ? AS rekeyed_db KEY ''";
-    }
-    [_fmdb executeUpdate:sql, tempPath];
+    NSString* sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY \"x'%@'\"", encryptionKey);
+    BOOL attachResult = [_fmdb executeUpdate:sql, tempPath];
     // Export the current database's contents to the new one:
     // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#sqlcipher_export>
-    NSString* vers = $sprintf(@"PRAGMA rekeyed_db.user_version = %d", self.schemaVersion);
+    NSString* putVersCommand = $sprintf(@"PRAGMA rekeyed_db.user_version = %d", self.schemaVersion);
     NSString *exportCommand = @"SELECT sqlcipher_export('rekeyed_db')";
     BOOL exportResult = [_fmdb executeUpdate:exportCommand];
-    BOOL result = [_fmdb executeUpdate:vers] && exportResult;
-    [_fmdb close];
+    BOOL putVersionResult = [_fmdb executeUpdate:putVersCommand];
+    BOOL dbWasClosed = [_fmdb close];
     // Overwrite the old db file with the new one:
-    [self deleteFile: _fmdb.databasePath];
-    [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
+    BOOL deleteResult = [self deleteFile: _fmdb.databasePath];
+    BOOL moveResult = [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
     _encryptionKey = encryptionKey;
     NSError *openError;
-    BOOL dbReopened = [self open:&openError];
-    return result && dbReopened;
+    BOOL dbReopenedResult = [self open:&openError];
+    return attachResult && exportResult &&  putVersionResult && dbWasClosed && deleteResult && moveResult && dbReopenedResult;
 }
 
-- (void) deleteFile: (NSString*)path {
+- (BOOL) deleteFile: (NSString*)path {
     Assert(path);
     NSString* tempPath = [NSTemporaryDirectory() stringByAppendingString: [NSUUID new].UUIDString];
     NSFileManager* fmgr = [NSFileManager defaultManager];
@@ -240,15 +235,16 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     BOOL exists = [fmgr moveItemAtPath: path toPath: tempPath error: &error];
     if (exists){
         NSError *outError;
-        [fmgr removeItemAtPath: tempPath error: &outError];
+        return [fmgr removeItemAtPath: tempPath error: &outError];
     }
+    return NO;
 }
 
-- (void) moveFile: (NSString*)srcPath toEmptyPath: (NSString*)dstPath {
+- (BOOL) moveFile: (NSString*)srcPath toEmptyPath: (NSString*)dstPath {
     Assert(srcPath && dstPath);
     NSFileManager* fmgr = [NSFileManager defaultManager];
     NSError *outError;
-    [fmgr moveItemAtPath: srcPath toPath: dstPath error: &outError];
+    return [fmgr moveItemAtPath: srcPath toPath: dstPath error: &outError];
 }
 
 

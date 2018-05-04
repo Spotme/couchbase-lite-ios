@@ -88,7 +88,7 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
     of resetting all replications, making them run slow the next time. */
 - (BOOL) replaceUUIDs: (NSError**)outError;
 
-- (void)encryptWithKey:(__attribute__((nonnull)) NSString *)key;
+- (BOOL) encryptWithKey:(__attribute__((nonnull)) NSString *)key;
 
 #pragma mark - DOCUMENT ACCESS:
 
