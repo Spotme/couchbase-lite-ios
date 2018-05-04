@@ -217,8 +217,7 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
 
 - (BOOL) sqliteHasEncryption;
 
-- (BOOL) encryptWithEncryptionKey: ( NSString *)encryptionKey
-                 plaintextDbNamed: (NSString *)name      __attribute__((nonnull));
+- (BOOL) encryptPlaintextDbWithEncryptionKey: (__attribute__((nonnull)) NSString *)encryptionKey;
 
 // VIEWS & QUERIES:
 

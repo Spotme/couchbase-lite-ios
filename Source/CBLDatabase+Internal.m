@@ -204,14 +204,11 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     return (BOOL)hasRealEncryption;
 }
 
-- (BOOL) encryptWithEncryptionKey: ( NSString *)encryptionKey
-                 plaintextDbNamed: (NSString *)name      __attribute__((nonnull)) {
+- (BOOL) encryptPlaintextDbWithEncryptionKey: (__attribute__((nonnull)) NSString *)encryptionKey {
     if (!self.sqliteHasEncryption) {
         return NO;
     }
     NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: CBLCreateUUID()];
-    NSError *outError;
-    [[NSFileManager defaultManager] removeItemAtPath: tempPath error: &outError];
     NSString* sql;
     if (encryptionKey) {
         sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY \"x'%@'\"", encryptionKey);
@@ -219,8 +216,6 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
         sql = @"ATTACH DATABASE ? AS rekeyed_db KEY ''";
     }
     [_fmdb executeUpdate:sql, tempPath];
-    [_fmdb executeUpdate: @"DETACH DATABASE rekeyed_db"];
-    
     // Export the current database's contents to the new one:
     // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#sqlcipher_export>
     NSString* vers = $sprintf(@"PRAGMA rekeyed_db.user_version = %d", self.schemaVersion);
@@ -228,12 +223,12 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     BOOL exportResult = [_fmdb executeUpdate:exportCommand];
     BOOL result = [_fmdb executeUpdate:vers] && exportResult;
     [_fmdb close];
-    NSError *openError;
-    BOOL dbReopened = [self open:&openError];
-    _encryptionKey = encryptionKey;
-     // Overwrite the old db file with the new one:
+    // Overwrite the old db file with the new one:
     [self deleteFile: _fmdb.databasePath];
     [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
+    _encryptionKey = encryptionKey;
+    NSError *openError;
+    BOOL dbReopened = [self open:&openError];
     return result && dbReopened;
 }
 

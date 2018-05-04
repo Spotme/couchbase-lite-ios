@@ -246,6 +246,9 @@ static id<CBLFilterCompiler> sFilterCompiler;
     return NO;
 }
 
+- (void) encryptWithKey:(nonnull NSString *)key {
+    [self encryptPlaintextDbWithEncryptionKey:key];
+}
 
 #pragma mark - DOCUMENTS:
 
