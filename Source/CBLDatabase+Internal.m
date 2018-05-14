@@ -204,12 +204,13 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     return (BOOL)hasRealEncryption;
 }
 
-- (BOOL) encryptPlaintextDbWithEncryptionKey: (__attribute__((nonnull)) NSString *)encryptionKey {
-    if (!self.sqliteHasEncryption || !encryptionKey) {
+- (BOOL) encryptPlaintextDb {
+    _encryptionKey = [_manager.shared valueForType: @"encryptionKey" name: @"" inDatabaseNamed: _name];
+    if (!self.sqliteHasEncryption || !_encryptionKey) {
         return NO;
     }
-    NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: CBLCreateUUID()];
-    NSString* sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY \"x'%@'\"", encryptionKey);
+    NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"dbtmp%@.cblite", CBLCreateUUID()]];
+    NSString* sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY '%@'", [_encryptionKey stringByReplacingOccurrencesOfString: @"'" withString: @"''"]);
     BOOL attachResult = [_fmdb executeUpdate:sql, tempPath];
     // Export the current database's contents to the new one:
     // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#sqlcipher_export>
@@ -217,14 +218,16 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     NSString *exportCommand = @"SELECT sqlcipher_export('rekeyed_db')";
     BOOL exportResult = [_fmdb executeUpdate:exportCommand];
     BOOL putVersionResult = [_fmdb executeUpdate:putVersCommand];
-    BOOL dbWasClosed = [_fmdb close];
-    // Overwrite the old db file with the new one:
-    BOOL deleteResult = [self deleteFile: _fmdb.databasePath];
+    BOOL detached = [_fmdb executeUpdate: @"DETACH DATABASE rekeyed_db"];
+    BOOL dbWasClosed = [self closeInternal];
+    // Overwrite the old db file with the new one
+    NSError *removeError;
+    BOOL deleteResult = CBLRemoveFileIfExists(_fmdb.databasePath, &removeError);
     BOOL moveResult = [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
-    _encryptionKey = encryptionKey;
-    NSError *openError;
-    BOOL dbReopenedResult = [self open:&openError];
-    return attachResult && exportResult &&  putVersionResult && dbWasClosed && deleteResult && moveResult && dbReopenedResult;
+    NSError *outError;
+    BOOL reopenedDd = [self open: &outError];
+    BOOL replacedUUIDs = [self replaceUUIDs: &outError];
+    return attachResult && exportResult &&  putVersionResult && detached && dbWasClosed && deleteResult && moveResult && reopenedDd && replacedUUIDs;
 }
 
 - (BOOL) deleteFile: (NSString*)path {
