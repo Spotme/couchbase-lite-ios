@@ -151,6 +151,53 @@
 }
 
 
+- (BOOL) encryptBlobStore {
+    if (_encryptionKey) {
+        // Find all the blob files:
+        __block NSArray* blobs = nil;
+        NSFileManager* fmgr = [NSFileManager defaultManager];
+        blobs = [fmgr contentsOfDirectoryAtPath: _path error: NULL];
+        blobs = [blobs pathsMatchingExtensions: @[@kFileExtension]];
+        if (blobs.count == 0) {
+            return NO;
+        }
+        // Create a new directory for the new blob store.
+        NSError* createTempDirError;
+        NSString* tempPath = [self createTempDir: &createTempDirError];
+        for (NSString * const blobName in blobs) {
+            NSData *blob =  [[NSFileManager defaultManager] contentsAtPath:[_path stringByAppendingPathComponent:blobName]];
+            blob = CBLDataEncode(blob, _encryptionKey);
+            NSError* error;
+            if (![blob writeToFile: [tempPath stringByAppendingPathComponent:blobName]
+                           options: NSDataWritingAtomic
+                             error: &error]) {
+                Warn(@"CBL_BlobStore: Couldn't write to %@: %@", _path, error);
+                return NO;
+            }
+        }
+        NSError *removeError;
+        BOOL deleteResult = CBLRemoveFileIfExists(_path, &removeError);
+        NSError *moveError;
+        BOOL moveResult = [fmgr moveItemAtPath: tempPath toPath: _path error: &moveError];
+        return deleteResult && moveResult;
+    }
+    return NO;
+}
+
+
+- (NSString*) createTempDir: (NSError**)outError {
+    NSError* error;
+    NSURL* parentURL = [NSURL fileURLWithPath: _path isDirectory: YES];
+    NSURL* tempDirURL = [[NSFileManager defaultManager] URLForDirectory: NSItemReplacementDirectory
+                                                               inDomain: NSUserDomainMask
+                                                      appropriateForURL: parentURL
+                                                                 create: YES
+                                                                  error: outError];
+    if (!tempDirURL)
+        Warn(@"CBL_BlobStore: Unable to create temp dir: %@", error.my_compactDescription);
+    return tempDirURL.path;
+}
+
 - (NSArray*) allKeys {
     NSArray* blob = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: _path
                                                                             error: NULL];

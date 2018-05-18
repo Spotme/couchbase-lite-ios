@@ -227,21 +227,11 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     NSError *outError;
     BOOL reopenedDd = [self open: &outError];
     BOOL replacedUUIDs = [self replaceUUIDs: &outError];
-    return attachResult && exportResult &&  putVersionResult && detached && dbWasClosed && deleteResult && moveResult && reopenedDd && replacedUUIDs;
+    BOOL reencryptAttachments = [_attachments encryptBlobStore];
+    return attachResult && exportResult &&  putVersionResult && detached && dbWasClosed && deleteResult && moveResult
+           && reopenedDd && replacedUUIDs && reencryptAttachments;
 }
 
-- (BOOL) deleteFile: (NSString*)path {
-    Assert(path);
-    NSString* tempPath = [NSTemporaryDirectory() stringByAppendingString: [NSUUID new].UUIDString];
-    NSFileManager* fmgr = [NSFileManager defaultManager];
-    NSError* error;
-    BOOL exists = [fmgr moveItemAtPath: path toPath: tempPath error: &error];
-    if (exists){
-        NSError *outError;
-        return [fmgr removeItemAtPath: tempPath error: &outError];
-    }
-    return NO;
-}
 
 - (BOOL) moveFile: (NSString*)srcPath toEmptyPath: (NSString*)dstPath {
     Assert(srcPath && dstPath);

@@ -37,6 +37,8 @@ typedef struct CBLBlobKey {
 // there from get encryption key from CBLManager
 @property (strong) NSString *encryptionKey;
 
+- (BOOL) encryptBlobStore;
+
 - (NSData*) blobForKey: (CBLBlobKey)key;
 //- (NSInputStream*) blobInputStreamForKey: (CBLBlobKey)key
 //                                  length: (UInt64*)outLength;
