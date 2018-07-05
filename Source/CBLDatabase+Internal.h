@@ -215,8 +215,8 @@ extern const CBLChangesOptions kDefaultCBLChangesOptions;
 /** Returns the most recent member of revIDs that appears in rev's ancestry. */
 - (NSString*) findCommonAncestorOf: (CBL_Revision*)rev withRevIDs: (NSArray*)revIDs;
 
-- (BOOL) sqliteHasEncryption;
-
+/** Encrypts existing plaintext database using ATTACH + sqlcipher_export()
+    This is a private function exposed as encryptPlaintextDatabase in CBLDatabase.h */
 - (BOOL) encryptPlaintextDb;
 
 // VIEWS & QUERIES:

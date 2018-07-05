@@ -186,7 +186,7 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     return [_fmdb intForQuery: @"PRAGMA user_version"];
 }
 
-- (BOOL) sqliteHasEncryption {
+- (BOOL) sqliteHasEncryptionEnabled {
     static int hasRealEncryption = -1;
     if (hasRealEncryption < 0) {
         // Check whether SQLCipher was properly compiled with SQLite Encryption Extension (SEE)
@@ -194,9 +194,8 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
         hasRealEncryption = sqlite3_compileoption_used("SQLITE_HAS_CODEC") != 0;
         if (hasRealEncryption) {
             // Determine whether we're using SQLCipher or the SQLite Encryption Extension,
-            // by calling a SQLCipher-specific pragma https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_default_kdf_iter
+            // https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_default_kdf_iter
             if ([_fmdb intForQuery: @"PRAGMA cipher_default_kdf_iter"] == 0) {
-                // This isn't SQLCipher, so we can't use encryption.
                 hasRealEncryption = 0;
             }
         }
@@ -206,38 +205,34 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
 
 - (BOOL) encryptPlaintextDb {
     _encryptionKey = [_manager.shared valueForType: @"encryptionKey" name: @"" inDatabaseNamed: _name];
-    if (!self.sqliteHasEncryption || !_encryptionKey) {
+    if (!self.sqliteHasEncryptionEnabled || !_encryptionKey) {
         return NO;
     }
     NSString* tempPath = [NSTemporaryDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@"dbtmp%@.cblite", CBLCreateUUID()]];
     NSString* sql = $sprintf(@"ATTACH DATABASE ? AS rekeyed_db KEY '%@'", [_encryptionKey stringByReplacingOccurrencesOfString: @"'" withString: @"''"]);
     BOOL attachResult = [_fmdb executeUpdate:sql, tempPath];
-    // Export the current database's contents to the new one:
-    // <https://www.zetetic.net/sqlcipher/sqlcipher-api/#sqlcipher_export>
+
     NSString* putVersCommand = $sprintf(@"PRAGMA rekeyed_db.user_version = %d", self.schemaVersion);
     NSString *exportCommand = @"SELECT sqlcipher_export('rekeyed_db')";
     BOOL exportResult = [_fmdb executeUpdate:exportCommand];
     BOOL putVersionResult = [_fmdb executeUpdate:putVersCommand];
     BOOL detached = [_fmdb executeUpdate: @"DETACH DATABASE rekeyed_db"];
     BOOL dbWasClosed = [self closeInternal];
-    // Overwrite the old db file with the new one
-    NSError *removeError;
-    BOOL deleteResult = CBLRemoveFileIfExists(_fmdb.databasePath, &removeError);
-    BOOL moveResult = [self moveFile: tempPath toEmptyPath: _fmdb.databasePath];
-    NSError *outError;
-    BOOL reopenedDd = [self open: &outError];
-    BOOL replacedUUIDs = [self replaceUUIDs: &outError];
+
+    NSError *deleteError;
+    BOOL deleteResult = CBLRemoveFileIfExists(_fmdb.databasePath, &deleteError);
+    
+    NSError *moveError;
+    BOOL moveResult = [[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: _fmdb.databasePath error: &moveError];
+    
+    NSError *openError;
+    BOOL reopenedDd = [self open: &openError];
+    NSError *uuidError;
+    BOOL replacedUUIDs = [self replaceUUIDs: &uuidError];
     BOOL reencryptAttachments = [_attachments encryptBlobStore];
+    
     return attachResult && exportResult &&  putVersionResult && detached && dbWasClosed && deleteResult && moveResult
            && reopenedDd && replacedUUIDs && reencryptAttachments;
-}
-
-
-- (BOOL) moveFile: (NSString*)srcPath toEmptyPath: (NSString*)dstPath {
-    Assert(srcPath && dstPath);
-    NSFileManager* fmgr = [NSFileManager defaultManager];
-    NSError *outError;
-    return [fmgr moveItemAtPath: srcPath toPath: dstPath error: &outError];
 }
 
 

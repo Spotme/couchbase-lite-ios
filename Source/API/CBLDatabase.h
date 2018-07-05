@@ -90,8 +90,8 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
 
 /** Encrypts a plaintext DB (e.g. downloaded one) using ATTACH statement to specify
     that a database should be attached encrypted using a specific encryption key.
-    After this calls sqlcipher_export to duplicate the entire contents of the main database to an attached database including the schema, triggers,
-    virtual tables, and all data. */
+    After this calls sqlcipher_export to duplicate the entire contents of the main database
+    to an attached database including the schema, triggers, virtual tables, and all data. */
 - (BOOL) encryptPlaintextDatabase;
 
 #pragma mark - DOCUMENT ACCESS:
