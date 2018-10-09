@@ -246,6 +246,12 @@ static NSString* createStringFromJSON(const char** in) {
                                                      length: length
                                                    encoding: NSUTF8StringEncoding
                                                freeWhenDone: freeWhenDone];
+    
+    //https://github.com/Spotme/spotme3-mobile-ios/issues/1699
+    if (!nsstr) {
+        nsstr = @"";
+    }
+    
     CAssert(nsstr != nil, @"Failed to convert to string: start=%p, length=%u", start, length);
     return nsstr;
 }
