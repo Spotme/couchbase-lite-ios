@@ -13,6 +13,8 @@
 
 NSString* const kCBLJSFunctionCurrentRequireContextKey = @"kCBLJSFunctionCurrentRequireContext";
 
+static JSObjectRef CreateJSError(JSContextRef ctx, NSString *message);
+
 #pragma mark - JS COMPILER
 // This is the body of the JavaScript "require()" function.
 static JSValueRef RequireCallback(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
@@ -183,7 +185,7 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                     WarnJSException(ctx, @"JS function threw exception", exception);
                     if (outException) // bloody pointers
                         *outException = exception;
-                    return JSValueMakeUndefined(ctx);
+                    return CreateJSError(ctx, @"JS sum() function error");
                 }
 
                 size_t count = (size_t)JSValueToNumber(ctx, lengthValue, NULL);
@@ -195,7 +197,7 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                         WarnJSException(ctx, @"JS function threw exception", exception);
                         if (outException) // bloody pointers
                             *outException = exception;
-                        return JSValueMakeUndefined(ctx);
+                        return CreateJSError(ctx, @"JS sum() function error");
                     }
                     
                     if (JSValueGetType(ctx, obj) == kJSTypeNumber) {
@@ -204,7 +206,7 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                             WarnJSException(ctx, @"JS function threw exception", exception);
                             if (outException) // bloody pointers
                                 *outException = exception;
-                            return JSValueMakeUndefined(ctx);
+                            return CreateJSError(ctx, @"JS sum() function error");
                         }
                         
                         ret += valueDbl;
@@ -218,7 +220,7 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
                 WarnJSException(ctx, @"JS function threw exception", exception);
                 if (outException) // bloody pointers
                     *outException = exception;
-                return JSValueMakeUndefined(ctx);
+                return CreateJSError(ctx, @"JS sum() function error");
             }
             
             ret += valueDbl;
@@ -227,6 +229,16 @@ static JSValueRef SumCallback(JSContextRef ctx, JSObjectRef function, JSObjectRe
 
     return JSValueMakeNumber(ctx, ret);
 }
+
+static JSObjectRef CreateJSError(JSContextRef ctx, NSString *message)
+{
+    JSStringRef string = JSStringCreateWithCFString((__bridge CFStringRef)message);
+    JSValueRef argument = JSValueMakeString(ctx, string);
+    JSStringRelease(string);
+    
+    return JSObjectMakeError(ctx, 1, &argument, 0);
+}
+
 
 @implementation CBLJSCompiler
 {

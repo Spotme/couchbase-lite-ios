@@ -252,7 +252,6 @@ static NSString* createStringFromJSON(const char** in) {
         nsstr = @"";
     }
     
-    CAssert(nsstr != nil, @"Failed to convert to string: start=%p, length=%u", start, length);
     return nsstr;
 }
 
