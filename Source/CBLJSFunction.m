@@ -262,11 +262,9 @@ static JSObjectRef CreateJSError(JSContextRef ctx, NSString *message)
             _context = JSGlobalContextCreate(NULL);
             
             // debugger-freindly
-            if (JSGlobalContextSetName) {
-                JSStringRef ctxName = JSStringCreateWithCFString((__bridge CFStringRef)NSStringFromClass([self class]));
-                JSGlobalContextSetName(_context, ctxName);
-                JSStringRelease(ctxName);
-            }
+            JSStringRef ctxName = JSStringCreateWithCFString((__bridge CFStringRef)NSStringFromClass([self class]));
+            JSGlobalContextSetName(_context, ctxName);
+            JSStringRelease(ctxName);
         }
         
         if (!_context)
