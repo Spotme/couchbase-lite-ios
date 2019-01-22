@@ -1200,10 +1200,8 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
 
 - (NSArray*) getPossibleAncestorRevisionIDs: (CBL_Revision*)rev
                                       limit: (unsigned)limit
-                              hasAttachment: (BOOL*)outHasAttachment
+                            onlyAttachments: (BOOL)onlyAttachments;
 {
-    if (outHasAttachment)
-        *outHasAttachment = NO;
     int generation = rev.generation;
     if (generation <= 1)
         return nil;
@@ -1220,8 +1218,8 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
         return nil;
     NSMutableArray* revIDs = $marray();
     while ([r next]) {
-        if (outHasAttachment && revIDs.count == 0)
-            *outHasAttachment = [self sequenceHasAttachments: [r longLongIntForColumnIndex: 1]];
+        if (onlyAttachments && ![self sequenceHasAttachments: [r longLongIntForColumnIndex: 1]])
+            continue;
         [revIDs addObject: [r stringForColumnIndex: 0]];
     }
     [r close];

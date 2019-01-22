@@ -952,18 +952,6 @@ TestCase(CBL_Database_FindMissingRevisions) {
     CBL_RevisionList* revs = [[CBL_RevisionList alloc] initWithArray: @[revToFind1, revToFind2, revToFind3]];
     CAssert([db findMissingRevisions: revs]);
     CAssertEqual(revs.allRevisions, (@[revToFind1, revToFind3]));
-    
-    // Check the possible ancestors:
-    BOOL hasAtt;
-    CAssertEqual([db getPossibleAncestorRevisionIDs: revToFind1 limit: 0 hasAttachment: &hasAtt],
-                 (@[doc1r2.revID, doc1r1.revID]));
-    CAssertEq(hasAtt, NO);
-    CAssertEqual([db getPossibleAncestorRevisionIDs: revToFind1 limit: 1 hasAttachment: &hasAtt],
-                 (@[doc1r2.revID]));
-    CAssertEq(hasAtt, NO);
-    CAssertEqual([db getPossibleAncestorRevisionIDs: revToFind3 limit: 0 hasAttachment: &hasAtt],
-                 nil);
-    CAssertEq(hasAtt, NO);
     CAssert([db close]);
 }
 
