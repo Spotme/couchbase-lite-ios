@@ -48,6 +48,11 @@ NSString* const kCBLDatabaseChangeNotification = @"CBLDatabaseChange";
 
 static id<CBLFilterCompiler> sFilterCompiler;
 
+@interface CBLDatabase ()
+
+@property (nonatomic, strong) CBLMangoIndexManager *mangoIndexManager;
+
+@end
 
 @implementation CBLDatabase
 {
@@ -58,7 +63,7 @@ static id<CBLFilterCompiler> sFilterCompiler;
 }
 
 
-@synthesize manager=_manager, unsavedModelsMutable=_unsavedModelsMutable;
+@synthesize manager=_manager, unsavedModelsMutable=_unsavedModelsMutable, mangoIndexManager = _mangoIndexManager;
 @synthesize path=_path, name=_name, isOpen=_isOpen, encryptionKey=_encryptionKey, docTypes = _docTypes;
 
 
@@ -71,6 +76,8 @@ static id<CBLFilterCompiler> sFilterCompiler;
     if (self) {
         _unsavedModelsMutable = [NSMutableSet set];
         _allReplications = [[NSMutableSet alloc] init];
+        NSError *mangoIndexError;
+        _mangoIndexManager = [[CBLMangoIndexManager alloc] initWithDatabase:self error:&mangoIndexError];
 #if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver: self
                                                  selector: @selector(appBackgrounding:)
@@ -503,6 +510,19 @@ static NSString* makeLocalDocID(NSString* docID) {
     return nil;
 }
 
+
+#pragma mark - Mango Query
+
+- (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
+                   withName:(NSString *)indexName
+                     ofType:(CBLMangoIndexType)type {
+    
+    return [self.mangoIndexManager ensureIndexed:fieldNames
+                                        withName:indexName
+                                          ofType:CBLMangoIndexTypeJSON];
+}
+
+#pragma mark - DEPRECATED
 
 #ifdef CBL_DEPRECATED
 - (CBLDocument*) untitledDocument {return [self createDocument];}
