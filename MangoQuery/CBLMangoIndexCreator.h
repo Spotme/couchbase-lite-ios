@@ -9,6 +9,7 @@
 
 @class CBLDatabase;
 @class CBLMangoIndex;
+@class CBL_FMDatabase;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
  @returns name of created index
  */
 + (nullable NSString *)ensureIndexed:(CBLMangoIndex *)index
-                          inDatabase:(CBLDatabase *)database;
+                          inDatabase:(CBL_FMDatabase *)database;
 
 
 @end

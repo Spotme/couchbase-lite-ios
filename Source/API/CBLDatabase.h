@@ -233,7 +233,7 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
 
 #pragma mark - MANGO QUERY
 
-- (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
+- (nullable NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
                    withName:(NSString *)indexName
                      ofType:(CBLMangoIndexType)type;
 

@@ -8,12 +8,14 @@
 #import "CBLMangoIndexCreator.h"
 #import "CBLMangoIndex.h"
 #import "CBLDatabase.h"
+#import "FMDatabase.h"
+#import "CBLDatabase+Internal.h"
 
 
 @implementation CBLMangoIndexCreator
 
 + (nullable NSString *)ensureIndexed:(CBLMangoIndex *)index
-                          inDatabase:(CBLDatabase *)database {
+                          inDatabase:(CBL_FMDatabase *)database {
     return @"";
 }
 
