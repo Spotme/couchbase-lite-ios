@@ -149,61 +149,6 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 }
 
 
-//+ (NSDictionary /* NSString -> NSArray[NSString]*/ *)listIndexesInDatabase:(FMDatabase *)db
-//{
-//    // Accumulate indexes and definitions into a dictionary
-//
-//    NSMutableDictionary *indexes = [NSMutableDictionary dictionary];
-//
-//    NSString *sql = @"SELECT index_name, index_type, field_name, index_settings FROM %@;";
-//    sql = [NSString stringWithFormat:sql, kCDTQIndexMetadataTableName];
-//    FMResultSet *rs = [db executeQuery:sql];
-//    while ([rs next]) {
-//        NSString *rowIndex = [rs stringForColumn:@"index_name"];
-//        NSString *rowType = [rs stringForColumn:@"index_type"];
-//        NSString *rowField = [rs stringForColumn:@"field_name"];
-//        NSString *rowSettings = [rs stringForColumn:@"index_settings"];
-//
-//        if (indexes[rowIndex] == nil) {
-//            if (rowSettings) {
-//                indexes[rowIndex] = @{@"type" : rowType,
-//                                      @"name" : rowIndex,
-//                                      @"fields" : [NSMutableArray array],
-//                                      @"settings" : rowSettings};
-//            } else {
-//                indexes[rowIndex] = @{@"type" : rowType,
-//                                      @"name" : rowIndex,
-//                                      @"fields" : [NSMutableArray array]};
-//            }
-//        }
-//
-//        [indexes[rowIndex][@"fields"] addObject:rowField];
-//    }
-//    [rs close];
-//
-//    // Now we need to make the return value immutable
-//
-//    for (NSString *indexName in [indexes allKeys]) {
-//        NSMutableDictionary *details = indexes[indexName];
-//        if (details[@"settings"]) {
-//            indexes[indexName] = @{
-//                @"type" : details[@"type"],
-//                @"name" : details[@"name"],
-//                @"fields" : [details[@"fields"] copy],  // -copy makes arrays immutable
-//                @"settings" : details[@"settings"]
-//            };
-//        } else {
-//            indexes[indexName] = @{
-//                @"type" : details[@"type"],
-//                @"name" : details[@"name"],
-//                @"fields" : [details[@"fields"] copy]  // -copy makes arrays immutable
-//            };
-//        }
-//    }
-//
-//    return [NSDictionary dictionaryWithDictionary:indexes];  // make dictionary immutable
-//}
-
 #pragma mark Create Indexes
 
 - (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
@@ -216,39 +161,6 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
     return [CBLMangoIndexCreator ensureIndexed:mangoIndex inDatabase:self.database];
 }
 
-//+ (CDTQIndexType)indexTypeForString:(NSString *)string
-//{
-//    if ([string isEqualToString:@"text"]) {
-//        return CDTQIndexTypeText;
-//    } else if ([string isEqualToString:@"json"]) {
-//        return CDTQIndexTypeJSON;
-//    } else {
-//        @throw [NSException exceptionWithName:@"InvalidIndexException"
-//                                       reason:@"Index type provided is not a valid index type."
-//                                     userInfo:@{
-//                                         @"Expected" : @"text or json",
-//                                         @"Actual" : string
-//                                     }];
-//    }
-//}
-
-//+ (NSString *)stringForIndexType:(CDTQIndexType)indexType
-//{
-//    switch (indexType) {
-//        case CDTQIndexTypeText:
-//            return @"text";
-//        case CDTQIndexTypeJSON:
-//            return @"json";
-//        default:
-//            @throw [NSException exceptionWithName:@"InvalidIndexException"
-//                                           reason:@"Index type provided is not a valid index type."
-//                                         userInfo:@{
-//                                             @"Expected" : @"CDTQIndexTypeText (int value 0) or "
-//                                                           @"CDTQIndexTypeJSON (int value 1)",
-//                                             @"Actual" : @(indexType)
-//                                         }];
-//    }
-//}
 
 #pragma mark Delete Indexes
 
@@ -293,37 +205,7 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 }
 
 #pragma mark Query indexes
-// TODO Implementation of simple find query will folow after initial index creation part will be done
-//
-//- (CDTQResultSet *)find:(NSDictionary *)query
-//{
-//    return [self find:query skip:0 limit:0 fields:nil sort:nil];
-//}
-//
-//- (CDTQResultSet *)find:(NSDictionary *)query
-//                   skip:(NSUInteger)skip
-//                  limit:(NSUInteger)limit
-//                 fields:(NSArray *)fields
-//                   sort:(NSArray *)sortDocument
-//{
-//    if (!query) {
-//        CDTLogError(CDTQ_LOG_CONTEXT, @"-find called with nil selector; bailing.");
-//        return nil;
-//    }
-//
-//    if (![self updateAllIndexes]) {
-//        return nil;
-//    }
-//
-//    CDTQQueryExecutor *queryExecutor =
-//        [[CDTQQueryExecutor alloc] initWithDatabase:_database datastore:_datastore];
-//    return [queryExecutor find:query
-//                  usingIndexes:[self listIndexes]
-//                          skip:skip
-//                         limit:limit
-//                        fields:fields
-//                          sort:sortDocument];
-//}
+
 
 #pragma mark Utilities
 
@@ -332,130 +214,6 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
     return [kCBLMangoIndexTablePrefix stringByAppendingString:indexName];
 }
 
-//+ (BOOL)ftsAvailableInDatabase:(FMDatabaseQueue *)db
-//{
-//    __block BOOL ftsOptionsExist = NO;
-//
-//    [db inDatabase:^(FMDatabase *db) {
-//        NSMutableArray *ftsCompileOptions = [NSMutableArray arrayWithArray:@[ @"ENABLE_FTS3" ] ];
-//        FMResultSet *rs = [db executeQuery:@"PRAGMA compile_options;"];
-//        while ([rs next]) {
-//            NSString *compileOption = [rs stringForColumnIndex:0];
-//            [ftsCompileOptions removeObject:compileOption];
-//            if (ftsCompileOptions.count == 0) {
-//                ftsOptionsExist = YES;
-//                break;
-//            }
-//        }
-//        [rs close];
-//    }];
-//
-//    return ftsOptionsExist;
-//}
-
-
-#pragma mark Setup methods
-
-//+ (FMDatabaseQueue *)databaseQueueWithDatastore:(CDTDatastore *)datastore
-//                                          error:(NSError *__autoreleasing *)error
-//{
-//    NSString *dir = [datastore extensionDataFolder:kCDTQExtensionName];
-//    [[NSFileManager defaultManager] createDirectoryAtPath:dir
-//                              withIntermediateDirectories:TRUE
-//                                               attributes:nil
-//                                                    error:nil];
-//    NSString *filename = [NSString pathWithComponents:@[ dir, @"indexes.sqlite" ]];
-//
-//    id<CDTEncryptionKeyProvider> provider = [datastore encryptionKeyProvider];
-//    FMDatabaseQueue *database = nil;
-//    NSError *thisError = nil;
-//    BOOL success = YES;
-//
-//    if (success) {
-//        database = [[FMDatabaseQueue alloc] initWithPath:filename];
-//
-//        success = (database != nil);
-//        if (!success) {
-//            NSDictionary *userInfo = @{
-//                NSLocalizedDescriptionKey :
-//                    NSLocalizedString(@"Problem opening or creating database.", nil)
-//            };
-//            thisError = [NSError errorWithDomain:CDTQIndexManagerErrorDomain
-//                                            code:CDTQIndexErrorSqlError
-//                                        userInfo:userInfo];
-//        }
-//    }
-//
-//    if (success) {
-//        success = [CDTQIndexManager configureDatabase:database
-//                            withEncryptionKeyProvider:provider
-//                                                error:&thisError];
-//    }
-//
-//    if (success) {
-//        success = [CDTQIndexManager updateSchema:VERSION inDatabase:database];
-//
-//        if (!success) {
-//            NSDictionary *userInfo = @{
-//                NSLocalizedDescriptionKey :
-//                    NSLocalizedString(@"Problem updating database schema.", nil)
-//            };
-//            thisError = [NSError errorWithDomain:CDTQIndexManagerErrorDomain
-//                                            code:CDTQIndexErrorSqlError
-//                                        userInfo:userInfo];
-//        }
-//    }
-//
-//    if (!success) {
-//        // close the database.
-//        [database close];
-//        database = nil;
-//
-//        if (error) {
-//            *error = thisError;
-//        }
-//    }
-//
-//    return database;
-//}
-
-
-
-//+ (BOOL)updateSchema:(int)currentVersion inDatabase:(FMDatabaseQueue *)database
-//{
-//    __block BOOL success = YES;
-//
-//    // get current version
-//    [database inTransaction:^(FMDatabase *db, BOOL *rollback) {
-//        int version = 0;
-//
-//        FMResultSet *rs = [db executeQuery:@"pragma user_version;"];
-//        while ([rs next]) {
-//            version = [rs intForColumnIndex:0];
-//            break;  // should only be a single result, so may as well break
-//        }
-//        [rs close];
-//
-//        if (version < 1) {
-//            success = [CDTQIndexManager migrate_0_1:db];
-//        }
-//
-//        if (version < 2) {
-//            success = success && [CDTQIndexManager migrate_1_2:db];
-//        }
-//
-//        // Set user_version unconditionally
-//        NSString *sql = [NSString stringWithFormat:@"pragma user_version = %d", currentVersion];
-//        success = success && [db executeUpdate:sql];
-//
-//        if (!success) {
-//            CDTLogError(CDTQ_LOG_CONTEXT, @"Failed to update schema");
-//            *rollback = YES;
-//        }
-//    }];
-//
-//    return success;
-//}
 
 @end
 

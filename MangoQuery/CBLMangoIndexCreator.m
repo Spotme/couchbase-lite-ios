@@ -71,22 +71,22 @@
             success = success && [self.database.fmdb executeUpdate:sql.sqlWithPlaceholders
                                               withArgumentsInArray:sql.placeholderValues];
         }
-        // TODO
+        
         // Create SQLite data structures to support the index
         // For JSON index type create a SQLite table and a SQLite index
-//        CBLMangoQuerySqlParts *createTable =
-//        [CBLMangoIndexCreator createIndexTableStatementForIndexName:index.indexName
-//                                                     fieldNames:fieldNames];
-//        success = success && [self.database.fmdb executeUpdate:createTable.sqlWithPlaceholders
-//                          withArgumentsInArray:createTable.placeholderValues];
-//
-//        // Create the SQLite index on the index table
-//
-//        CBLMangoQuerySqlParts *createIndex =
-//        [CBLMangoIndexCreator createIndexIndexStatementForIndexName:index.indexName
-//                                                     fieldNames:fieldNames];
-//        success = success && [self.database.fmdb executeUpdate:createIndex.sqlWithPlaceholders
-//                                          withArgumentsInArray:createIndex.placeholderValues];
+        CBLMangoQuerySqlParts *createTable =
+        [CBLMangoIndexCreator createIndexTableStatementForIndexName:index.indexName
+                                                     fieldNames:fieldNames];
+        success = success && [self.database.fmdb executeUpdate:createTable.sqlWithPlaceholders
+                          withArgumentsInArray:createTable.placeholderValues];
+
+        // Create the SQLite index on the index table
+
+        CBLMangoQuerySqlParts *createIndex =
+        [CBLMangoIndexCreator createIndexIndexStatementForIndexName:index.indexName
+                                                     fieldNames:fieldNames];
+        success = success && [self.database.fmdb executeUpdate:createIndex.sqlWithPlaceholders
+                                          withArgumentsInArray:createIndex.placeholderValues];
 
         CBLStatus status = kCBLStatusBadJSON;
         if (success) {
@@ -163,5 +163,56 @@
     }
     return result;
 }
+
+
++ (CBLMangoQuerySqlParts *)createIndexTableStatementForIndexName:(NSString *)indexName
+                                             fieldNames:(NSArray *)fieldNames
+{
+    if (!indexName) {
+        return nil;
+    }
+    
+    if (!fieldNames || fieldNames.count == 0) {
+        return nil;
+    }
+    
+    NSString *tableName = [CBLMangoIndexManager tableNameForIndex:indexName];
+    NSMutableArray *clauses = [NSMutableArray array];
+    for (NSString *fieldName in fieldNames) {
+        NSString *clause = [NSString stringWithFormat:@"\"%@\" NONE", fieldName];
+        [clauses addObject:clause];
+    }
+    
+    NSString *sql = [NSString stringWithFormat:@"CREATE TABLE \"%@\" ( %@ );", tableName,
+                     [clauses componentsJoinedByString:@", "]];
+    return [CBLMangoQuerySqlParts partsForSql:sql parameters:@[]];
+}
+
+
++ (CBLMangoQuerySqlParts *)createIndexIndexStatementForIndexName:(NSString *)indexName
+                                             fieldNames:(NSArray *)fieldNames
+{
+    if (!indexName) {
+        return nil;
+    }
+    
+    if (!fieldNames || fieldNames.count == 0) {
+        return nil;
+    }
+    
+    NSString *tableName = [CBLMangoIndexManager tableNameForIndex:indexName];
+    NSString *sqlIndexName = [tableName stringByAppendingString:@"_index"];
+    
+    NSMutableArray *clauses = [NSMutableArray array];
+    for (NSString *fieldName in fieldNames) {
+        [clauses addObject:[NSString stringWithFormat:@"\"%@\"", fieldName]];
+    }
+    
+    NSString *sql =
+    [NSString stringWithFormat:@"CREATE INDEX \"%@\" ON \"%@\" ( %@ );", sqlIndexName,
+     tableName, [clauses componentsJoinedByString:@", "]];
+    return [CBLMangoQuerySqlParts partsForSql:sql parameters:@[]];
+}
+
 
 @end

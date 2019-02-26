@@ -108,20 +108,11 @@ typedef NS_ENUM(NSInteger, CBLMangoQueryError) {
 
 - (BOOL)updateAllIndexes;
 
-//- (nullable CDTQResultSet *)find:(NSDictionary *)query;
-
-//- (nullable CDTQResultSet *)find:(NSDictionary *)query
-//                            skip:(NSUInteger)skip
-//                           limit:(NSUInteger)limit
-//                          fields:(nullable NSArray *)fields
-//                            sort:(nullable NSArray *)sortDocument;
-
-/** Internal */
-//+ (NSString *)tableNameForIndex:(NSString *)indexName;
-//+ (CDTQIndexType)indexTypeForString:(NSString *)string;
-//+ (NSString *)stringForIndexType:(CDTQIndexType)indexType;
++ (NSString *)tableNameForIndex:(NSString *)indexName;
 
 
 @end
+
+
 NS_ASSUME_NONNULL_END
 

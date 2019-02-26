@@ -511,7 +511,7 @@ static NSString* makeLocalDocID(NSString* docID) {
 
 #pragma mark - Mango Query
 
-- (nullable NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
+- (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
                             withName:(NSString *)indexName
                               ofType:(CBLMangoIndexType)type {
     
