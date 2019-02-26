@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class CBLDatabase;
 
-extern NSString *const CBLMangoIndexManagerErrorDomain;
+extern NSString *const kCBLMangoIndexManagerErrorDomain;
 extern NSString *const kCBLMangoIndexTablePrefix;
 extern NSString *const kCBLMangoIndexMetadataTableName;
 

@@ -52,10 +52,10 @@
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
 
-NSString *const CBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
-
+NSString *const kCBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
 NSString *const kCBLMangoIndexTablePrefix = @"_t_cbl__mango_query_index_";
-NSString *const CBLMangoIndexMetadataTableName = @"_t_cbl__mango_query_metadata";
+NSString *const kCBLMangoIndexMetadataTableName = @"_t_cbl__mango_query_metadata";
+
 
 static NSString *const kCBLMangoQueryExtensionName = @"com.cbl.mango.query";
 static NSString *const kCBLMangoQueryIndexRoot = @"_mango_indexes";
