@@ -7,8 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class CBLDatabase;
 @class CBLMangoIndex;
+@class CBLDatabase;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
  @returns name of created index
  */
 + (nullable NSString *)ensureIndexed:(CBLMangoIndex *)index
-                          inDatabase:(CBLDatabase *)database;
+                          inDatabase:(CBLDatabase *)database
+                         fromEventDatabase:(CBLDatabase *)eventDatabase;
 
 
 @end

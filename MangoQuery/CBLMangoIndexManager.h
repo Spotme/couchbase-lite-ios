@@ -96,6 +96,7 @@ typedef NS_ENUM(NSInteger, CBLMangoQueryError) {
 - (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database
                                               error:(NSError *__autoreleasing *)error;
 
++ (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database;
 
 - (NSDictionary<NSString *, NSArray<NSString *> *> *)listIndexes;
 

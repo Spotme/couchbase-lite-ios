@@ -45,8 +45,7 @@
     }
     
     if (indexName.length == 0) {
-        NSLog(@"No index name provided.");
-        return nil;
+        indexName = [[[[NSUUID UUID] UUIDString] stringByReplacingOccurrencesOfString:@"-" withString:@""] lowercaseString];
     }
 
     

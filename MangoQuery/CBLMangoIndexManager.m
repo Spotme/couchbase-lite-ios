@@ -49,8 +49,7 @@
 #import "CBLMangoIndex.h"
 #import "CBLMangoIndexCreator.h"
 #import "CBLDatabase+Internal.h"
-#import "FMDatabase.h"
-#import "FMDatabaseAdditions.h"
+#import "CBLManager.h"
 
 NSString *const kCBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
 NSString *const kCBLMangoIndexTablePrefix = @"_t_cbl__mango_query_index_";
@@ -66,7 +65,8 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 @interface CBLMangoIndexManager ()
 
 @property (nonatomic, strong) NSRegularExpression *validFieldName;
-@property (nonatomic, strong) CBL_FMDatabase *database;
+@property (nonatomic, weak) CBLDatabase *eventDatabase;
+@property (nonatomic, strong) CBLDatabase *indexDatabase;
 
 @end
 
@@ -93,31 +93,22 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 
 @implementation CBLMangoIndexManager
 
-@synthesize validFieldName = _validFieldName, database =_database;
+@synthesize validFieldName = _validFieldName, eventDatabase =_eventDatabase, indexDatabase = _indexDatabase;
 
 
 - (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database error:(NSError *__autoreleasing *)error
 {
     self = [super init];
     if (self) {
-        if (database.name && database.path) {
-            NSString *indexDir = [NSString pathWithComponents:@[database.path,
-                                                                [NSString stringWithFormat:@"%@%@", database.name, kCBLMangoQueryIndexRoot],
-                                                                kCBLMangoQueryExtensionName]];
-            [[NSFileManager defaultManager] createDirectoryAtPath:indexDir
-                                      withIntermediateDirectories:YES
-                                                       attributes:nil
-                                                            error:nil];
-            NSString *filename = [NSString pathWithComponents:@[indexDir, @"mango-indexes.sqlite" ]];
+        if (database && database.name) {
             
-            _database = [[CBL_FMDatabase alloc] initWithPath:filename];
-            if (_database) {
-                _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
-                                                                       options:0
-                                                                         error:error];
-            } else {
-                self = nil;
-            }
+            NSString *filename = [CBLMangoIndexManager indexDatabaseNameForDatabase:database];
+            _eventDatabase = database;
+            CBLManager *dbsManager = [database.manager copy];
+            _indexDatabase = [dbsManager databaseNamed:filename error:error];
+            _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
+                                                                   options:0
+                                                                     error:error];
         } else {
             self = nil;
         }
@@ -128,9 +119,7 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 
 - (void)dealloc
 {
-    // close the database.
-    //CDTLogDebug(CDTQ_LOGGING_CONTEXT, @"-dealloc CDTQIndexManager %@", self);
-    //[self.database close];
+    [self.indexDatabase close];
 }
 
 #pragma mark List indexes
@@ -158,7 +147,12 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
     CBLMangoIndex *mangoIndex = [CBLMangoIndex index:indexName
                                           withFields:fieldNames
                                                 type:type];
-    return [CBLMangoIndexCreator ensureIndexed:mangoIndex inDatabase:self.database];
+    if (mangoIndex) {
+        return [CBLMangoIndexCreator ensureIndexed:mangoIndex
+                                        inDatabase:self.indexDatabase
+                                 fromEventDatabase:self.eventDatabase];
+    }
+    return nil;
 }
 
 
@@ -208,6 +202,11 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 
 
 #pragma mark Utilities
+
++ (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database {
+    return  [NSString stringWithFormat:@"%@_%@", database.name, @"mango-indexes.sqlite"];
+}
+
 
 + (NSString *)tableNameForIndex:(NSString *)indexName
 {
