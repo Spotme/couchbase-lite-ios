@@ -68,14 +68,14 @@
     }
     
     __block BOOL success = YES;
-    [self.indexDatabase _inTransaction:^CBLStatus{
+    CBLStatus status = [self.indexDatabase _inTransaction: ^CBLStatus {
         NSArray *inserts = [CBLMangoIndexCreator insertMetadataStatementsForIndexName:index.indexName
                                                                                  type:@"json"
                                                                              settings:@""
                                                                            fieldNames:index.fieldNames];
         for (CBLMangoQuerySqlParts *sql in inserts) {
             success = success && [self.indexDatabase.fmdb executeUpdate:sql.sqlWithPlaceholders
-                                              withArgumentsInArray:sql.placeholderValues];
+                                                   withArgumentsInArray:sql.placeholderValues];
         }
         
         // Create SQLite data structures to support the index
@@ -83,13 +83,13 @@
         CBLMangoQuerySqlParts *createTable = [CBLMangoIndexCreator createIndexTableStatementForIndexName:index.indexName
                                                                                               fieldNames:fieldNames];
         success = success && [self.indexDatabase.fmdb executeUpdate:createTable.sqlWithPlaceholders
-                                          withArgumentsInArray:createTable.placeholderValues];
+                                               withArgumentsInArray:createTable.placeholderValues];
         
         // Create the SQLite index on the index table
         CBLMangoQuerySqlParts *createIndex = [CBLMangoIndexCreator createIndexIndexStatementForIndexName:index.indexName
                                                                                               fieldNames:fieldNames];
         success = success && [self.indexDatabase.fmdb executeUpdate:createIndex.sqlWithPlaceholders
-                                          withArgumentsInArray:createIndex.placeholderValues];
+                                               withArgumentsInArray:createIndex.placeholderValues];
         
         CBLStatus status = kCBLStatusBadJSON;
         if (success) {
@@ -98,7 +98,7 @@
         return status;
     }];
     // Update the new index if it's been created
-    if (success) {
+    if (success && !CBLStatusIsError(status)) {
         success = success && [CBLMangoIndexUpdater updateIndex:index.indexName
                                                     withFields:index.fieldNames
                                                     inDatabase:self.indexDatabase
