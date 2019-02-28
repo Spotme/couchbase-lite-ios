@@ -101,11 +101,10 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
     self = [super init];
     if (self) {
         if (database && database.name) {
-            
-            NSString *filename = [CBLMangoIndexManager indexDatabaseNameForDatabase:database];
             _eventDatabase = database;
             CBLManager *dbsManager = [database.manager copy];
-            _indexDatabase = [dbsManager databaseNamed:filename error:error];
+            _indexDatabase = [dbsManager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
+                                                 error:error];
             _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
                                                                    options:0
                                                                      error:error];
@@ -204,7 +203,7 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 #pragma mark Utilities
 
 + (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database {
-    return  [NSString stringWithFormat:@"%@_%@", database.name, @"mango-indexes.sqlite"];
+    return  [NSString stringWithFormat:@"%@_%@", database.name, @"mango-indexes"];
 }
 
 
