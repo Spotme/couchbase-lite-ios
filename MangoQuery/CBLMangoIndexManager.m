@@ -102,8 +102,7 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
     if (self) {
         if (database && database.name) {
             _eventDatabase = database;
-            CBLManager *dbsManager = [database.manager copy];
-            _indexDatabase = [dbsManager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
+            _indexDatabase = [database.manager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
                                                  error:error];
             _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
                                                                    options:0

@@ -72,7 +72,7 @@
         NSArray *inserts = [CBLMangoIndexCreator insertMetadataStatementsForIndexName:index.indexName
                                                                                  type:@"json"
                                                                              settings:@""
-                                                                           fieldNames:index.fieldNames];
+                                                                           fieldNames:fieldNames];
         for (CBLMangoQuerySqlParts *sql in inserts) {
             success = success && [self.indexDatabase.fmdb executeUpdate:sql.sqlWithPlaceholders
                                                    withArgumentsInArray:sql.placeholderValues];
@@ -100,7 +100,7 @@
     // Update the new index if it's been created
     if (success && !CBLStatusIsError(status)) {
         success = success && [CBLMangoIndexUpdater updateIndex:index.indexName
-                                                    withFields:index.fieldNames
+                                                    withFields:fieldNames
                                                     inDatabase:self.indexDatabase
                                              fromEventDatabase:self.eventDatabase
                                                          error:nil];

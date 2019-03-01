@@ -48,11 +48,6 @@ NSString* const kCBLDatabaseChangeNotification = @"CBLDatabaseChange";
 
 static id<CBLFilterCompiler> sFilterCompiler;
 
-@interface CBLDatabase ()
-
-@property (nonatomic, strong) CBLMangoIndexManager *mangoIndexManager;
-
-@end
 
 @implementation CBLDatabase
 {
@@ -508,30 +503,6 @@ static NSString* makeLocalDocID(NSString* docID) {
     return nil;
 }
 
-
-#pragma mark - Mango Query
-
-- (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
-                            withName:(NSString *)indexName
-                              ofType:(CBLMangoIndexType)type {
-    
-    if (!self.mangoIndexManager) {
-        NSError *mangoIndexCreationError;
-        self.mangoIndexManager = [[CBLMangoIndexManager alloc] initWithDatabase:self error:&mangoIndexCreationError];
-        if (mangoIndexCreationError) {
-            LogTo(CBLDatabase, @"%@ mango index creation error %@ for fields %@", self, mangoIndexCreationError, fieldNames);
-            return nil;
-        }
-    }
-    if (self.mangoIndexManager) {
-        return [self.mangoIndexManager ensureIndexed:fieldNames
-                                            withName:indexName
-                                              ofType:CBLMangoIndexTypeJSON];
-    } else {
-        LogTo(CBLDatabase, @"%@ failed to create database to support Mango Query indexes", self);
-        return nil;
-    }
-}
 
 #pragma mark - DEPRECATED
 

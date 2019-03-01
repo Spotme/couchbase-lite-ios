@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "CBLView.h"
-#import "CBLMangoIndexManager.h"
 
-@class CBLManager, CBLDocument, CBLRevision, CBLSavedRevision, CBLView, CBLQuery, CBLReplication, CBLShowFunction, CBLListFunction;
+@class CBLManager, CBLDocument, CBLRevision, CBLSavedRevision, CBLView, CBLQuery, CBLReplication, CBLShowFunction, CBLListFunction, CBLMangoIndexManager;
 @protocol CBLValidationContext;
 
 
@@ -68,6 +67,8 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
 
 /** The database's encryption key; must be registred in CBLManager */
 @property (readonly) NSString *encryptionKey;
+
+@property (nonatomic, strong, readonly) CBLMangoIndexManager *mangoIndexManager;
 
 #pragma mark - HOUSEKEEPING:
 
@@ -229,13 +230,6 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
     This always creates a new replication, even if there is already one from the given URL.
     You must call -start on the replication to start it. */
 - (CBLReplication*) replicationFromURL: (NSURL*)url;
-
-
-#pragma mark - MANGO QUERY
-
-- (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
-                   withName:(NSString *)indexName
-                     ofType:(CBLMangoIndexType)type;
 
 
 #ifdef CBL_DEPRECATED
