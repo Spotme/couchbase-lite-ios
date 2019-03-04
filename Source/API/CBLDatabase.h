@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CBLView.h"
 
-@class CBLManager, CBLDocument, CBLRevision, CBLSavedRevision, CBLView, CBLQuery, CBLReplication, CBLShowFunction, CBLListFunction, CBLMangoIndexManager;
+@class CBLManager, CBLDocument, CBLRevision, CBLSavedRevision, CBLView, CBLQuery, CBLReplication, CBLShowFunction, CBLListFunction;
 @protocol CBLValidationContext;
 
 

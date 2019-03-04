@@ -504,8 +504,6 @@ static NSString* makeLocalDocID(NSString* docID) {
 }
 
 
-#pragma mark - DEPRECATED
-
 #ifdef CBL_DEPRECATED
 - (CBLDocument*) untitledDocument {return [self createDocument];}
 - (void) clearDocumentCache {[self _clearDocumentCache];}
