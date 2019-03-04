@@ -50,23 +50,28 @@
 #import "CBLMangoIndexCreator.h"
 #import "CBLDatabase+Internal.h"
 #import "CBLManager.h"
+#import "FMDatabase.h"
 
-NSString *const kCBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
-NSString *const kCBLMangoIndexTablePrefix = @"_t_cbl__mango_query_index_";
-NSString *const kCBLMangoIndexMetadataTableName = @"_t_cbl__mango_query_metadata";
+char * const kCBLMangoIndexManagerDispatchQueueName = "com.spotme.cbl.mango.query.queue";
+NSString * const kCBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
+NSString * const kCBLMangoIndexTablePrefix = @"_t_cbl__mango_query_index_";
+NSString * const kCBLMangoIndexMetadataTableName = @"_t_cbl__mango_query_metadata";
 
 
-static NSString *const kCBLMangoQueryExtensionName = @"com.cbl.mango.query";
-static NSString *const kCBLMangoQueryIndexRoot = @"_mango_indexes";
-static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*$";
+static NSString * const kCBLMangoQueryExtensionName = @"com.cbl.mango.query";
+static NSString * const kCBLMangoQueryIndexRoot = @"_mango_indexes";
+static NSString * const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*$";
 
 //static const int VERSION = 1;
 
 @interface CBLMangoIndexManager ()
 
+
+@property (nonatomic, strong, readwrite) dispatch_queue_t mangoQueryEngineDispatchQueue;
 @property (nonatomic, strong) NSRegularExpression *validFieldName;
 @property (nonatomic, weak) CBLDatabase *eventDatabase;
-@property (nonatomic, strong) CBLDatabase *indexDatabase;
+@property (nonatomic, strong) CBLManager *mangoBackgoundCblManager;
+@property (nonatomic, strong, readwrite) CBLDatabase *indexDatabase;
 
 @end
 
@@ -91,22 +96,36 @@ static NSString *const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*
 
 @end
 
+
 @implementation CBLMangoIndexManager
 
-@synthesize validFieldName = _validFieldName, eventDatabase =_eventDatabase, indexDatabase = _indexDatabase;
+@synthesize validFieldName = _validFieldName, eventDatabase =_eventDatabase, indexDatabase = _indexDatabase,
+mangoQueryEngineDispatchQueue = _mangoQueryEngineDispatchQueue, mangoBackgoundCblManager = _mangoBackgoundCblManager;
 
 
-- (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database error:(NSError *__autoreleasing *)error
+- (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database
 {
     self = [super init];
     if (self) {
         if (database && database.name) {
+            _mangoQueryEngineDispatchQueue = dispatch_queue_create(kCBLMangoIndexManagerDispatchQueueName, NULL);
+            _mangoBackgoundCblManager = [[CBLManager sharedInstance] copy];
+            _mangoBackgoundCblManager.dispatchQueue = _mangoQueryEngineDispatchQueue;
             _eventDatabase = database;
-            _indexDatabase = [database.manager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
-                                                 error:error];
+            dispatch_async(_mangoQueryEngineDispatchQueue, ^{
+                 __autoreleasing NSError *error;
+                _indexDatabase = [_mangoBackgoundCblManager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
+                                                                    error:&error];
+                // Workaround for a thred safety check in [FMDB beginUse]
+                // This check doesn't work if the current queue is separate from dispatchQueue but has
+                // dispatchQueue as its target queue. The best would be to modify fmdb submodule and skip the check ther
+                // but will keep this workaround for a while
+                [_indexDatabase.fmdb setDispatchQueue:_mangoQueryEngineDispatchQueue];
+            });
+            __autoreleasing NSError *regExpError;
             _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
                                                                    options:0
-                                                                     error:error];
+                                                                     error:&regExpError];
         } else {
             self = nil;
         }

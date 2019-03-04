@@ -87,14 +87,18 @@ typedef NS_ENUM(NSInteger, CBLMangoQueryError) {
  - execute queries
  - update indexes (usually done automatically)
  */
+
+extern char * const kCBLMangoIndexManagerDispatchQueueName;
+
 @interface CBLMangoIndexManager : NSObject
 
+@property (nonatomic, strong, readonly) dispatch_queue_t mangoQueryEngineDispatchQueue;
+@property (nonatomic, strong, readonly) CBLDatabase *indexDatabase;
 
 /**
  Constructs a new CBLMangoIndexManager which indexes documents in database
  */
-- (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database
-                                              error:(NSError *__autoreleasing *)error;
+- (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database;
 
 + (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database;
 

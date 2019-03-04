@@ -9,7 +9,7 @@
 #import "CBLDatabase.h"
 #import "CBLDatabase+Internal.h"
 #import "FMDatabase.h"
-
+#import "CBLMangoIndexManager.h"
 
 @interface CBLMangoIndexUpdater ()
 

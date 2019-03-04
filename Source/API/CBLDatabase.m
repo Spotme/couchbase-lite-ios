@@ -58,7 +58,7 @@ static id<CBLFilterCompiler> sFilterCompiler;
 }
 
 
-@synthesize manager=_manager, unsavedModelsMutable=_unsavedModelsMutable, mangoIndexManager = _mangoIndexManager;
+@synthesize manager=_manager, unsavedModelsMutable=_unsavedModelsMutable;
 @synthesize path=_path, name=_name, isOpen=_isOpen, encryptionKey=_encryptionKey, docTypes = _docTypes;
 
 

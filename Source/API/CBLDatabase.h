@@ -68,8 +68,6 @@ typedef BOOL (^CBLFilterBlock) (CBLSavedRevision* revision, NSDictionary* params
 /** The database's encryption key; must be registred in CBLManager */
 @property (readonly) NSString *encryptionKey;
 
-@property (nonatomic, strong, readonly) CBLMangoIndexManager *mangoIndexManager;
-
 #pragma mark - HOUSEKEEPING:
 
 /** Compacts the database file by purging non-current JSON bodies, pruning revisions older than
