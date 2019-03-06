@@ -68,6 +68,25 @@
     }
     
     __block BOOL success = YES;
+    NSDictionary *existingIndexes = [CBLMangoIndexManager listIndexesInDatabase:self.indexDatabase];
+    
+    if (existingIndexes && existingIndexes.count && existingIndexes[index.indexName] != nil) {
+        NSDictionary *existingIndex = existingIndexes[index.indexName];
+        NSSet *existingFields = [NSSet setWithArray:existingIndex[@"fields"]];
+        NSSet *newFields = [NSSet setWithArray:fieldNames];
+        if ([existingFields isEqualToSet:newFields]) {
+            NSError *indexUpdError;
+            success = success && [CBLMangoIndexUpdater updateIndex:index.indexName
+                                                        withFields:fieldNames
+                                                        inDatabase:self.indexDatabase
+                                                 fromEventDatabase:self.eventDatabase
+                                                             error:&indexUpdError];
+            return (success && !indexUpdError) ? index.indexName : nil;
+        } else {
+            return nil;
+        }
+    }
+    
     CBLStatus status = [self.indexDatabase _inTransaction: ^CBLStatus {
         NSArray *inserts = [CBLMangoIndexCreator insertMetadataStatementsForIndexName:index.indexName
                                                                                  type:@"json"
@@ -99,11 +118,12 @@
     }];
     // Update the new index if it's been created
     if (success && !CBLStatusIsError(status)) {
-        success = success && [CBLMangoIndexUpdater updateIndex:index.indexName
+        NSError *indexUpdError;
+        success = !indexUpdError && success && [CBLMangoIndexUpdater updateIndex:index.indexName
                                                     withFields:fieldNames
                                                     inDatabase:self.indexDatabase
                                              fromEventDatabase:self.eventDatabase
-                                                         error:nil];
+                                                         error:&indexUpdError];
     }
     
     return success ? index.indexName : nil;

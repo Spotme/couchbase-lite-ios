@@ -51,18 +51,20 @@
 #import "CBLDatabase+Internal.h"
 #import "CBLManager.h"
 #import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "CBLManager+Internal.h"
 
-char * const kCBLMangoIndexManagerDispatchQueueName = "com.spotme.cbl.mango.query.queue";
+char * const kCBLMangoIndexManagerDispatchQueueName = "com.spotme.CouchbaseLite.MangoQueryQ";
 NSString * const kCBLMangoIndexManagerErrorDomain = @"CBLMangoIndexManagerErrorDomain";
-NSString * const kCBLMangoIndexTablePrefix = @"_t_cbl__mango_query_index_";
-NSString * const kCBLMangoIndexMetadataTableName = @"_t_cbl__mango_query_metadata";
+NSString * const kCBLMangoIndexTablePrefix = @"t_cbl__mango_query_index_";
+NSString * const kCBLMangoIndexMetadataTableName = @"t_cbl__mango_query_metadata";
 
 
 static NSString * const kCBLMangoQueryExtensionName = @"com.cbl.mango.query";
 static NSString * const kCBLMangoQueryIndexRoot = @"_mango_indexes";
 static NSString * const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]*$";
 
-//static const int VERSION = 1;
+static const int INDEX_DB_VERSION = 1;
 
 @interface CBLMangoIndexManager ()
 
@@ -70,7 +72,7 @@ static NSString * const kCBLMangoIndexFieldNamePattern = @"^[a-zA-Z][a-zA-Z0-9_]
 @property (nonatomic, strong, readwrite) dispatch_queue_t mangoQueryEngineDispatchQueue;
 @property (nonatomic, strong) NSRegularExpression *validFieldName;
 @property (nonatomic, weak) CBLDatabase *eventDatabase;
-@property (nonatomic, strong) CBLManager *mangoBackgoundCblManager;
+@property (nonatomic, strong, readwrite) CBLManager *mangoBackgoundCblManager;
 @property (nonatomic, strong, readwrite) CBLDatabase *indexDatabase;
 
 @end
@@ -113,14 +115,29 @@ mangoQueryEngineDispatchQueue = _mangoQueryEngineDispatchQueue, mangoBackgoundCb
             _mangoBackgoundCblManager.dispatchQueue = _mangoQueryEngineDispatchQueue;
             _eventDatabase = database;
             dispatch_async(_mangoQueryEngineDispatchQueue, ^{
-                 __autoreleasing NSError *error;
-                _indexDatabase = [_mangoBackgoundCblManager databaseNamed: [CBLMangoIndexManager indexDatabaseNameForDatabase:database]
-                                                                    error:&error];
-                // Workaround for a thred safety check in [FMDB beginUse]
-                // This check doesn't work if the current queue is separate from dispatchQueue but has
-                // dispatchQueue as its target queue. The best would be to modify fmdb submodule and skip the check ther
-                // but will keep this workaround for a while
+                BOOL success = NO;
+                NSError *creationError;
+                NSString *indexDbName = [CBLMangoIndexManager indexDatabaseNameForDatabaseName:database.name];
+                _indexDatabase = [_mangoBackgoundCblManager _databaseNamed:indexDbName
+                                                                 mustExist:NO
+                                                                 error:&creationError];
+                // Workaround for a thread safety check in [FMDB beginUse]
+                // The best option would be to skip a check for dispatch_get_current_queue() in the FMDB completely
+                // because there is no way to inspect dispatch_queue invocation tree with the public libdispatch API.
+                // Exactly the same has been done in the upstrem:
+                // https://github.com/couchbaselabs/fmdb/commit/9838b4a49e10ebdefbda706df51273e80198dc59
+                // But so that not to modify FMDB submodule let's keep this workaround for now
                 [_indexDatabase.fmdb setDispatchQueue:_mangoQueryEngineDispatchQueue];
+                if (_indexDatabase && !creationError) {
+                    NSError *openError;
+                    BOOL result = [_indexDatabase openFMDB:&openError];
+                    if (result && !openError) {
+                        success = [CBLMangoIndexManager updateSchema:INDEX_DB_VERSION inDatabase:_indexDatabase];
+                    }
+                }
+                if (!success) {
+                    [_indexDatabase close];
+                }
             });
             __autoreleasing NSError *regExpError;
             _validFieldName = [[NSRegularExpression alloc] initWithPattern:kCBLMangoIndexFieldNamePattern
@@ -141,17 +158,57 @@ mangoQueryEngineDispatchQueue = _mangoQueryEngineDispatchQueue, mangoBackgoundCb
 
 #pragma mark List indexes
 
-/**
- Returns:
- 
- { indexName: { type: json,
- name: indexName,
- fields: [field1, field2]
- }
- */
-- (NSDictionary<NSString *, NSArray<NSString *> *> *)listIndexes
++ (NSDictionary<NSString *, NSArray<NSString *> *> *)listIndexesInDatabase:(CBLDatabase *)indexDatabase
 {
-    return @{};
+    NSMutableDictionary *indexes = [NSMutableDictionary dictionary];
+    
+    NSString *sql = @"SELECT index_name, index_type, field_name, index_settings FROM %@;";
+    sql = [NSString stringWithFormat:sql, kCBLMangoIndexMetadataTableName];
+    CBL_FMResultSet *rs = [indexDatabase.fmdb executeQuery:sql];
+    while ([rs next]) {
+        NSString *rowIndex = [rs stringForColumnIndex:0];
+        NSString *rowType = [rs stringForColumnIndex:1];
+        NSString *rowField = [rs stringForColumnIndex:2];
+        NSString *rowSettings = [rs stringForColumnIndex:3];
+        
+        if (indexes[rowIndex] == nil) {
+            if (rowSettings) {
+                indexes[rowIndex] = @{@"type" : rowType,
+                                      @"name" : rowIndex,
+                                      @"fields" : [NSMutableArray array],
+                                      @"settings" : rowSettings};
+            } else {
+                indexes[rowIndex] = @{@"type" : rowType,
+                                      @"name" : rowIndex,
+                                      @"fields" : [NSMutableArray array]};
+            }
+        }
+        
+        [indexes[rowIndex][@"fields"] addObject:rowField];
+    }
+    [rs close];
+    
+    // Now we need to make the return value immutable
+    
+    for (NSString *indexName in [indexes allKeys]) {
+        NSMutableDictionary *details = indexes[indexName];
+        if (details[@"settings"]) {
+            indexes[indexName] = @{
+                                   @"type" : details[@"type"],
+                                   @"name" : details[@"name"],
+                                   @"fields" : [details[@"fields"] copy],  // -copy makes arrays immutable
+                                   @"settings" : details[@"settings"]
+                                   };
+        } else {
+            indexes[indexName] = @{
+                                   @"type" : details[@"type"],
+                                   @"name" : details[@"name"],
+                                   @"fields" : [details[@"fields"] copy]  // -copy makes arrays immutable
+                                   };
+        }
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:indexes];
 }
 
 
@@ -173,55 +230,15 @@ mangoQueryEngineDispatchQueue = _mangoQueryEngineDispatchQueue, mangoBackgoundCb
 }
 
 
-#pragma mark Delete Indexes
-
-- (BOOL)deleteIndexNamed:(NSString *)indexName
-{
-    __block BOOL success = YES;
-    
-    //    [_database inTransaction:^(FMDatabase *db, BOOL *rollback) {
-    //
-    //        NSString *tableName = [CDTQIndexManager tableNameForIndex:indexName];
-    //        NSString *sql;
-    //
-    //        // Drop the index table
-    //        sql = [NSString stringWithFormat:@"DROP TABLE \"%@\";", tableName];
-    //        success = success && [db executeUpdate:sql withArgumentsInArray:@[]];
-    //
-    //        // Delete the metadata entries
-    //        sql = [NSString
-    //            stringWithFormat:@"DELETE FROM %@ WHERE index_name = ?", kCDTQIndexMetadataTableName];
-    //        success = success && [db executeUpdate:sql withArgumentsInArray:@[ indexName ]];
-    //
-    //        if (!success) {
-    //            CDTLogError(CDTQ_LOG_CONTEXT, @"Failed to delete index: %@", indexName);
-    //            *rollback = YES;
-    //        }
-    //    }];
-    
-    return success;
-}
-
-#pragma mark Update indexes
-
-- (BOOL)updateAllIndexes
-{
-    // TODO
-    
-    // To start with, assume top-level fields only
-    return NO;
-    //    NSDictionary *indexes = [self listIndexes];
-    //    return
-    //        [CDTQIndexUpdater updateAllIndexes:indexes inDatabase:_database fromDatastore:_datastore];
-}
-
-#pragma mark Query indexes
-
-
 #pragma mark Utilities
 
-+ (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database {
-    return  [NSString stringWithFormat:@"%@_%@", database.name, @"mango-indexes"];
++ (nonnull NSString *)indexDatabaseNameForDatabaseName:(nonnull NSString *)databaseName {
+    return  [NSString stringWithFormat:@"%@_%@", databaseName, @"mango-indexes"];
+}
+
+
++ (nonnull NSString *)eventDatabaseNameForIndexDatabaseName:(nonnull NSString *)databaseName {
+    return [databaseName stringByReplacingOccurrencesOfString:@"_mango-indexes" withString:@""];
 }
 
 
@@ -230,6 +247,36 @@ mangoQueryEngineDispatchQueue = _mangoQueryEngineDispatchQueue, mangoBackgoundCb
     return [kCBLMangoIndexTablePrefix stringByAppendingString:indexName];
 }
 
+
++ (BOOL)updateSchema:(int)currentVersion inDatabase:(CBLDatabase *)database {
+    
+    CBLStatus status = [database _inTransaction:^CBLStatus{
+        int version = 0;
+        CBL_FMResultSet *rs = [database.fmdb executeQuery:@"pragma user_version;"];
+        while ([rs next]) {
+            version = [rs intForColumnIndex:0];
+            break;
+        }
+        [rs close];
+        [database.fmdb executeUpdate:@"BEGIN TRANSACTION"];
+        NSString *metadataSchema = [NSString stringWithFormat:@"CREATE TABLE %@ ( "
+                                    @"        index_name TEXT NOT NULL, " @" index_type TEXT NOT NULL, "
+                                    @"        index_settings TEXT NULL, "
+                                    @"        field_name TEXT NOT NULL, " @" last_sequence INTEGER NOT NULL);", kCBLMangoIndexMetadataTableName];
+        
+        if ([database.fmdb executeUpdate:metadataSchema]) {
+            [database.fmdb executeUpdate:@"END TRANSACTION"];
+            return kCBLStatusOK;
+        } else {
+            [database close];
+            return kCBLStatusDBError;
+        }
+    }];
+    if (!CBLStatusIsError(status)) {
+        return YES;
+    }
+    return NO;
+}
 
 @end
 

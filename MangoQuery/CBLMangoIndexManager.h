@@ -15,7 +15,9 @@
 
 
 //  Modified by Oleksandr Karaberov on 2019-02-21
-//
+//  Changes: 1. Adapt index db creation to CBL_FMDatabase API limitations
+//  2. Optimisations: host Mango engine on a private queue
+//  3. Simplify API
 //  Copyright © 2019 SpotMe Engineering. All rights reserved.
 
 
@@ -23,7 +25,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class CBLDatabase;
+@class CBLDatabase, CBLManager;
 
 extern NSString *const kCBLMangoIndexManagerErrorDomain;
 extern NSString *const kCBLMangoIndexTablePrefix;
@@ -92,29 +94,35 @@ extern char * const kCBLMangoIndexManagerDispatchQueueName;
 
 @interface CBLMangoIndexManager : NSObject
 
-@property (nonatomic, strong, readonly) dispatch_queue_t mangoQueryEngineDispatchQueue;
-@property (nonatomic, strong, readonly) CBLDatabase *indexDatabase;
-
 /**
  Constructs a new CBLMangoIndexManager which indexes documents in database
- */
+ **/
 - (nullable CBLMangoIndexManager *)initWithDatabase:(CBLDatabase *)database;
 
-+ (nonnull NSString *)indexDatabaseNameForDatabase:(nonnull CBLDatabase *)database;
+@property (nonatomic, strong, readonly) dispatch_queue_t mangoQueryEngineDispatchQueue;
+@property (nonatomic, strong, readonly) CBLDatabase *indexDatabase;
+@property (nonatomic, strong, readonly) CBLManager *mangoBackgoundCblManager;
 
-- (NSDictionary<NSString *, NSArray<NSString *> *> *)listIndexes;
++ (nonnull NSString *)indexDatabaseNameForDatabaseName:(nonnull NSString *)databaseName;
+
++ (nonnull NSString *)eventDatabaseNameForIndexDatabaseName:(nonnull NSString *)databaseName;
+
++ (NSString *)tableNameForIndex:(NSString *)indexName;
+
+/**
+ @return
+ {"name" = {
+ fields = [field1, field2,..n];
+ name = "name";
+ settings = "";
+ type = json/text; }
+ }
+ **/
++ (NSDictionary<NSString *, NSArray<NSString *> *> *)listIndexesInDatabase:(CBLDatabase *)indexDatabase;
 
 - (NSString *)ensureIndexed:(NSArray<NSString *> *)fieldNames
                    withName:(NSString *)indexName
                      ofType:(CBLMangoIndexType)type;
-
-
-- (BOOL)deleteIndexNamed:(NSString *)indexName;
-
-- (BOOL)updateAllIndexes;
-
-+ (NSString *)tableNameForIndex:(NSString *)indexName;
-
 
 @end
 

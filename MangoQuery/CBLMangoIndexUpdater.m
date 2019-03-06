@@ -10,6 +10,8 @@
 #import "CBLDatabase+Internal.h"
 #import "FMDatabase.h"
 #import "CBLMangoIndexManager.h"
+#import "CBLManager.h"
+#import "CBLRevision.h"
 
 @interface CBLMangoIndexUpdater ()
 
@@ -40,7 +42,8 @@
   fromEventDatabase:(CBLDatabase *)eventDatabase
               error:(NSError *__nullable __autoreleasing *__nullable)error {
     
-    CBLMangoIndexUpdater *indexUpdater = [[CBLMangoIndexUpdater alloc] initWithDatabase:database eventDatabase:eventDatabase];
+    CBLMangoIndexUpdater *indexUpdater = [[CBLMangoIndexUpdater alloc] initWithDatabase:database
+                                                                          eventDatabase:eventDatabase];
     BOOL success = [indexUpdater updateIndex:indexName withFields:fieldNames error:error];
     return success;
 }
@@ -70,40 +73,44 @@
 
 
 - (BOOL)updateIndex:(NSString *)indexName
-         fieldNames:(NSArray /* NSString */ *)fieldNames
+         fieldNames:(NSArray <NSString *> *)fieldNames
    startingSequence:(SequenceNumber)lastSequence
 {
     __block bool success = YES;
     CBLChangesOptions options = kDefaultCBLChangesOptions;
     options.includeDocs = YES;
     
-    CBL_RevisionList* changes = [self.eventDatabase changesSinceSequence:lastSequence
-                                                            options:&options
-                                                             filter:NULL params: @{}];
-    if (changes && changes.allRevisions.count) {
-        NSArray *updateBatch = [changes.allRevisions my_filter:^int(id obj) {
-            return 1;
-        }];
-        NSArray *deleteBatch = [changes.allRevisions my_filter:^int(id obj) {
-            return 1;
-        }];
-        if (updateBatch && updateBatch.count) {
-            success = success && [self processUpdateBatch:updateBatch];
+    [self.eventDatabase.manager backgroundTellDatabaseNamed:self.eventDatabase.name to:^(CBLDatabase *eventDatabase) {
+        CBL_RevisionList* changes = [eventDatabase changesSinceSequence:lastSequence
+                                                                options:&options
+                                                                 filter:NULL params: @{}];
+        if (changes && changes.allRevisions.count) {
+            NSArray *updateBatch = [changes.allRevisions my_filter:^int(CBL_Revision *rev) {
+                return !rev.deleted && !rev.missing;
+            }];
+            NSArray *deleteBatch = [changes.allRevisions my_filter:^int(CBL_Revision *rev) {
+                return rev.deleted;
+            }];
+            if (updateBatch && updateBatch.count) {
+                success = success && [self processUpdateBatch:updateBatch];
+            }
+            if (deleteBatch && deleteBatch.count) {
+                success = success && [self processDeleteBatch:deleteBatch];
+            }
         }
-        if (deleteBatch && deleteBatch.count) {
-            success = success && [self processDeleteBatch:deleteBatch];
-        }
-    }
+    }];
     return success;
 }
 
 
 - (BOOL)processUpdateBatch:(NSArray *)updateBatch {
+    //TODO: Insert new revs into index db
     return YES;
 }
 
 
 - (BOOL)processDeleteBatch:(NSArray *)deleteBatch {
+    //TODO:
     return YES;
 }
 
