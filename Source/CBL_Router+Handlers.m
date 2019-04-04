@@ -1064,8 +1064,28 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
         options.keys = keys;
 
     status = [view updateIndex];
-    if (status >= kCBLStatusBadRequest)
-        return status;
+    if (status >= kCBLStatusBadRequest) {
+        // Check if we have SQLITE_CORRUPT error. If yes then most probably internal sqlite b-tree indexes have been corrupted.
+        // In this case run sqlite reindex to rebuild them, delete old view index (maps) and then update view one more time.
+        if (status == kCBLStatusCorruptError) {
+            NSDictionary *indexCorruptionError = @{@"error_title":@"CBL SQLITE_CORRUPT",
+                                                   @"error_message":[NSString stringWithFormat:@"%@ index is corrupted", viewName],
+                                                   @"info":@{@"view_name": viewName,
+                                                             @"design_doc": designDoc,
+                                                             @"view_keys": keys,
+                                                             @"view_last_sequence": @(view.lastSequenceIndexed)}};
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
+                                                                object:self
+                                                              userInfo:indexCorruptionError];
+            [view repairInternalIndexes];
+            [view deleteIndex];
+            status = [view updateIndex];
+        } else {
+            return status;
+        }
+    }
+    
     
     // Check for conditional GET and set response Etag header:
     if (!keys) {

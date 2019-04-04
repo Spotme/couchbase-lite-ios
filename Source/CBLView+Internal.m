@@ -443,6 +443,27 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
 }
 
 
+- (CBLStatus) repairInternalIndexes {
+    CBLDatabase* db = _weakDB;
+    return [db _inTransaction: ^CBLStatus {
+        CBL_FMDatabase* fmdb = db.fmdb;
+        if (![fmdb executeUpdate: @"reindex main.maps_keys"]) {
+            return db.lastDbError;
+        }
+        if (![fmdb executeUpdate: @"reindex main.maps"]) {
+            return db.lastDbError;
+        }
+        if (![fmdb executeUpdate: @"reindex main.revs"]) {
+            return db.lastDbError;
+        }
+        // Also try to repair internal index built for sequence PRIMARY KEY
+        if (![fmdb executeUpdate: @"reindex main.sqlite_autoindex_revs_1"]) {
+            return db.lastDbError;
+        }
+        return kCBLStatusOK;
+    }];
+}
+
 @end
 
 

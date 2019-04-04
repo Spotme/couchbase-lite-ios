@@ -85,6 +85,8 @@ typedef enum {
  @return  200 if updated, 304 if already up-to-date, else an error code */
 - (CBLStatus) updateIndex;
 
+- (CBLStatus) repairInternalIndexes;
+
 @end
 
 
