@@ -1072,7 +1072,7 @@ static NSArray* parseJSONRevArrayQuery(NSString* queryStr) {
                                                    @"error_message":[NSString stringWithFormat:@"%@ index is corrupted", viewName],
                                                    @"info":@{@"view_name": viewName,
                                                              @"design_doc": designDoc,
-                                                             @"view_keys": keys,
+                                                             @"view_keys": keys?keys:@[],
                                                              @"view_last_sequence": @(view.lastSequenceIndexed)}};
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
