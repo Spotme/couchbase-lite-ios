@@ -34,14 +34,19 @@ static inline int dcmp(double n1, double n2) {
 }
 
 
-// Maps an ASCII character to its uppercase equivalent.
-static char kAsciiToUpper[128];
+static uint8_t kCharPriority[128];
+static uint8_t kCharPriorityCaseInsensitive[128];
 
-static void initializeAsciiToUpper(void) {
-    for (int i=0; i<=127; i++)
-        kAsciiToUpper[i] = (char)i;
-    for (int i='a'; i<='z'; i++)
-        kAsciiToUpper[i] = (char)i - 32;
+
+static void initializeCharPriorityMap(void) {
+    static const char* const kInverseMap = "\t\n\r `^_-,;:!?.'\"()[]{}@*/\\&#%+<=>|~$0123456789aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ";
+    uint8_t priority = 1;
+    for (unsigned i=0; i<strlen(kInverseMap); i++)
+        kCharPriority[(uint8_t)kInverseMap[i]] = priority++;
+    
+    memcpy(kCharPriorityCaseInsensitive, kCharPriority, sizeof(kCharPriority));
+    for (uint8_t c = 'a'; c <= 'z'; c++)
+        kCharPriorityCaseInsensitive[c] = kCharPriority[toupper(c)];
 }
 
 
@@ -188,13 +193,14 @@ static int compareStringsUnicodeFast(const char** in1, const char** in2) {
             return -2; // fail: I only handle ASCII
 
         // Compare the next characters, case-insensitively:
-        int s = cmp(kAsciiToUpper[(uint8_t)c1], kAsciiToUpper[(uint8_t)c2]);
+        int s = cmp(kCharPriorityCaseInsensitive[(uint8_t)c1],
+                    kCharPriorityCaseInsensitive[(uint8_t)c2]);
         ifc (s)
             return s;
 
         // Remember case-sensitive result, i.e. 'A' > 'a'
         ifc (resultIfEqual == 0 && c1 != c2)
-            resultIfEqual = cmp(c2, c1); // opposite of ASCII ordering
+            resultIfEqual = cmp(kCharPriority[(uint8_t)c1], kCharPriority[(uint8_t)c2]);
     }
 
     ifc (resultIfEqual)
@@ -300,7 +306,7 @@ int CBLCollateJSONLimited(void *context,
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         initializeValueTypes();
-        initializeAsciiToUpper();
+        initializeCharPriorityMap();
     });
 
     const char* str1 = chars1;

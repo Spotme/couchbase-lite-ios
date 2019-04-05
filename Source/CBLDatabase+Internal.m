@@ -494,6 +494,15 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
         dbVersion = 12;
     }
     
+    if (dbVersion < 14) {
+        // Version 14: fix for JSON collation (Unicode vs ASCII comparison). Have to invalidate view indexes
+        NSString* sql = @"DELETE FROM maps; UPDATE views SET lastsequence=0; \
+        PRAGMA user_version = 14";
+        if (![self initialize: sql error: outError])
+            return NO;
+        dbVersion = 14;
+    }
+    
     if (isNew && ![self initialize: @"END TRANSACTION" error: outError])
         return NO;
 
