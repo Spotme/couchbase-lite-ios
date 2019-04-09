@@ -168,41 +168,18 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
     CBLDatabase* db = _weakDB;
     CBL_FMDatabase* fmdb = db.fmdb;
 
-    NSNumber* fullTextID = nil, *bboxID = nil;
-    NSData* geoKey = nil;
-
     NSString* keyJSON = nil;
-    if ([key isKindOfClass: [CBLSpecialKey class]]) {
-        CBLSpecialKey *specialKey = key;
-        BOOL ok;
-        NSString* text = specialKey.text;
-        if (text) {
-            ok = [fmdb executeUpdate: @"INSERT INTO fulltext (content) VALUES (?)", text];
-            fullTextID = @(fmdb.lastInsertRowId);
-        } else {
-            CBLGeoRect rect = specialKey.rect;
-            ok = [fmdb executeUpdate: @"INSERT INTO bboxes (x0,y0,x1,y1) VALUES (?,?,?,?)",
-                  @(rect.min.x), @(rect.min.y), @(rect.max.x), @(rect.max.y)];
-            bboxID = @(fmdb.lastInsertRowId);
-            geoKey = specialKey.geoJSONData;
-        }
-        if (!ok)
-            return db.lastDbError;
-        keyJSON = @"null";
-    } else {
-        keyJSON = _javaScriptView ? key : toJSONString(key);
-        keyJSON = (keyJSON != nil) ? keyJSON : @"null";
-    }
+
+    keyJSON = _javaScriptView ? key : toJSONString(key);
+    keyJSON = (keyJSON != nil) ? keyJSON : @"null";
     
     NSString* valueJSON = _javaScriptView ? value : toJSONString(value);
     valueJSON = (valueJSON != nil) ? valueJSON : @"null";
     
     LogTo(ViewIndexVerbose, @" %@ emit(%@, %@) for sequence=%lld", _name, keyJSON, valueJSON, sequence);
     
-    if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value, "
-                                   "fulltext_id, bbox_id, geokey) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                  @(self.viewID), @(sequence), keyJSON, valueJSON,
-                                  fullTextID, bboxID, geoKey])
+    if (![fmdb executeUpdate: @"INSERT INTO maps (view_id, sequence, key, value) VALUES (?, ?, ?, ?)",
+                                  @(self.viewID), @(sequence), keyJSON, valueJSON])
         return db.lastDbError;
     return kCBLStatusOK;
 }

@@ -243,7 +243,7 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
            @"Critical Couchbase Lite code has been stripped from the app binary! "
             "Please make sure to build using the -ObjC linker flag!");
 
-    int flags =  SQLITE_OPEN_FILEPROTECTION_COMPLETEUNLESSOPEN;
+    int flags = 0;
     if (_readOnly)
         flags |= SQLITE_OPEN_READONLY;
     else
@@ -264,7 +264,7 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
     sqlite3_create_collation(_fmdb.sqliteHandle, "REVID", SQLITE_UTF8,
                              NULL, CBLCollateRevIDs);
 
-    [CBLView registerFunctions: self];
+    //[CBLView registerFunctions: self];
     
     // Give SQLCipher the encryption key, if provided:
     if (_encryptionKey) {
@@ -429,35 +429,35 @@ NSString* const  CBL_HasFpTypesConfigFileName = @"has-fp-types-config.plist";
         dbVersion = 6;
     }
 
-    if (dbVersion < 7) {
-        // Version 7: enable full-text search
-        // Note: Apple's SQLite build does not support the icu or unicode61 tokenizers :(
-        // OPT: Could add compress/decompress functions to make stored content smaller
-        NSString* sql = @"CREATE VIRTUAL TABLE fulltext USING fts4(content, tokenize=unicodesn); \
-                          ALTER TABLE maps ADD COLUMN fulltext_id INTEGER; \
-                          CREATE INDEX IF NOT EXISTS maps_by_fulltext ON maps(fulltext_id); \
-                          CREATE TRIGGER del_fulltext DELETE ON maps WHEN old.fulltext_id not null \
-                                BEGIN DELETE FROM fulltext WHERE rowid=old.fulltext_id| END;\
-                          PRAGMA user_version = 7";
-        if (![self initialize: sql error: outError])
-            return NO;
-        dbVersion = 7;
-    }
-
-    // (Version 8 was an older version of the geo index)
-
-    if (dbVersion < 9) {
-        // Version 9: Add geo-query index
-        NSString* sql = @"CREATE VIRTUAL TABLE bboxes USING rtree(rowid, x0, x1, y0, y1); \
-                        ALTER TABLE maps ADD COLUMN bbox_id INTEGER; \
-                        ALTER TABLE maps ADD COLUMN geokey BLOB; \
-                        CREATE TRIGGER del_bbox DELETE ON maps WHEN old.bbox_id not null \
-                        BEGIN DELETE FROM bboxes WHERE rowid=old.bbox_id| END;\
-                        PRAGMA user_version = 9";
-        if (![self initialize: sql error: outError])
-            return NO;
-        dbVersion = 9;
-    }
+//    if (dbVersion < 7) {
+//        // Version 7: enable full-text search
+//        // Note: Apple's SQLite build does not support the icu or unicode61 tokenizers :(
+//        // OPT: Could add compress/decompress functions to make stored content smaller
+//        NSString* sql = @"CREATE VIRTUAL TABLE fulltext USING fts4(content, tokenize=unicodesn); \
+//                          ALTER TABLE maps ADD COLUMN fulltext_id INTEGER; \
+//                          CREATE INDEX IF NOT EXISTS maps_by_fulltext ON maps(fulltext_id); \
+//                          CREATE TRIGGER del_fulltext DELETE ON maps WHEN old.fulltext_id not null \
+//                                BEGIN DELETE FROM fulltext WHERE rowid=old.fulltext_id| END;\
+//                          PRAGMA user_version = 7";
+//        if (![self initialize: sql error: outError])
+//            return NO;
+//        dbVersion = 7;
+//    }
+//
+//    // (Version 8 was an older version of the geo index)
+//
+//    if (dbVersion < 9) {
+//        // Version 9: Add geo-query index
+//        NSString* sql = @"CREATE VIRTUAL TABLE bboxes USING rtree(rowid, x0, x1, y0, y1); \
+//                        ALTER TABLE maps ADD COLUMN bbox_id INTEGER; \
+//                        ALTER TABLE maps ADD COLUMN geokey BLOB; \
+//                        CREATE TRIGGER del_bbox DELETE ON maps WHEN old.bbox_id not null \
+//                        BEGIN DELETE FROM bboxes WHERE rowid=old.bbox_id| END;\
+//                        PRAGMA user_version = 9";
+//        if (![self initialize: sql error: outError])
+//            return NO;
+//        dbVersion = 9;
+//    }
 
     if (dbVersion < 10) {
         // Version 10: Add rev flag for whether it has an attachment
