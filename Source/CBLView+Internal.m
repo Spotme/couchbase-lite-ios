@@ -456,10 +456,6 @@ static inline NSString* toJSONString(__unsafe_unretained id object ) {
         if (![fmdb executeUpdate: @"reindex main.revs"]) {
             return db.lastDbError;
         }
-        // Also try to repair internal index built for sequence PRIMARY KEY
-        if (![fmdb executeUpdate: @"reindex main.sqlite_autoindex_revs_1"]) {
-            return db.lastDbError;
-        }
         return kCBLStatusOK;
     }];
 }
