@@ -823,6 +823,40 @@
 		DA147C3C14BCAC780052DA4D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA147C3A14BCAC780052DA4D /* MobileCoreServices.framework */; };
 		DA147C3D14BCAC780052DA4D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA147C3B14BCAC780052DA4D /* Security.framework */; };
 		DA147C3E14BCAC9D0052DA4D /* CBLListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 275315DE14ACF0A20065964D /* CBLListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FF19DD5722269DA400EDB0D8 /* CBLMangoIndexUpdater.h in Headers */ = {isa = PBXBuildFile; fileRef = FF19DD5522269DA400EDB0D8 /* CBLMangoIndexUpdater.h */; };
+		FF19DD5822269DA400EDB0D8 /* CBLMangoIndexUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = FF19DD5622269DA400EDB0D8 /* CBLMangoIndexUpdater.m */; };
+		FF19DD5922269DA400EDB0D8 /* CBLMangoIndexUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = FF19DD5622269DA400EDB0D8 /* CBLMangoIndexUpdater.m */; };
+		FF29C09F22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = FF29C09D22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h */; };
+		FF29C0A022294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = FF29C09D22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h */; };
+		FF29C0A122294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C09E22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m */; };
+		FF29C0A222294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C09E22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m */; };
+		FF29C0A322294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C09E22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m */; };
+		FF29C0A62229500300C5D9A4 /* CBLMangoResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = FF29C0A42229500300C5D9A4 /* CBLMangoResultSet.h */; };
+		FF29C0A72229500300C5D9A4 /* CBLMangoResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = FF29C0A42229500300C5D9A4 /* CBLMangoResultSet.h */; };
+		FF29C0A82229500300C5D9A4 /* CBLMangoResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C0A52229500300C5D9A4 /* CBLMangoResultSet.m */; };
+		FF29C0A92229500300C5D9A4 /* CBLMangoResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C0A52229500300C5D9A4 /* CBLMangoResultSet.m */; };
+		FF29C0AA2229500300C5D9A4 /* CBLMangoResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = FF29C0A52229500300C5D9A4 /* CBLMangoResultSet.m */; };
+		FF39A2312220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A22F2220386F00CC20F6 /* CBLMangoIndexManager.h */; };
+		FF39A2322220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A22F2220386F00CC20F6 /* CBLMangoIndexManager.h */; };
+		FF39A2332220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A22F2220386F00CC20F6 /* CBLMangoIndexManager.h */; };
+		FF39A2342220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */; };
+		FF39A2352220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */; };
+		FF39A2362220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */; };
+		FF39A2372220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */; };
+		FF39A23A22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A23822203BC000CC20F6 /* CBLMangoIndexCreator.h */; };
+		FF39A23B22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A23822203BC000CC20F6 /* CBLMangoIndexCreator.h */; };
+		FF39A23C22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A23822203BC000CC20F6 /* CBLMangoIndexCreator.h */; };
+		FF39A23D22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */; };
+		FF39A23E22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */; };
+		FF39A23F22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */; };
+		FF39A24022203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */; };
+		FF39A24322203CBA00CC20F6 /* CBLMangoIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A24122203CBA00CC20F6 /* CBLMangoIndex.h */; };
+		FF39A24422203CBA00CC20F6 /* CBLMangoIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A24122203CBA00CC20F6 /* CBLMangoIndex.h */; };
+		FF39A24522203CBA00CC20F6 /* CBLMangoIndex.h in Headers */ = {isa = PBXBuildFile; fileRef = FF39A24122203CBA00CC20F6 /* CBLMangoIndex.h */; };
+		FF39A24622203CBA00CC20F6 /* CBLMangoIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */; };
+		FF39A24722203CBA00CC20F6 /* CBLMangoIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */; };
+		FF39A24822203CBA00CC20F6 /* CBLMangoIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */; };
+		FF39A24922203CBA00CC20F6 /* CBLMangoIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1467,6 +1501,18 @@
 		DA147C3614BCAC3B0052DA4D /* CouchbaseLiteListener.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CouchbaseLiteListener.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA147C3A14BCAC780052DA4D /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		DA147C3B14BCAC780052DA4D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		FF19DD5522269DA400EDB0D8 /* CBLMangoIndexUpdater.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLMangoIndexUpdater.h; sourceTree = "<group>"; };
+		FF19DD5622269DA400EDB0D8 /* CBLMangoIndexUpdater.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBLMangoIndexUpdater.m; sourceTree = "<group>"; };
+		FF29C09D22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBLDatabase+MangoQuery.h"; sourceTree = "<group>"; };
+		FF29C09E22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CBLDatabase+MangoQuery.m"; sourceTree = "<group>"; };
+		FF29C0A42229500300C5D9A4 /* CBLMangoResultSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLMangoResultSet.h; sourceTree = "<group>"; };
+		FF29C0A52229500300C5D9A4 /* CBLMangoResultSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBLMangoResultSet.m; sourceTree = "<group>"; };
+		FF39A22F2220386F00CC20F6 /* CBLMangoIndexManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLMangoIndexManager.h; sourceTree = "<group>"; };
+		FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBLMangoIndexManager.m; sourceTree = "<group>"; };
+		FF39A23822203BC000CC20F6 /* CBLMangoIndexCreator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLMangoIndexCreator.h; sourceTree = "<group>"; };
+		FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBLMangoIndexCreator.m; sourceTree = "<group>"; };
+		FF39A24122203CBA00CC20F6 /* CBLMangoIndex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLMangoIndex.h; sourceTree = "<group>"; };
+		FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CBLMangoIndex.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1610,6 +1656,7 @@
 			isa = PBXGroup;
 			children = (
 				270B3E28148940C000E0A926 /* README.md */,
+				FF39A225222037AD00CC20F6 /* MangoQuery */,
 				27DA4300158F9D7A00F9E7B5 /* API */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				275315D714ACF0A20065964D /* Listener */,
@@ -2251,6 +2298,8 @@
 				A9DD5F8F1868B38D00DA3C3A /* CBLListFunction.m */,
 				27DA4310158FB79E00F9E7B5 /* CBLQuery.h */,
 				27DA4311158FB79E00F9E7B5 /* CBLQuery.m */,
+				FF29C09D22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h */,
+				FF29C09E22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m */,
 				277EF39917F4DEDD00F7B7F7 /* CBLQuery+FullTextSearch.h */,
 				277EF39A17F4DEDD00F7B7F7 /* CBLQuery+FullTextSearch.m */,
 				277EF39B17F4DEDD00F7B7F7 /* CBLQuery+Geo.h */,
@@ -2472,6 +2521,23 @@
 			path = MYUtilitiesLocal;
 			sourceTree = "<group>";
 		};
+		FF39A225222037AD00CC20F6 /* MangoQuery */ = {
+			isa = PBXGroup;
+			children = (
+				FF39A22F2220386F00CC20F6 /* CBLMangoIndexManager.h */,
+				FF39A2302220386F00CC20F6 /* CBLMangoIndexManager.m */,
+				FF39A23822203BC000CC20F6 /* CBLMangoIndexCreator.h */,
+				FF39A23922203BC000CC20F6 /* CBLMangoIndexCreator.m */,
+				FF39A24122203CBA00CC20F6 /* CBLMangoIndex.h */,
+				FF39A24222203CBA00CC20F6 /* CBLMangoIndex.m */,
+				FF19DD5522269DA400EDB0D8 /* CBLMangoIndexUpdater.h */,
+				FF19DD5622269DA400EDB0D8 /* CBLMangoIndexUpdater.m */,
+				FF29C0A42229500300C5D9A4 /* CBLMangoResultSet.h */,
+				FF29C0A52229500300C5D9A4 /* CBLMangoResultSet.m */,
+			);
+			path = MangoQuery;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2518,6 +2584,7 @@
 				277B5D321821A8380088881E /* yajl_buf.h in Headers */,
 				2711CE0314C759BD00505D55 /* CBLDatabase+Replication.h in Headers */,
 				277EF41017F4DF3700F7B7F7 /* fts3_unicodesn.h in Headers */,
+				FF39A23A22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */,
 				BCB5E4321FAB5F29000F824C /* MYStreamUtils.h in Headers */,
 				A9DD5F9E1868B76100DA3C3A /* CBLShowFunction+Internal.h in Headers */,
 				270B3E2B1489581E00E0A926 /* CBL_Puller.h in Headers */,
@@ -2555,6 +2622,7 @@
 				275315C014ACF0330065964D /* DDASLLogger.h in Headers */,
 				275315C414ACF0330065964D /* DDFileLogger.h in Headers */,
 				A9DD5FA51868B79400DA3C3A /* CBLListFunction+Internal.h in Headers */,
+				FF29C0A62229500300C5D9A4 /* CBLMangoResultSet.h in Headers */,
 				27BDA81E181973EF00F27A11 /* CBLBulkDownloader.h in Headers */,
 				275315C814ACF0330065964D /* DDLog.h in Headers */,
 				27F94120176A64BA007BAEBE /* CBLJSONValidator.h in Headers */,
@@ -2583,18 +2651,21 @@
 				270F5705156AE0BF000FEB8F /* CBLAuthorizer.h in Headers */,
 				27ED8630157D0FC600712B33 /* CBLDocument.h in Headers */,
 				277B5D361821A8380088881E /* yajl_encode.h in Headers */,
+				FF29C09F22294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h in Headers */,
 				27DA42F8158E66DD00F9E7B5 /* CBLRevision.h in Headers */,
 				277B5DC81821A8B60088881E /* yajl_gen.h in Headers */,
 				27DA42FD158E7D3500F9E7B5 /* CBLDatabase.h in Headers */,
 				27DA4308158FA35600F9E7B5 /* CBLCache.h in Headers */,
 				27DA4312158FB79F00F9E7B5 /* CBLQuery.h in Headers */,
 				27DA4345159125B500F9E7B5 /* CBLManager.h in Headers */,
+				FF39A24322203CBA00CC20F6 /* CBLMangoIndex.h in Headers */,
 				27DA434A15912AFD00F9E7B5 /* CBLView.h in Headers */,
 				27DA435715918C8E00F9E7B5 /* CBLModel.h in Headers */,
 				27DA435A15918C8E00F9E7B5 /* CBLModelFactory.h in Headers */,
 				277EF40B17F4DF3700F7B7F7 /* fts3_tokenizer.h in Headers */,
 				270D6FC1164484190081812D /* CBLSocketStreamingChangeTracker.h in Headers */,
 				27208F8E184D1D83006ADBEF /* NSURL+Base.h in Headers */,
+				FF39A2312220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */,
 				275A29021649A11900B0D8EE /* CouchbaseLitePrivate.h in Headers */,
 				2776A59116A0C3A6006FF199 /* CBLPersonaAuthorizer.h in Headers */,
 				277B5DCE1821AE990088881E /* CBLJSONReader.h in Headers */,
@@ -2633,6 +2704,7 @@
 				27DA43651592387400F9E7B5 /* CBLRevision.h in Headers */,
 				27DA43661592387400F9E7B5 /* CBLView.h in Headers */,
 				27DA43671592387400F9E7B5 /* CBLQuery.h in Headers */,
+				FF39A2322220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */,
 				27DA43681592387400F9E7B5 /* CBLModel.h in Headers */,
 				27DA43691592387400F9E7B5 /* CBLModelFactory.h in Headers */,
 				275A29051649A13900B0D8EE /* CBLReplication.h in Headers */,
@@ -2656,6 +2728,7 @@
 				27B0B7FF1492BDE800A817AD /* CBL_Server.h in Headers */,
 				27B0B8001492BDE800A817AD /* CBL_Router.h in Headers */,
 				27B0B8011492BDE800A817AD /* CBL_URLProtocol.h in Headers */,
+				FF39A24422203CBA00CC20F6 /* CBLMangoIndex.h in Headers */,
 				AA24F8E4184538AE0091D577 /* CBLDatabaseChange.h in Headers */,
 				277EF49217F4EA0B00F7B7F7 /* CBLGeometry.h in Headers */,
 				27B0B8021492BDE800A817AD /* CBL_Replicator.h in Headers */,
@@ -2663,6 +2736,7 @@
 				277EF49017F4EA0000F7B7F7 /* CBLQuery+FullTextSearch.h in Headers */,
 				27B0B8041492BDE800A817AD /* CBL_Pusher.h in Headers */,
 				2776A59216A0C3A6006FF199 /* CBLPersonaAuthorizer.h in Headers */,
+				FF39A23B22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2683,12 +2757,14 @@
 				A932B2F91875F3FC001B540A /* CBLAttachment.h in Headers */,
 				A932B2FA1875F3FC001B540A /* CBLView.h in Headers */,
 				A932B2FB1875F3FC001B540A /* CBLFunctionResult.h in Headers */,
+				FF39A2332220386F00CC20F6 /* CBLMangoIndexManager.h in Headers */,
 				A932B2FC1875F3FC001B540A /* CBLShowFunction.h in Headers */,
 				A932B2FD1875F3FC001B540A /* CBLListFunction.h in Headers */,
 				BCB5E4241FAB5F29000F824C /* MYDynamicObject.h in Headers */,
 				A932B2FE1875F3FC001B540A /* CBLQuery.h in Headers */,
 				A932B2FF1875F3FC001B540A /* CBLQuery+FullTextSearch.h in Headers */,
 				A932B3001875F3FC001B540A /* CBLQuery+Geo.h in Headers */,
+				FF19DD5722269DA400EDB0D8 /* CBLMangoIndexUpdater.h in Headers */,
 				A932B3011875F3FC001B540A /* CBLReplication.h in Headers */,
 				A932B3021875F3FC001B540A /* CBLDatabaseChange.h in Headers */,
 				A932B3031875F3FC001B540A /* CBLModel.h in Headers */,
@@ -2725,6 +2801,7 @@
 				BCB5E42E1FAB5F29000F824C /* MYRegexUtils.h in Headers */,
 				A932B3201875F4F7001B540A /* CBL_Server.h in Headers */,
 				A932B3221875F557001B540A /* CBL_Router.h in Headers */,
+				FF29C0A022294D1C00C5D9A4 /* CBLDatabase+MangoQuery.h in Headers */,
 				A932B3231875F557001B540A /* CBL_URLProtocol.h in Headers */,
 				A932B3241875F557001B540A /* CBL_Replicator.h in Headers */,
 				A932B3251875F557001B540A /* CBL_Puller.h in Headers */,
@@ -2732,8 +2809,11 @@
 				A932B3271875F557001B540A /* CBLPersonaAuthorizer.h in Headers */,
 				BCB5E4101FAB5F29000F824C /* ExceptionUtils.h in Headers */,
 				A932B3291875F634001B540A /* CBLHTTPServer.h in Headers */,
+				FF29C0A72229500300C5D9A4 /* CBLMangoResultSet.h in Headers */,
 				A932B32A1875F634001B540A /* CBLHTTPConnection.h in Headers */,
+				FF39A24522203CBA00CC20F6 /* CBLMangoIndex.h in Headers */,
 				A932B32B1875F634001B540A /* CBLHTTPResponse.h in Headers */,
+				FF39A23C22203BC000CC20F6 /* CBLMangoIndexCreator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3189,6 +3269,7 @@
 				4F5FB6E41B28B6EE006FFEF0 /* CBLJSFunction.m in Sources */,
 				4F5FB6E51B28B6EE006FFEF0 /* CBLJSViewCompiler.m in Sources */,
 				270B3E111489382F00E0A926 /* CBLDatabase+Internal.m in Sources */,
+				FF39A2342220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */,
 				BCB5E41B1FAB5F29000F824C /* MYBlockUtils.m in Sources */,
 				270B3E121489382F00E0A926 /* CBL_Body.m in Sources */,
 				270B3E131489382F00E0A926 /* CBL_Server.m in Sources */,
@@ -3198,6 +3279,7 @@
 				272A690E17B2CCF0000722FA /* CBLFacebookAuthorizer.m in Sources */,
 				270B3E3F148D7F0000E0A926 /* CBL_Pusher.m in Sources */,
 				27821BB8148E7D6F0099B373 /* CBL_Replicator.m in Sources */,
+				FF29C0A122294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */,
 				BCB5E4251FAB5F29000F824C /* MYDynamicObject.m in Sources */,
 				27821BBC149001B30099B373 /* CBLReplicator_Tests.m in Sources */,
 				279EB2CF149140DE00E74185 /* CBLView+Internal.m in Sources */,
@@ -3254,6 +3336,7 @@
 				BCB5E43E1FAB5F29000F824C /* MYURLUtils.m in Sources */,
 				277EF49417F5F3CB00F7B7F7 /* CBLView+Querying.m in Sources */,
 				277EF3A117F4DEDD00F7B7F7 /* CBLQuery+Geo.m in Sources */,
+				FF39A23D22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */,
 				27B945B417692E2000B2DF2D /* CBLModel+Properties.m in Sources */,
 				27B945A51767E06B00B2DF2D /* ModelTests.m in Sources */,
 				A902068E188847AA00B6B6B4 /* CBLSocketChangeTracker.m in Sources */,
@@ -3273,11 +3356,13 @@
 				27F128B9156AC8F0008465C2 /* OAMutableURLRequest.m in Sources */,
 				270F5702156AD215000FEB8F /* OARequestParameter.m in Sources */,
 				27F128B5156AC8B7008465C2 /* OAToken.m in Sources */,
+				FF29C0A82229500300C5D9A4 /* CBLMangoResultSet.m in Sources */,
 				27F128B8156AC8EC008465C2 /* OAConsumer.m in Sources */,
 				A902068718882B4100B6B6B4 /* CBLConnectionChangeTracker.m in Sources */,
 				27F128A8156ABFE0008465C2 /* NSMutableURLRequest+Parameters.m in Sources */,
 				27208F8A184D1D5C006ADBEF /* NSString+URLEncoding.m in Sources */,
 				27208F8F184D1D83006ADBEF /* NSURL+Base.m in Sources */,
+				FF39A24622203CBA00CC20F6 /* CBLMangoIndex.m in Sources */,
 				27DB90D814DB249700FC7118 /* GTMNSData+zlib.m in Sources */,
 				277B5D301821A8380088881E /* yajl_buf.c in Sources */,
 				277B5D291821A8380088881E /* yajl.c in Sources */,
@@ -3336,7 +3421,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF39A23F22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */,
+				FF39A24822203CBA00CC20F6 /* CBLMangoIndex.m in Sources */,
 				27ED9A971639D8D2000C844A /* LiteServ.m in Sources */,
+				FF29C0A92229500300C5D9A4 /* CBLMangoResultSet.m in Sources */,
+				FF19DD5822269DA400EDB0D8 /* CBLMangoIndexUpdater.m in Sources */,
+				FF29C0A222294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */,
+				FF39A2362220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3537,6 +3628,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF39A24722203CBA00CC20F6 /* CBLMangoIndex.m in Sources */,
+				FF39A23E22203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */,
+				FF39A2352220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3598,6 +3692,7 @@
 				A932B2541875ED4B001B540A /* CBLCollateJSON.m in Sources */,
 				A932B2551875ED4B001B540A /* CBL_Replicator.m in Sources */,
 				A932B2561875ED4B001B540A /* CBL_Puller.m in Sources */,
+				FF39A24922203CBA00CC20F6 /* CBLMangoIndex.m in Sources */,
 				A932B2571875ED4B001B540A /* CBL_Pusher.m in Sources */,
 				A932B2581875ED4B001B540A /* CBLChangeTracker.m in Sources */,
 				A932B2591875ED4B001B540A /* CBLBase64.m in Sources */,
@@ -3646,6 +3741,7 @@
 				BCB5E4181FAB5F29000F824C /* Logging.m in Sources */,
 				A932B2801875ED4B001B540A /* CBLReplication.m in Sources */,
 				A932B2811875ED4B001B540A /* CBLModelArray.m in Sources */,
+				FF39A24022203BC000CC20F6 /* CBLMangoIndexCreator.m in Sources */,
 				BCB5E4311FAB5F29000F824C /* MYRegexUtils.m in Sources */,
 				A932B2821875ED4B001B540A /* CBLView+Querying.m in Sources */,
 				A932B2841875ED4B001B540A /* CBLListFunction+Internal.m in Sources */,
@@ -3667,6 +3763,7 @@
 				A932B29E1875ED4B001B540A /* NSURL+Base.m in Sources */,
 				A932B29F1875ED4B001B540A /* OAPlaintextSignatureProvider.m in Sources */,
 				A932B2A01875ED4B001B540A /* OARequestParameter.m in Sources */,
+				FF29C0A322294D1C00C5D9A4 /* CBLDatabase+MangoQuery.m in Sources */,
 				A932B2A11875ED4B001B540A /* OAToken.m in Sources */,
 				A932B2A21875ED4B001B540A /* NSMutableURLRequest+Parameters.m in Sources */,
 				A932B2A31875ED4B001B540A /* NSString+URLEncoding.m in Sources */,
@@ -3684,6 +3781,7 @@
 				A932B2B61875ED4B001B540A /* stem_ISO_8859_1_italian.c in Sources */,
 				A932B2B71875ED4B001B540A /* stem_ISO_8859_2_romanian.c in Sources */,
 				A932B2B81875ED4B001B540A /* CBLShowFunction.m in Sources */,
+				FF39A2372220386F00CC20F6 /* CBLMangoIndexManager.m in Sources */,
 				A932B2B91875ED4B001B540A /* stem_UTF_8_german.c in Sources */,
 				A932B2BA1875ED4B001B540A /* stem_UTF_8_danish.c in Sources */,
 				A932B2BB1875ED4B001B540A /* stem_ISO_8859_1_danish.c in Sources */,
@@ -3699,6 +3797,7 @@
 				A932B2C41875ED4B001B540A /* stem_UTF_8_romanian.c in Sources */,
 				A932B2C51875ED4B001B540A /* stem_ISO_8859_1_hungarian.c in Sources */,
 				A932B2C61875ED4B001B540A /* stem_ISO_8859_1_dutch.c in Sources */,
+				FF19DD5922269DA400EDB0D8 /* CBLMangoIndexUpdater.m in Sources */,
 				A932B2C71875ED4B001B540A /* fts3_unicode2.c in Sources */,
 				A932B2C81875ED4B001B540A /* stem_UTF_8_italian.c in Sources */,
 				A932B2C91875ED4B001B540A /* stem_UTF_8_russian.c in Sources */,
@@ -3706,6 +3805,7 @@
 				A932B2CB1875ED4B001B540A /* stem_UTF_8_hungarian.c in Sources */,
 				A932B2CC1875ED4B001B540A /* stem_UTF_8_portuguese.c in Sources */,
 				A932B2CD1875ED4B001B540A /* stem_UTF_8_french.c in Sources */,
+				FF29C0AA2229500300C5D9A4 /* CBLMangoResultSet.m in Sources */,
 				A932B2CE1875ED4B001B540A /* stem_ISO_8859_1_porter.c in Sources */,
 				A932B2CF1875ED4B001B540A /* stem_UTF_8_dutch.c in Sources */,
 				A932B2D01875ED4B001B540A /* stem_ISO_8859_1_spanish.c in Sources */,
