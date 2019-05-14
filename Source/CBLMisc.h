@@ -76,3 +76,8 @@ NSData* CBLDataDecode(NSData *data, NSString *key);
 
 /** splits a URL path into array, skips empty items */
 NSArray* CBLSplitURLPath(NSURL *URL);
+
+BOOL verifyCertIsInPinnedSetForServerTrust(SecTrustRef trust);
+
+/** Unused currently. Switch to this if function if public key pinning will be required instead of certificate pinning */
+BOOL verifyPKeyIsInPinnedSetForServerTrust(SecTrustRef trust);

@@ -36,6 +36,9 @@ extern double CouchbaseLiteVersionNumber; // Defined in Xcode-generated Couchbas
 #endif
 
 
+NSArray<NSString *> * getPinnedCerificates(void);
+NSArray<NSString *> * getPinnedPublicKeys(void);
+
 NSString* CBLVersionString( void ) {
 return $sprintf(@"%g", CouchbaseLiteVersionNumber);
 }
@@ -439,6 +442,101 @@ NSData* CBLDataDecode(NSData *data, NSString *key) {
     free(buffer); //free the buffer;
     return nil;
 }
+
+
+NSArray<NSString *> * getPinnedCerificates(void) {
+    // List is obtained via this script:
+    // https://github.com/Spotme/tool-emergency-hacks/blob/master/dump-cloud-certificate-hashes/hash_cloud_certs.py
+    return @[
+             @"8MlkzZFgriMj+xxs53Nmof2LKlk2fpwXKabp1fmCVQrOjQC9AwdwnRWHpv5AFE71vrkEqEXQhzdw4DSvIRY8oQ==",
+             @"4Fn7pesgxtmCojAhSoh6FCBbpx9RCZ92zVfz1vAZjIJPzyRess5ZTxGI5lJa4C9QTo6rM0SLbWSgvZTqCrQVpQ==",
+             @"QlXn6WZ1vfBcUqJ7KaffpITZNYH1ZoMns1LV8x+nHS7dkgSXbE+SPEmyJwwEzGmjODSgJ9Gzola5m+3UBAu/3w==",
+             @"RoJLyOqrW3i8yxfGOIq6RJGzIZif4nyF1deD4gvNGQ4wlHoalNkycm/k65K6lmVoDBLnMV9htSyd8kSyyTC94w==",
+             @"mFH6ulQmAbFT8q1c5WY66d4m0y4o9V2mTvwu8NxLvA76149Q7UUL698zJHTU9ZdbngGkiFw2sS/eG+BWEqLs8A==",
+             @"LiqgRa4ZgrWkeXv/yJGc6EMHTToZv6U/LwCbfLtq79RQIridWaoe4JeV+qDpZ2N3P8HijtCkFgqsk7YdewMxlA==",
+             @"6oAiHM06cna7OSRm4sDKZp7pnc4TA5crfKUk7W10/oQHq85wceruOW0SxxWTMUNwu4qyBqd4hDRkAIDPiYRnCQ==",
+             @"mFH6ulQmAbFT8q1c5WY66d4m0y4o9V2mTvwu8NxLvA76149Q7UUL698zJHTU9ZdbngGkiFw2sS/eG+BWEqLs8A==",
+             @"3rT3nGGckCDQyqzM4r4mGyl+pDhHfrdJHX8iX4oa9TxcpIK2DFqoZ0Y61Isfsx5dAcZUnXtNhjsDaWY1yhzdDw==",
+             @"vvGOqSEXbQVpNjIlXzI2Jip9gqJiD0bWxqi7/qhq4WmL4cbmLiBxt93NKeiYbZsrQVoL0+986Il6ys1JVEKuUA==",
+             @"C8hkcL9uRd9m/KrDIk2mS2vbBc7knN37GzEdsiNzs/KaR4TynjLsydGIuaDaMvXXxi6eIf4cOzb1yC8VNWCBHg==",
+             @"wMdDc05AMlAfYCdHKWzz7MC//A0xGQXNGmvjXHx52yBF7Ab4/LxblXFwhw9iBntfTii3tpZO8tVLdVOF8cAqSQ==",
+             @"LO7UGF5ie0LHZ4vo9CSnVS7+hEdXAngJRVXbppbBeRaJqBtxH2B+ZkibZ2fBK63s3zGXNsNskGJmPHWW7LQgPA==",
+             @"6OzNscn6tlAb1hEJM92aq7ooRQjR+cf7B/aO+dSZWo/n4IC1WDFMIcGglEOzfB/yoTheVVBIL92jH0SfVbYWcw==",
+             @"xq/ydoHlNWqLl96jCJfTLckiq0SamyJXmsKYBOxdnmTnlQdAhBK3R7gIbAJwwpeRnzz/lq6jBRZIPvq1NeIJdQ==",
+             @"ubjCFx89HycEvTqOx6nU3QXkwno+axeKkmVJ42zna2kKOAWQNCyx9ezpEMn3WwWK+YGOTGAgcqgMzg9cD9f+nw==",
+             @"O0w/8r6mN5Sa25WzMYQI+eeHn7xlO/hmTPZrf/0hGj4THdmR2JoimimRstRh2g8QvnL8e2MPLGypNFbNYNM5cw==",
+             @"lI3FkIRPpqKtHqefS1oDDr0jp0H4qeFhe/mRyi2iw/aIj1vRzup8JWkrmw7uy/k+W3Mk8nYnDH/s9TcjnWtEzQ==",
+             @"CwrfD2tY4CBU/ADdYYta5b00BRCUk6DheKWwBebQF4uMRJOptDiadC1RJWIDclqy5VaPkkcR5Q5AP0bf83BuZQ==",
+             @"K8Ay6BBbpwqLTcPNuMlWK8soinNQoBMhvb13P5sEbMUOZc6hGVjRHllh566LRd18C13ScNe9oeco/vHygKuj6g==",
+             @"pYrjbicx+xrURJDRiqGuxEwNYcJCo06u4skk9jhw7sKBygEAGvdowkXKcE76YEsP87FHEnpqXbBOC+MHH5Mr/w==",
+             @"KmpegCAamjUxykoLvoy6N5JDqfI4BCvpwOxyw3nk4a/3wpmiSgb9AikwnGFiJP5Kz6L7HuQ/y/QC/zl6wnvZJw=="
+             ];
+}
+
+
+NSArray<NSString *> * getPinnedPublicKeys(void) {
+    // Pin only staging7/8 wildcard certificates pkey for now
+    return @[@"owjUQOf/ZY894ZLo3ivSixlNexZi6PcCYm2Z5+S57xYuF0M6OdtM2obTbtmCE1Vj6WhRGBX75TSqakYLt/ov9Q=="];
+}
+
+
+BOOL verifyCertIsInPinnedSetForServerTrust(SecTrustRef trust) {
+    BOOL success = NO;
+    if (trust && SecTrustGetCertificateCount(trust) > 0) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
+        if (certificate) {
+            NSData *certData = CFBridgingRelease(SecCertificateCopyData(certificate));
+            if (certData && certData.length) {
+                NSMutableData *keyWithHeaderRawData = [NSMutableData new];
+                [keyWithHeaderRawData appendData:certData];
+                uint8_t hash[CC_SHA512_DIGEST_LENGTH] = {0};
+                if (CC_SHA512([keyWithHeaderRawData bytes], (CC_LONG)[keyWithHeaderRawData length], hash)) {
+                    NSData *sha = [NSData dataWithBytes:hash length:CC_SHA512_DIGEST_LENGTH];
+                    NSString *base64Data = [sha base64EncodedStringWithOptions:0];
+                    if (base64Data && base64Data.length) {
+                        success = [getPinnedCerificates() containsObject:base64Data];
+                    }
+                }
+            }
+        }
+    }
+    return success;
+}
+
+
+BOOL verifyPKeyIsInPinnedSetForServerTrust(SecTrustRef trust) {
+    
+    BOOL success = NO;
+    const int kHeaderLength = 24;
+    const uint8_t rsa2048Header[kHeaderLength] = {0x30, 0x82, 0x01, 0x22, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48,
+        0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x01, 0x0f, 0x00};
+    
+    if (trust && SecTrustGetCertificateCount(trust) > 0) {
+        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(trust, 0);
+        if (certificate) {
+            SecKeyRef serverPublicKey = SecCertificateCopyPublicKey(certificate);
+            if (serverPublicKey) {
+                CFErrorRef keyError = NULL;
+                NSData *serverPublicKeyData = CFBridgingRelease(SecKeyCopyExternalRepresentation(serverPublicKey, &keyError));
+                if (serverPublicKeyData && !keyError && serverPublicKeyData.length) {
+                    NSMutableData *keyWithHeaderRawData = [[NSMutableData alloc] initWithBytes:rsa2048Header
+                                                                                        length:kHeaderLength];
+                    [keyWithHeaderRawData appendData:serverPublicKeyData];
+                    uint8_t hash[CC_SHA512_DIGEST_LENGTH] = {0};
+                    if (CC_SHA512([keyWithHeaderRawData bytes], (CC_LONG)[keyWithHeaderRawData length], hash)) {
+                        NSData *sha = [NSData dataWithBytes:hash length:CC_SHA512_DIGEST_LENGTH];
+                        NSString *base64Data = [sha base64EncodedStringWithOptions:0];
+                        if (base64Data) {
+                            success = [getPinnedPublicKeys() containsObject:base64Data];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return success;
+}
+
 
 NSArray* CBLSplitURLPath(NSURL *URL) {
     // Unfortunately can't just call url.path because that converts %2F to a '/'.
