@@ -130,6 +130,8 @@ static NSString* normalizeHostname( NSString* hostname ) {
         if ([host hasSuffix: @".couchbase."]) {
             host = [host substringToIndex: host.length - 11];
             return [self serverForHostname: host];
+        } else if([host hasSuffix: @"localhost"]){
+            return [self serverForHostname: @".lite."];
         }
     }
     return nil;
