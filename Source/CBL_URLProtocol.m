@@ -124,6 +124,8 @@ static NSString* normalizeHostname( NSString* hostname ) {
         if ([host hasSuffix: @".couchbase."]) {
             host = [host substringToIndex: host.length - 11];
             return [self serverForHostname: host];
+        } else if ([self serverForHostname: @"lite"]) {
+            return [self serverForHostname: @"lite"];
         }
     } else if ([scheme isEqualToString: @"http"] || [scheme isEqualToString: @"https"]) {
         NSString* host = url.host;
