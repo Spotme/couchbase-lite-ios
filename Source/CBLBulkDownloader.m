@@ -139,7 +139,7 @@
                                       @"error_message":@"_docReader startedPart assert fail",
                                       @"info":@{@"_docReader": _docReader,
                                                 @"_docReader.status": @(_docReader.status),
-                                                @"self": self
+                                                @"self": [self debugDescription]
                                                 }
                                       };
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
@@ -158,10 +158,7 @@
     if (!_docReader) {
         NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
                                       @"error_message":@"_docReader appendToPart assert fail",
-                                      @"info":@{@"_docReader": _docReader,
-                                                @"_docReader.status": @(_docReader.status),
-                                                @"self": self
-                                                }
+                                      @"info":@{@"data_length": @(data.length),@"self": [self debugDescription]}
                                       };
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
                                                             object:self
@@ -181,10 +178,7 @@
     if (!_docReader) {
         NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
                                       @"error_message":@"_docReader finishedPart assert fail",
-                                      @"info":@{@"_docReader": _docReader,
-                                                @"_docReader.status": @(_docReader.status),
-                                                @"self": self
-                                                }
+                                      @"info":@{@"self": [self debugDescription]}
                                       };
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
                                                             object:self
