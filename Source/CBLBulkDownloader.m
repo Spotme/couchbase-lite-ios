@@ -134,7 +134,19 @@
 
 /** This method is called when a part's headers have been parsed, before its data is parsed. */
 - (BOOL) startedPart: (NSDictionary*)headers {
-    Assert(!_docReader);
+    if (_docReader) {
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+                                      @"error_message":@"_docReader startedPart assert fail",
+                                      @"info":@{@"_docReader": _docReader,
+                                                @"_docReader.status": @(_docReader.status),
+                                                @"self": self
+                                                }
+                                      };
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
+                                                            object:self
+                                                          userInfo:assertError];
+        return NO;
+    }
     LogTo(SyncVerbose, @"%@: Starting new document; ID=\"%@\"", self, headers[@"X-Doc-ID"]);
     _docReader = [[CBLMultipartDocumentReader alloc] initWithDatabase: _db];
     _docReader.headers = headers;
@@ -143,7 +155,19 @@
 
 /** This method is called to append data to a part's body. */
 - (BOOL) appendToPart: (NSData*)data {
-    Assert(_docReader);
+    if (!_docReader) {
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+                                      @"error_message":@"_docReader appendToPart assert fail",
+                                      @"info":@{@"_docReader": _docReader,
+                                                @"_docReader.status": @(_docReader.status),
+                                                @"self": self
+                                                }
+                                      };
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
+                                                            object:self
+                                                          userInfo:assertError];
+        return NO;
+    }
     if (![_docReader appendData: data]) {
         [self cancelWithStatus: _docReader.status];
         return NO;
@@ -154,7 +178,19 @@
 /** This method is called when a part is complete. */
 - (BOOL) finishedPart {
     LogTo(SyncVerbose, @"%@: Finished document", self);
-    Assert(_docReader);
+    if (!_docReader) {
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+                                      @"error_message":@"_docReader finishedPart assert fail",
+                                      @"info":@{@"_docReader": _docReader,
+                                                @"_docReader.status": @(_docReader.status),
+                                                @"self": self
+                                                }
+                                      };
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
+                                                            object:self
+                                                          userInfo:assertError];
+        return NO;
+    }
     if (![_docReader finish]) {
         [self cancelWithStatus: _docReader.status];
         return NO;

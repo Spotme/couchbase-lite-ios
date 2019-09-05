@@ -113,6 +113,7 @@
 - (void) clearConnection {
     _request = nil;
     if (_connection) {
+        [_connection cancel];
         _connection = nil;
     }
 }
