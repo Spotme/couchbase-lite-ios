@@ -135,7 +135,7 @@
 /** This method is called when a part's headers have been parsed, before its data is parsed. */
 - (BOOL) startedPart: (NSDictionary*)headers {
     if (_docReader) {
-        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DOWNLOADER_ERROR",
                                       @"error_message":@"_docReader startedPart assert fail",
                                       @"info":@{@"_docReader": _docReader,
                                                 @"_docReader.status": @(_docReader.status),
@@ -156,7 +156,7 @@
 /** This method is called to append data to a part's body. */
 - (BOOL) appendToPart: (NSData*)data {
     if (!_docReader) {
-        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DOWNLOADER_ERROR",
                                       @"error_message":@"_docReader appendToPart assert fail",
                                       @"info":@{@"data_length": @(data.length),@"self": [self debugDescription]}
                                       };
@@ -176,7 +176,7 @@
 - (BOOL) finishedPart {
     LogTo(SyncVerbose, @"%@: Finished document", self);
     if (!_docReader) {
-        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DONLOADER_ERROR",
+        NSDictionary *assertError = @{@"error_title":@"CBL BULK_DOWNLOADER_ERROR",
                                       @"error_message":@"_docReader finishedPart assert fail",
                                       @"info":@{@"self": [self debugDescription]}
                                       };
