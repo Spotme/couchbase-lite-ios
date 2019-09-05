@@ -156,9 +156,20 @@
 /** This method is called to append data to a part's body. */
 - (BOOL) appendToPart: (NSData*)data {
     if (!_docReader) {
+        NSMutableDictionary *debugInfo = [NSMutableDictionary new];
+        [debugInfo setObject:@(data.length) forKey:@"data_length"];
+        if ([self debugDescription]) {
+            [debugInfo setObject:[self debugDescription] forKey:@"self"];
+        }
+        if ([data length]<2000) {
+            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+            if (dataString) {
+                [debugInfo setObject:dataString forKey:@"dataString"];
+            }
+        }
         NSDictionary *assertError = @{@"error_title":@"CBL BULK_DOWNLOADER_ERROR",
                                       @"error_message":@"_docReader appendToPart assert fail",
-                                      @"info":@{@"data_length": @(data.length),@"self": [self debugDescription]}
+                                      @"info":debugInfo
                                       };
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SPMNotificationSendError"
                                                             object:self
@@ -194,7 +205,5 @@
     _docReader = nil;
     return YES;
 }
-
-
 
 @end
