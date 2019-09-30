@@ -266,7 +266,7 @@
 
 
 - (NSString*) tempDir {
-    if (!_tempDir) {
+    if (!_tempDir || ![[NSFileManager defaultManager] fileExistsAtPath:_tempDir]) {
         // Find a temporary directory suitable for files that will be moved into the store:
 #ifdef GNUSTEP
         _tempDir = [NSTemporaryDirectory() copy];
