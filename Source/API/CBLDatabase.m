@@ -179,6 +179,7 @@ static id<CBLFilterCompiler> sFilterCompiler;
         return NO;
 
     [self _clearDocumentCache];
+    _attachments = nil;
     _modelFactory = nil;
     return YES;
 }

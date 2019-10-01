@@ -266,7 +266,7 @@
 
 
 - (NSString*) tempDir {
-    if (!_tempDir || ![[NSFileManager defaultManager] fileExistsAtPath:_tempDir]) {
+    if (!_tempDir) {
         // Find a temporary directory suitable for files that will be moved into the store:
 #ifdef GNUSTEP
         _tempDir = [NSTemporaryDirectory() copy];
@@ -285,6 +285,17 @@
 #endif
     }
     return _tempDir;
+}
+
+- (void) cancel {
+    if (_tempDir) {
+        [[NSFileManager defaultManager] removeItemAtPath: _tempDir error: NULL];
+        _tempDir = nil;
+    }
+}
+
+- (void) dealloc {
+    [self cancel];      // Close file, and delete it if it hasn't been installed yet
 }
 
 
@@ -317,7 +328,19 @@
         if (![[NSFileManager defaultManager] createFileAtPath: _tempPath
                                                      contents: nil
                                                    attributes: attributes]) {
-            return nil;
+            
+            //if it failed to create the directory it's most likely that because _tempPath is no longer valid ( something cleaned it)
+            //so before marking it as fail , we can try to re-create the parent folder
+            if (![[NSFileManager defaultManager] fileExistsAtPath:_store.tempDir]) {
+                NSURL* parentURL = [NSURL fileURLWithPath: _store.path isDirectory: YES];
+                [[NSFileManager defaultManager] URLForDirectory: NSItemReplacementDirectory inDomain: NSUserDomainMask appropriateForURL: parentURL create: YES error:nil];
+            }
+            
+            //then try to create the new blob subfolder
+            if (![[NSFileManager defaultManager] createFileAtPath: _tempPath contents: nil attributes: attributes]) {
+                //if it still fails , c'est la vie
+                return nil;
+            }
         }
         _out = [NSFileHandle fileHandleForWritingAtPath: _tempPath];
         if (!_out) {
