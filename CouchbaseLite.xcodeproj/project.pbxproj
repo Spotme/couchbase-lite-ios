@@ -18,7 +18,6 @@
 				275A290D1649A54700B0D8EE /* PBXTargetDependency */,
 				275A29151649A55200B0D8EE /* PBXTargetDependency */,
 				27208F96184FC071006ADBEF /* PBXTargetDependency */,
-				275A29171649A55500B0D8EE /* PBXTargetDependency */,
 				27208F98184FC077006ADBEF /* PBXTargetDependency */,
 				27B15522164AD14E00DF5E2C /* PBXTargetDependency */,
 			);
@@ -56,9 +55,6 @@
 		270F5705156AE0BF000FEB8F /* CBLAuthorizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 270F5703156AE0BF000FEB8F /* CBLAuthorizer.h */; };
 		270F5706156AE0BF000FEB8F /* CBLAuthorizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 270F5704156AE0BF000FEB8F /* CBLAuthorizer.m */; };
 		270F5707156AE0BF000FEB8F /* CBLAuthorizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 270F5704156AE0BF000FEB8F /* CBLAuthorizer.m */; };
-		270FE0CA14C5008C005FF647 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
-		270FE0D514C50134005FF647 /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270B3DEA1489359000E0A926 /* CouchbaseLite.framework */; };
-		270FE0D614C50134005FF647 /* CouchbaseLiteListener.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275315D514ACF0A10065964D /* CouchbaseLiteListener.framework */; };
 		27103F8314E9CE4400DF7209 /* CBLReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 27103F8114E9CE4400DF7209 /* CBLReachability.h */; };
 		27103F8414E9CE4400DF7209 /* CBLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 27103F8214E9CE4400DF7209 /* CBLReachability.m */; };
 		27103F8514E9CE4400DF7209 /* CBLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 27103F8214E9CE4400DF7209 /* CBLReachability.m */; };
@@ -128,27 +124,6 @@
 		275315FC14ACF83C0065964D /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270B3DEA1489359000E0A926 /* CouchbaseLite.framework */; };
 		2753160C14ACFC2A0065964D /* CBLHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2753160A14ACFC2A0065964D /* CBLHTTPConnection.h */; };
 		2753160D14ACFC2A0065964D /* CBLHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2753160B14ACFC2A0065964D /* CBLHTTPConnection.m */; };
-		27538F5117F13B03004C3BFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C70697148864BA00F0F099 /* Cocoa.framework */; };
-		27538F5717F13B03004C3BFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27538F5517F13B03004C3BFD /* InfoPlist.strings */; };
-		27538F5917F13B03004C3BFD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 27538F5817F13B03004C3BFD /* main.m */; };
-		27538F5D17F13B03004C3BFD /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 27538F5B17F13B03004C3BFD /* Credits.rtf */; };
-		27538F6017F13B03004C3BFD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 27538F5F17F13B03004C3BFD /* AppDelegate.m */; };
-		27538F6317F13B03004C3BFD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27538F6117F13B03004C3BFD /* MainMenu.xib */; };
-		27538F8017F140DD004C3BFD /* CouchbaseLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270B3DEA1489359000E0A926 /* CouchbaseLite.framework */; };
-		27538F8117F140DD004C3BFD /* CouchbaseLiteListener.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275315D514ACF0A10065964D /* CouchbaseLiteListener.framework */; };
-		27538F8217F1417B004C3BFD /* CBLJSViewCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = 792867CF178DE03E00248AF0 /* CBLJSViewCompiler.m */; };
-		27538F8317F14185004C3BFD /* CBLJSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = 792867CC178DE03E00248AF0 /* CBLJSFunction.m */; };
-		27538F8617F14504004C3BFD /* CouchbaseLite.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 270B3DEA1489359000E0A926 /* CouchbaseLite.framework */; };
-		27538F8717F14504004C3BFD /* CouchbaseLiteListener.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 275315D514ACF0A10065964D /* CouchbaseLiteListener.framework */; };
-		27538F8917F148C2004C3BFD /* LiteServ.icns in Resources */ = {isa = PBXBuildFile; fileRef = 27538F8817F148C2004C3BFD /* LiteServ.icns */; };
-		27538F8B17F14A73004C3BFD /* LiteServ_MenubarIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 27538F8A17F14A73004C3BFD /* LiteServ_MenubarIcon.png */; };
-		27538F8F17F15057004C3BFD /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27538F8E17F15057004C3BFD /* ScriptingBridge.framework */; };
-		27538F9317F1D2AC004C3BFD /* LiteServ in Copy Tool */ = {isa = PBXBuildFile; fileRef = 270FE0C814C5008C005FF647 /* LiteServ */; };
-		27538F9A17F1D93F004C3BFD /* ToolInstallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 27538F9917F1D93F004C3BFD /* ToolInstallController.m */; };
-		27538F9C17F1D957004C3BFD /* ToolInstallController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 27538F9B17F1D957004C3BFD /* ToolInstallController.xib */; };
-		27538F9F17F1D9D6004C3BFD /* PrivilegedInstall.m in Sources */ = {isa = PBXBuildFile; fileRef = 27538F9E17F1D9D6004C3BFD /* PrivilegedInstall.m */; };
-		27538FA017F1DC98004C3BFD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275315F414ACF1CC0065964D /* Security.framework */; };
-		27538FA317F1ECE8004C3BFD /* LoggingMode.c in Sources */ = {isa = PBXBuildFile; fileRef = 27538FA217F1ECE8004C3BFD /* LoggingMode.c */; };
 		275A24E016B986CD00561DF0 /* CBLJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 272B85121523691700A90CB2 /* CBLJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		275A29021649A11900B0D8EE /* CouchbaseLitePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 27DA434D15914F5700F9E7B5 /* CouchbaseLitePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		275A29031649A11A00B0D8EE /* CouchbaseLitePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 27DA434D15914F5700F9E7B5 /* CouchbaseLitePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -457,7 +432,6 @@
 		27ED8630157D0FC600712B33 /* CBLDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 27ED862E157D0FC600712B33 /* CBLDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		27ED8631157D0FC600712B33 /* CBLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 27ED862F157D0FC600712B33 /* CBLDocument.m */; };
 		27ED8632157D0FC600712B33 /* CBLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 27ED862F157D0FC600712B33 /* CBLDocument.m */; };
-		27ED9A971639D8D2000C844A /* LiteServ.m in Sources */ = {isa = PBXBuildFile; fileRef = 27ED9A961639D8D2000C844A /* LiteServ.m */; };
 		27F08C8B15A7A31B003C3E2B /* CBL_Attachment.h in Headers */ = {isa = PBXBuildFile; fileRef = 27A7209E152B959100C0A0E8 /* CBL_Attachment.h */; };
 		27F12887156ABE24008465C2 /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F12856156ABE24008465C2 /* OAConsumer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27F12890156ABE24008465C2 /* OAMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F1285C156ABE24008465C2 /* OAMutableURLRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -478,7 +452,6 @@
 		27F273C217039D6200CD2B85 /* CBLUICollectionSource.m in Copy Extras */ = {isa = PBXBuildFile; fileRef = 27CB056216CDD1ED0040C9F8 /* CBLUICollectionSource.m */; };
 		27F273C417039F3700CD2B85 /* README.md in Copy Extras */ = {isa = PBXBuildFile; fileRef = 27F273C317039F3600CD2B85 /* README.md */; };
 		27F5B18716519F2400126D0D /* CBLUITableSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 27DA4317158FD9B400F9E7B5 /* CBLUITableSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		27F8AF3517B046E000105C8F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275315F414ACF1CC0065964D /* Security.framework */; };
 		27F9411B176A5FB4007BAEBE /* ModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B945A41767E06B00B2DF2D /* ModelTests.m */; };
 		27F9411C176A5FB9007BAEBE /* CBLModel+Properties.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B945B117692E2000B2DF2D /* CBLModel+Properties.m */; };
 		27F9411D176A5FC2007BAEBE /* CBLModelArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B945A81768E63200B2DF2D /* CBLModelArray.m */; };
@@ -697,26 +670,12 @@
 		A932B3291875F634001B540A /* CBLHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 27E11F0C14ACFFC60006B340 /* CBLHTTPServer.h */; };
 		A932B32A1875F634001B540A /* CBLHTTPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2753160A14ACFC2A0065964D /* CBLHTTPConnection.h */; };
 		A932B32B1875F634001B540A /* CBLHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 27E11F0E14AD15940006B340 /* CBLHTTPResponse.h */; };
-		A972B8CC186C5E6900833EFE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CB186C5E6900833EFE /* JavaScriptCore.framework */; };
-		A972B8CE186C5E7600833EFE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CD186C5E7600833EFE /* UIKit.framework */; };
-		A972B8D0186C5E7D00833EFE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8CF186C5E7D00833EFE /* CoreGraphics.framework */; };
-		A972B8D2186C64F600833EFE /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8D1186C64F600833EFE /* libsqlite3.dylib */; };
-		A972B8D4186C64FF00833EFE /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8D3186C64FF00833EFE /* Security.framework */; };
-		A972B8D6186C650800833EFE /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8D5186C650800833EFE /* CFNetwork.framework */; };
-		A972B8D8186C651100833EFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8D7186C651100833EFE /* SystemConfiguration.framework */; };
-		A972B8DA186C651C00833EFE /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A972B8D9186C651C00833EFE /* libz.dylib */; };
 		A972B8DB186C692500833EFE /* CBLJSViewCompiler_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 792867CD178DE03E00248AF0 /* CBLJSViewCompiler_Test.m */; };
 		A972B8E3186C866300833EFE /* CBLFunctionResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A972B8E1186C866300833EFE /* CBLFunctionResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A972B8E4186C866300833EFE /* CBLFunctionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A972B8E2186C866300833EFE /* CBLFunctionResult.m */; };
 		A972B8E5186C866300833EFE /* CBLFunctionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A972B8E2186C866300833EFE /* CBLFunctionResult.m */; };
 		A972B8E6186C956900833EFE /* CBLFunctionResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A972B8E1186C866300833EFE /* CBLFunctionResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A9876523194EDBF100700708 /* libsqlcipher.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A98764F7194EDB0400700708 /* libsqlcipher.a */; };
-		A9A98B9E1875FF9000293106 /* libCouchbaseLite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A932B2D91875ED4B001B540A /* libCouchbaseLite.a */; };
-		A9AB721E186C581D00B19EB0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F0745C11CD50A600E9A2AB /* Foundation.framework */; };
-		A9AB7226186C581D00B19EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9AB7224186C581D00B19EB0 /* InfoPlist.strings */; };
-		A9AB7228186C581D00B19EB0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A9AB7227186C581D00B19EB0 /* main.m */; };
-		A9AB722C186C581D00B19EB0 /* CBLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9AB722B186C581D00B19EB0 /* CBLAppDelegate.m */; };
-		A9AB722E186C581D00B19EB0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9AB722D186C581D00B19EB0 /* Images.xcassets */; };
 		A9CF4737186F28AD004DB55E /* yajl.c in Sources */ = {isa = PBXBuildFile; fileRef = 277B5C7D1821A8370088881E /* yajl.c */; };
 		A9CF4738186F28AD004DB55E /* yajl_alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 277B5C801821A8370088881E /* yajl_alloc.c */; };
 		A9CF4739186F28AD004DB55E /* yajl_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 277B5C821821A8370088881E /* yajl_buf.c */; };
@@ -826,20 +785,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		270BDD6E15645127007D52F6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 275315D414ACF0A10065964D;
-			remoteInfo = TouchDBListener;
-		};
-		270BDD701564512A007D52F6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 270B3DE91489359000E0A926;
-			remoteInfo = TouchDB;
-		};
 		270BDD741564514C007D52F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -867,27 +812,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 270B3DE91489359000E0A926;
 			remoteInfo = TouchDB;
-		};
-		27538F9017F1D279004C3BFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 270FE0C714C5008C005FF647;
-			remoteInfo = LiteServ;
-		};
-		27538F9417F1D327004C3BFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 270B3DE91489359000E0A926;
-			remoteInfo = "CBL Mac";
-		};
-		27538F9617F1D327004C3BFD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 275315D414ACF0A10065964D;
-			remoteInfo = "CBL Listener Mac";
 		};
 		275A290A1649A54500B0D8EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -917,13 +841,6 @@
 			remoteGlobalIDString = DA147C1F14BCAC3B0052DA4D;
 			remoteInfo = "TouchDBListener-iOS";
 		};
-		275A29161649A55500B0D8EE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 270FE0C714C5008C005FF647;
-			remoteInfo = LiteServ;
-		};
 		27B0B7F41492BC5B00A817AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -938,13 +855,6 @@
 			remoteGlobalIDString = 27731F131495CFEF00815D67;
 			remoteInfo = "TouchDB iOS Empty App";
 		};
-		A9A98B9C1875FF8700293106 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A932B24A1875ED4B001B540A;
-			remoteInfo = "CBL iOS Full";
-		};
 		DA147C3814BCAC670052DA4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -955,29 +865,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		27538F8517F144E6004C3BFD /* Copy Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				27538F8617F14504004C3BFD /* CouchbaseLite.framework in Copy Frameworks */,
-				27538F8717F14504004C3BFD /* CouchbaseLiteListener.framework in Copy Frameworks */,
-			);
-			name = "Copy Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		27538F9217F1D285004C3BFD /* Copy Tool */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = Contents/Tools;
-			dstSubfolderSpec = 1;
-			files = (
-				27538F9317F1D2AC004C3BFD /* LiteServ in Copy Tool */,
-			);
-			name = "Copy Tool";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		27F273C017039D4B00CD2B85 /* Copy Extras */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1023,7 +910,6 @@
 		270D6FC0164484190081812D /* CBLSocketStreamingChangeTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLSocketStreamingChangeTracker.m; sourceTree = "<group>"; };
 		270F5703156AE0BF000FEB8F /* CBLAuthorizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBLAuthorizer.h; sourceTree = "<group>"; };
 		270F5704156AE0BF000FEB8F /* CBLAuthorizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLAuthorizer.m; sourceTree = "<group>"; };
-		270FE0C814C5008C005FF647 /* LiteServ */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LiteServ; sourceTree = BUILT_PRODUCTS_DIR; };
 		27103F8114E9CE4400DF7209 /* CBLReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBLReachability.h; sourceTree = "<group>"; };
 		27103F8214E9CE4400DF7209 /* CBLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLReachability.m; sourceTree = "<group>"; };
 		27103F8714EA076600DF7209 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -1092,7 +978,6 @@
 		275315FA14ACF7FF0065964D /* CouchbaseLiteListener.exp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.exports; path = CouchbaseLiteListener.exp; sourceTree = "<group>"; };
 		2753160A14ACFC2A0065964D /* CBLHTTPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBLHTTPConnection.h; sourceTree = "<group>"; };
 		2753160B14ACFC2A0065964D /* CBLHTTPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLHTTPConnection.m; sourceTree = "<group>"; };
-		27538F5017F13B03004C3BFD /* LiteServ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiteServ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27538F5417F13B03004C3BFD /* LiteServ App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LiteServ App-Info.plist"; sourceTree = "<group>"; };
 		27538F5617F13B03004C3BFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		27538F5817F13B03004C3BFD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1410,7 +1295,6 @@
 		A972B8E1186C866300833EFE /* CBLFunctionResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBLFunctionResult.h; sourceTree = "<group>"; };
 		A972B8E2186C866300833EFE /* CBLFunctionResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBLFunctionResult.m; sourceTree = "<group>"; };
 		A98764F7194EDB0400700708 /* libsqlcipher.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsqlcipher.a; sourceTree = "<group>"; };
-		A9AB721D186C581D00B19EB0 /* LiteServ-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LiteServ-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9AB7223186C581D00B19EB0 /* LiteServ-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LiteServ-iOS-Info.plist"; sourceTree = "<group>"; };
 		A9AB7225186C581D00B19EB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A9AB7227186C581D00B19EB0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1483,17 +1367,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		270FE0C514C5008C005FF647 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27F8AF3517B046E000105C8F /* Security.framework in Frameworks */,
-				270FE0D514C50134005FF647 /* CouchbaseLite.framework in Frameworks */,
-				270FE0D614C50134005FF647 /* CouchbaseLiteListener.framework in Frameworks */,
-				270FE0CA14C5008C005FF647 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		275315D114ACF0A10065964D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1502,18 +1375,6 @@
 				275315F814ACF2500065964D /* CoreServices.framework in Frameworks */,
 				275315F314ACF1C20065964D /* Foundation.framework in Frameworks */,
 				275315F514ACF1CC0065964D /* Security.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		27538F4D17F13B03004C3BFD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27538FA017F1DC98004C3BFD /* Security.framework in Frameworks */,
-				27538F8F17F15057004C3BFD /* ScriptingBridge.framework in Frameworks */,
-				27538F8017F140DD004C3BFD /* CouchbaseLite.framework in Frameworks */,
-				27538F8117F140DD004C3BFD /* CouchbaseLiteListener.framework in Frameworks */,
-				27538F5117F13B03004C3BFD /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1565,23 +1426,6 @@
 				A9EDD5261A66910300C5856F /* JavaScriptCore.framework in Frameworks */,
 				A9876523194EDBF100700708 /* libsqlcipher.a in Frameworks */,
 				A932B2D31875ED4B001B540A /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A9AB721A186C581D00B19EB0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A9A98B9E1875FF9000293106 /* libCouchbaseLite.a in Frameworks */,
-				A972B8D8186C651100833EFE /* SystemConfiguration.framework in Frameworks */,
-				A972B8D6186C650800833EFE /* CFNetwork.framework in Frameworks */,
-				A972B8D4186C64FF00833EFE /* Security.framework in Frameworks */,
-				A972B8DA186C651C00833EFE /* libz.dylib in Frameworks */,
-				A972B8D2186C64F600833EFE /* libsqlite3.dylib in Frameworks */,
-				A972B8D0186C5E7D00833EFE /* CoreGraphics.framework in Frameworks */,
-				A972B8CE186C5E7600833EFE /* UIKit.framework in Frameworks */,
-				A972B8CC186C5E6900833EFE /* JavaScriptCore.framework in Frameworks */,
-				A9AB721E186C581D00B19EB0 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1649,10 +1493,7 @@
 				275315D514ACF0A10065964D /* CouchbaseLiteListener.framework */,
 				DA023B6414BCA94C008184BB /* libCouchbaseLiteListener.a */,
 				DA147C3614BCAC3B0052DA4D /* CouchbaseLiteListener.framework */,
-				270FE0C814C5008C005FF647 /* LiteServ */,
 				792867BF178DE01900248AF0 /* libCBLJSViewCompiler.a */,
-				27538F5017F13B03004C3BFD /* LiteServ.app */,
-				A9AB721D186C581D00B19EB0 /* LiteServ-iOS.app */,
 				A932B2D91875ED4B001B540A /* libCouchbaseLite.a */,
 			);
 			name = Products;
@@ -2783,24 +2624,6 @@
 			productReference = 270B3DEA1489359000E0A926 /* CouchbaseLite.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		270FE0C714C5008C005FF647 /* LiteServ */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 270FE0D414C5008C005FF647 /* Build configuration list for PBXNativeTarget "LiteServ" */;
-			buildPhases = (
-				270FE0C414C5008C005FF647 /* Sources */,
-				270FE0C514C5008C005FF647 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				270BDD6F15645127007D52F6 /* PBXTargetDependency */,
-				270BDD711564512A007D52F6 /* PBXTargetDependency */,
-			);
-			name = LiteServ;
-			productName = LiteServ;
-			productReference = 270FE0C814C5008C005FF647 /* LiteServ */;
-			productType = "com.apple.product-type.tool";
-		};
 		275315D414ACF0A10065964D /* CBL Listener Mac */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 275315E114ACF0A20065964D /* Build configuration list for PBXNativeTarget "CBL Listener Mac" */;
@@ -2819,28 +2642,6 @@
 			productName = TouchDBListener;
 			productReference = 275315D514ACF0A10065964D /* CouchbaseLiteListener.framework */;
 			productType = "com.apple.product-type.framework";
-		};
-		27538F4F17F13B03004C3BFD /* LiteServ App */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 27538F7C17F13B04004C3BFD /* Build configuration list for PBXNativeTarget "LiteServ App" */;
-			buildPhases = (
-				27538F4C17F13B03004C3BFD /* Sources */,
-				27538F4D17F13B03004C3BFD /* Frameworks */,
-				27538F4E17F13B03004C3BFD /* Resources */,
-				27538F8517F144E6004C3BFD /* Copy Frameworks */,
-				27538F9217F1D285004C3BFD /* Copy Tool */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				27538F9517F1D327004C3BFD /* PBXTargetDependency */,
-				27538F9717F1D327004C3BFD /* PBXTargetDependency */,
-				27538F9117F1D279004C3BFD /* PBXTargetDependency */,
-			);
-			name = "LiteServ App";
-			productName = "LiteServ App";
-			productReference = 27538F5017F13B03004C3BFD /* LiteServ.app */;
-			productType = "com.apple.product-type.application";
 		};
 		27731F131495CFEF00815D67 /* CBL iOS Empty App */ = {
 			isa = PBXNativeTarget;
@@ -2933,24 +2734,6 @@
 			productReference = A932B2D91875ED4B001B540A /* libCouchbaseLite.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		A9AB721C186C581D00B19EB0 /* LiteServ-iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A9AB7241186C581E00B19EB0 /* Build configuration list for PBXNativeTarget "LiteServ-iOS" */;
-			buildPhases = (
-				A9AB7219186C581D00B19EB0 /* Sources */,
-				A9AB721A186C581D00B19EB0 /* Frameworks */,
-				A9AB721B186C581D00B19EB0 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A9A98B9D1875FF8700293106 /* PBXTargetDependency */,
-			);
-			name = "LiteServ-iOS";
-			productName = "LiteServ-iOS";
-			productReference = A9AB721D186C581D00B19EB0 /* LiteServ-iOS.app */;
-			productType = "com.apple.product-type.application";
-		};
 		DA023B2614BCA94C008184BB /* Listener iOS Library */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA023B6114BCA94C008184BB /* Build configuration list for PBXNativeTarget "Listener iOS Library" */;
@@ -2993,12 +2776,9 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1120;
 				TargetAttributes = {
 					275315D414ACF0A10065964D = {
-						DevelopmentTeam = N2Q372V7W2;
-					};
-					27538F4F17F13B03004C3BFD = {
 						DevelopmentTeam = N2Q372V7W2;
 					};
 					27731F131495CFEF00815D67 = {
@@ -3026,12 +2806,9 @@
 				275315D414ACF0A10065964D /* CBL Listener Mac */,
 				DA147C1F14BCAC3B0052DA4D /* CBL Listener iOS */,
 				DA023B2614BCA94C008184BB /* Listener iOS Library */,
-				270FE0C714C5008C005FF647 /* LiteServ */,
-				27538F4F17F13B03004C3BFD /* LiteServ App */,
 				275A29061649A54000B0D8EE /* All */,
 				792867BE178DE01900248AF0 /* CBLJSViewCompiler */,
 				27FA59EA179EEACA0043460A /* Documentation */,
-				A9AB721C186C581D00B19EB0 /* LiteServ-iOS */,
 				A932B24A1875ED4B001B540A /* CBL iOS Full */,
 			);
 		};
@@ -3053,32 +2830,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		27538F4E17F13B03004C3BFD /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27538F5717F13B03004C3BFD /* InfoPlist.strings in Resources */,
-				27538F9C17F1D957004C3BFD /* ToolInstallController.xib in Resources */,
-				27538F8B17F14A73004C3BFD /* LiteServ_MenubarIcon.png in Resources */,
-				27538F5D17F13B03004C3BFD /* Credits.rtf in Resources */,
-				27538F8917F148C2004C3BFD /* LiteServ.icns in Resources */,
-				27538F6317F13B03004C3BFD /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		27731F231495CFEF00815D67 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A9AB721B186C581D00B19EB0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A9AB7226186C581D00B19EB0 /* InfoPlist.strings in Resources */,
-				A9AB722E186C581D00B19EB0 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3098,7 +2853,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "source \"$SCRIPT_INPUT_FILE_0\"";
+			shellScript = "source \"$SCRIPT_INPUT_FILE_0\"\n";
 			showEnvVarsInLog = 0;
 		};
 		27B0B8061492BE2100A817AD /* Copy Library */ = {
@@ -3158,7 +2913,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "source \"$SCRIPT_INPUT_FILE_0\"";
+			shellScript = "source \"$SCRIPT_INPUT_FILE_0\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DA147C3214BCAC3B0052DA4D /* Copy Library */ = {
@@ -3173,7 +2928,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "CREATING_UNIVERSAL_DIR=${SYMROOT}/${CONFIGURATION}-${PRODUCT_NAME}-ios-universal\ncp \"${CREATING_UNIVERSAL_DIR}/libCouchbaseLiteListener.a\" \"${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_PATH}\"";
+			shellScript = "CREATING_UNIVERSAL_DIR=${SYMROOT}/${CONFIGURATION}-${PRODUCT_NAME}-ios-universal\ncp \"${CREATING_UNIVERSAL_DIR}/libCouchbaseLiteListener.a\" \"${CONFIGURATION_BUILD_DIR}/${EXECUTABLE_PATH}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -3332,14 +3087,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		270FE0C414C5008C005FF647 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27ED9A971639D8D2000C844A /* LiteServ.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		275315D014ACF0A10065964D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3366,20 +3113,6 @@
 				27B678B71804B62500B06D11 /* CBLHTTPServer.m in Sources */,
 				27E2E61815993CB6005B9234 /* CBL_URLProtocol.m in Sources */,
 				275315F114ACF1130065964D /* GCDAsyncSocket.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		27538F4C17F13B03004C3BFD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				27538F6017F13B03004C3BFD /* AppDelegate.m in Sources */,
-				27538F5917F13B03004C3BFD /* main.m in Sources */,
-				27538F9F17F1D9D6004C3BFD /* PrivilegedInstall.m in Sources */,
-				27538FA317F1ECE8004C3BFD /* LoggingMode.c in Sources */,
-				27538F8317F14185004C3BFD /* CBLJSFunction.m in Sources */,
-				27538F9A17F1D93F004C3BFD /* ToolInstallController.m in Sources */,
-				27538F8217F1417B004C3BFD /* CBLJSViewCompiler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3713,15 +3446,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A9AB7219186C581D00B19EB0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A9AB722C186C581D00B19EB0 /* CBLAppDelegate.m in Sources */,
-				A9AB7228186C581D00B19EB0 /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		DA023B2714BCA94C008184BB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3759,16 +3483,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		270BDD6F15645127007D52F6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 275315D414ACF0A10065964D /* CBL Listener Mac */;
-			targetProxy = 270BDD6E15645127007D52F6 /* PBXContainerItemProxy */;
-		};
-		270BDD711564512A007D52F6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 270B3DE91489359000E0A926 /* CBL Mac */;
-			targetProxy = 270BDD701564512A007D52F6 /* PBXContainerItemProxy */;
-		};
 		270BDD751564514C007D52F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 27B0B7E61492BB6B00A817AD /* CBL iOS */;
@@ -3788,21 +3502,6 @@
 			isa = PBXTargetDependency;
 			target = 270B3DE91489359000E0A926 /* CBL Mac */;
 			targetProxy = 275315FD14ACF87F0065964D /* PBXContainerItemProxy */;
-		};
-		27538F9117F1D279004C3BFD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 270FE0C714C5008C005FF647 /* LiteServ */;
-			targetProxy = 27538F9017F1D279004C3BFD /* PBXContainerItemProxy */;
-		};
-		27538F9517F1D327004C3BFD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 270B3DE91489359000E0A926 /* CBL Mac */;
-			targetProxy = 27538F9417F1D327004C3BFD /* PBXContainerItemProxy */;
-		};
-		27538F9717F1D327004C3BFD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 275315D414ACF0A10065964D /* CBL Listener Mac */;
-			targetProxy = 27538F9617F1D327004C3BFD /* PBXContainerItemProxy */;
 		};
 		275A290B1649A54500B0D8EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3824,11 +3523,6 @@
 			target = DA147C1F14BCAC3B0052DA4D /* CBL Listener iOS */;
 			targetProxy = 275A29141649A55200B0D8EE /* PBXContainerItemProxy */;
 		};
-		275A29171649A55500B0D8EE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 270FE0C714C5008C005FF647 /* LiteServ */;
-			targetProxy = 275A29161649A55500B0D8EE /* PBXContainerItemProxy */;
-		};
 		27B0B7F51492BC5B00A817AD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 27B0B7A81492B83B00A817AD /* CBL iOS library */;
@@ -3838,11 +3532,6 @@
 			isa = PBXTargetDependency;
 			target = 27731F131495CFEF00815D67 /* CBL iOS Empty App */;
 			targetProxy = 27B15521164AD14E00DF5E2C /* PBXContainerItemProxy */;
-		};
-		A9A98B9D1875FF8700293106 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A932B24A1875ED4B001B540A /* CBL iOS Full */;
-			targetProxy = A9A98B9C1875FF8700293106 /* PBXContainerItemProxy */;
 		};
 		DA147C3914BCAC670052DA4D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4017,39 +3706,6 @@
 			};
 			name = Release;
 		};
-		270FE0D214C5008C005FF647 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		270FE0D314C5008C005FF647 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		275315E214ACF0A20065964D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4109,70 +3765,6 @@
 				PROVISIONING_PROFILE = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = framework;
-			};
-			name = Release;
-		};
-		27538F7817F13B04004C3BFD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ App/LiteServ App-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = LiteServ;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		27538F7917F13B04004C3BFD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ App/LiteServ App-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = LiteServ;
-				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -4472,50 +4064,6 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = "Release 64bit";
-		};
-		27A4DE09182D6F0900A7FEB1 /* Release 64bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/ @executable_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = "Release 64bit";
-		};
-		27A4DE0A182D6F0900A7FEB1 /* Release 64bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ App/LiteServ App-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = LiteServ;
-				WRAPPER_EXTENSION = app;
 			};
 			name = "Release 64bit";
 		};
@@ -4934,115 +4482,6 @@
 			};
 			name = "Release 64bit";
 		};
-		A9AB7242186C581E00B19EB0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LiteServ-iOS/LiteServ-iOS-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ-iOS/LiteServ-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = app;
-			};
-			name = Debug;
-		};
-		A9AB7243186C581E00B19EB0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LiteServ-iOS/LiteServ-iOS-Prefix.pch";
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ-iOS/LiteServ-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		A9AB7244186C581E00B19EB0 /* Release 64bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LiteServ-iOS/LiteServ-iOS-Prefix.pch";
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				INFOPLIST_FILE = "LiteServ-iOS/LiteServ-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				WRAPPER_EXTENSION = app;
-			};
-			name = "Release 64bit";
-		};
 		DA023B6214BCA94C008184BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5165,32 +4604,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		270FE0D414C5008C005FF647 /* Build configuration list for PBXNativeTarget "LiteServ" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				270FE0D214C5008C005FF647 /* Debug */,
-				270FE0D314C5008C005FF647 /* Release */,
-				27A4DE09182D6F0900A7FEB1 /* Release 64bit */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		275315E114ACF0A20065964D /* Build configuration list for PBXNativeTarget "CBL Listener Mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				275315E214ACF0A20065964D /* Debug */,
 				275315E314ACF0A20065964D /* Release */,
 				27A4DE06182D6F0900A7FEB1 /* Release 64bit */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		27538F7C17F13B04004C3BFD /* Build configuration list for PBXNativeTarget "LiteServ App" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				27538F7817F13B04004C3BFD /* Debug */,
-				27538F7917F13B04004C3BFD /* Release */,
-				27A4DE0A182D6F0900A7FEB1 /* Release 64bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5261,16 +4680,6 @@
 				A932B2D61875ED4B001B540A /* Debug */,
 				A932B2D71875ED4B001B540A /* Release */,
 				A932B2D81875ED4B001B540A /* Release 64bit */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A9AB7241186C581E00B19EB0 /* Build configuration list for PBXNativeTarget "LiteServ-iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A9AB7242186C581E00B19EB0 /* Debug */,
-				A9AB7243186C581E00B19EB0 /* Release */,
-				A9AB7244186C581E00B19EB0 /* Release 64bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
