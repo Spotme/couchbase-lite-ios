@@ -36,6 +36,7 @@
 - (SequenceNumber) addValue: (id)value {
     [_sequences addIndex: ++_lastSequence];
     [_values addObject: value];
+
     return _lastSequence;
 }
 

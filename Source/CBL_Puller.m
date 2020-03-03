@@ -639,7 +639,6 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 
 @synthesize remoteSequenceID=_remoteSequenceID, conflicted=_conflicted;
 
-
 @end
 
 

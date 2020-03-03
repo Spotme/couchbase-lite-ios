@@ -29,12 +29,6 @@
 #define kInitialRetryDelay 2.0      // Initial retry delay (doubles after every subsequent failure)
 #define kMaxRetryDelay (10*60.0)    // ...but will never get longer than this
 
-
-//@interface CBLChangeTracker ()
-//@property (readwrite, copy, nonatomic) id lastSequenceID;
-//@end
-
-
 @implementation CBLChangeTracker
 
 @synthesize lastSequenceID=_lastSequenceID, databaseURL=_databaseURL, mode=_mode;
@@ -223,8 +217,6 @@
             return;
         
         id sequence = [change objectForKey: @"seq"];
-        if (!sequence)
-            return;
         
         NSString* docID = [change objectForKey: @"id"];
         if (!docID || ![docID isKindOfClass: [NSString class]])

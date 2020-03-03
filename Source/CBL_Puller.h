@@ -42,6 +42,7 @@
     bool _conflicted;
 }
 
+/// Sequence ID received from a remote server. Can be nil.
 @property (copy) id remoteSequenceID;
 @property bool conflicted;
 
