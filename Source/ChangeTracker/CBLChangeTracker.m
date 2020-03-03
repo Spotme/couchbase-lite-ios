@@ -214,7 +214,6 @@
 }
 
 - (BOOL) receivedChanges: (NSArray*)changes errorMessage: (NSString**)errorMessage {
-    __block id lastSequence = nil;
     [changes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         // being very careful on what we have received from _changes feed
         // no-one likes crashes in production
@@ -261,12 +260,7 @@
                                             revIDs: revIDs
                                            deleted: deleted
                                            removed: removed];
-        
-        lastSequence = sequence;
     }];
-    
-    if (lastSequence)
-        self.lastSequenceID = lastSequence;
     
     return YES;
 }
@@ -285,6 +279,15 @@
         return -1;
     }
     NSDictionary* changeDict = $castIf(NSDictionary, changeObj);
+    
+    NSString *lastSequence = $castIf(NSString, changeDict[@"last_seq"]);
+    if (!lastSequence) {
+        if (errorMessage)
+            *errorMessage = @"No 'last_seq' field in response";
+        return -1;
+    }
+    self.lastSequenceID = lastSequence;
+    
     NSArray* changes = $castIf(NSArray, changeDict[@"results"]);
     if (!changes) {
         if (errorMessage)
