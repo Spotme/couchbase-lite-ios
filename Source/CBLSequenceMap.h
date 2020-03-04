@@ -29,11 +29,4 @@
 
 @property (readonly) BOOL isEmpty;
 
-/** Returns the maximum consecutively-removed sequence number.
-    This is one less than the minimum remaining sequence number. */
-- (SequenceNumber) checkpointedSequence;
-
-/** Returns the value associated with the checkpointedSequence. */
-- (id) checkpointedValue;
-
 @end

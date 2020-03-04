@@ -84,7 +84,7 @@
         _mode = mode;
         _heartbeat = kDefaultHeartbeat;
         _includeConflicts = includeConflicts;
-        self.lastSequenceID = lastSequenceID;
+        _lastSequenceID = lastSequenceID;
     }
     return self;
 }
@@ -272,14 +272,6 @@
     }
     NSDictionary* changeDict = $castIf(NSDictionary, changeObj);
     
-    NSString *lastSequence = $castIf(NSString, changeDict[@"last_seq"]);
-    if (!lastSequence) {
-        if (errorMessage)
-            *errorMessage = @"No 'last_seq' field in response";
-        return -1;
-    }
-    self.lastSequenceID = lastSequence;
-    
     NSArray* changes = $castIf(NSArray, changeDict[@"results"]);
     if (!changes) {
         if (errorMessage)
@@ -288,8 +280,16 @@
     }
     if (![self receivedChanges: changes errorMessage: errorMessage])
         return -1;
+    
+    NSString *lastSequence = $castIf(NSString, changeDict[@"last_seq"]);
+    if (!lastSequence) {
+        if (errorMessage)
+            *errorMessage = @"No 'last_seq' field in response";
+        return -1;
+    }
+    [self.client setLastSequence:lastSequence];
+    
     return changes.count;
 }
-
 
 @end

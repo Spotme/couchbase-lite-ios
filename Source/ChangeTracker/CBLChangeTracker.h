@@ -28,6 +28,7 @@
                                deleted: (BOOL)deleted
                                removed: (BOOL)removed;
 - (void) changeTrackerFinished;
+- (void) setLastSequence:(NSString*)lastSequence;
 @optional
 - (void) changeTrackerStopped: (CBLChangeTracker*)tracker;
 @end

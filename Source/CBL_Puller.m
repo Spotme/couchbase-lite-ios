@@ -62,12 +62,6 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     }
     if (!_pendingSequences) {
         _pendingSequences = [[CBLSequenceMap alloc] init];
-        if (_lastSequence != nil) {
-            // Prime _pendingSequences so its checkpointedValue will reflect the last known seq:
-            SequenceNumber seq = [_pendingSequences addValue: _lastSequence];
-            [_pendingSequences removeSequence: seq];
-            AssertEqual(_pendingSequences.checkpointedValue, _lastSequence);
-        }
     }
     
     _caughtUp = NO;
@@ -287,7 +281,6 @@ static NSString* joinQuotedEscaped(NSArray* strings);
         LogTo(SyncVerbose, @"%@: no new remote revisions to fetch", self);
         SequenceNumber seq = [_pendingSequences addValue: lastInboxSequence];
         [_pendingSequences removeSequence: seq];
-        self.lastSequence = _pendingSequences.checkpointedValue;
         return;
     }
     
@@ -616,9 +609,6 @@ static NSString* joinQuotedEscaped(NSArray* strings);
               self, (unsigned)downloads.count);
         return kCBLStatusOK;
     }];
-
-    // Checkpoint:
-    self.lastSequence = _pendingSequences.checkpointedValue;
 
     time = CFAbsoluteTimeGetCurrent() - time;
     LogTo(Sync, @"%@ inserted %u revs (%u in history) in %.3f sec (%.1f/sec)",
