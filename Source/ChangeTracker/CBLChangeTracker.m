@@ -36,6 +36,7 @@
 @synthesize client=_client, filterName=_filterName, filterParameters=_filterParameters;
 @synthesize requestHeaders = _requestHeaders, authorizer=_authorizer;
 @synthesize docIDs = _docIDs, pollInterval=_pollInterval;
+@synthesize seqInterval = _seqInterval;
 
 - (instancetype) initWithDatabaseURL: (NSURL*)databaseURL
                                 mode: (CBLChangeTrackerMode)mode
@@ -135,6 +136,11 @@
             [path appendFormat: @"&%@=%@", CBLEscapeURLParam(key),
                                            CBLEscapeURLParam(value)];
         }
+    }
+    
+    // Add seq interval to skip calculating certain sequences
+    if (_seqInterval && _seqInterval > 0) {
+        [path appendFormat: @"&seq_interval=%u", _seqInterval];
     }
 
     return path;
