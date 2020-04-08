@@ -36,6 +36,7 @@
 - (SequenceNumber) addValue: (id)value {
     [_sequences addIndex: ++_lastSequence];
     [_values addObject: value];
+
     return _lastSequence;
 }
 
@@ -51,7 +52,6 @@
     return _sequences.firstIndex == NSNotFound;
 }
 
-
 - (SequenceNumber) checkpointedSequence {
     NSUInteger sequence = _sequences.firstIndex;
     sequence = (sequence == NSNotFound) ? _lastSequence : sequence-1;
@@ -65,12 +65,10 @@
     return sequence;
 }
 
-
 - (id) checkpointedValue {
     NSInteger index = (NSInteger)([self checkpointedSequence] - _firstValueSequence);
     return (index >= 0) ? _values[index] : nil;
 }
-
 
 @end
 
@@ -110,7 +108,7 @@ TestCase(CBLSequenceMap) {
     [map removeSequence: 3];
     CAssertEq(map.checkpointedSequence, 3);
     CAssertEqual(map.checkpointedValue, @"three");
-    
+
     [map removeSequence: 4];
     CAssertEq(map.checkpointedSequence, 4);
     CAssertEqual(map.checkpointedValue, @"four");

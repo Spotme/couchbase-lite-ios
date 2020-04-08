@@ -180,7 +180,6 @@ NSString* CBL_ReplicatorStoppedNotification = @"CBL_ReplicatorStopped";
     }
 }
 
-
 - (void) postProgressChanged {
     LogTo(SyncVerbose, @"%@: postProgressChanged (%u/%u, active=%d (batch=%u, net=%u), online=%d)",
           self, (unsigned)_changesProcessed, (unsigned)_changesTotal,

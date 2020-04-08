@@ -29,12 +29,6 @@
 #define kInitialRetryDelay 2.0      // Initial retry delay (doubles after every subsequent failure)
 #define kMaxRetryDelay (10*60.0)    // ...but will never get longer than this
 
-
-//@interface CBLChangeTracker ()
-//@property (readwrite, copy, nonatomic) id lastSequenceID;
-//@end
-
-
 @implementation CBLChangeTracker
 
 @synthesize lastSequenceID=_lastSequenceID, databaseURL=_databaseURL, mode=_mode;
@@ -42,6 +36,7 @@
 @synthesize client=_client, filterName=_filterName, filterParameters=_filterParameters;
 @synthesize requestHeaders = _requestHeaders, authorizer=_authorizer;
 @synthesize docIDs = _docIDs, pollInterval=_pollInterval;
+@synthesize seqInterval = _seqInterval;
 
 - (instancetype) initWithDatabaseURL: (NSURL*)databaseURL
                                 mode: (CBLChangeTrackerMode)mode
@@ -90,7 +85,7 @@
         _mode = mode;
         _heartbeat = kDefaultHeartbeat;
         _includeConflicts = includeConflicts;
-        self.lastSequenceID = lastSequenceID;
+        _lastSequenceID = lastSequenceID;
     }
     return self;
 }
@@ -141,6 +136,11 @@
             [path appendFormat: @"&%@=%@", CBLEscapeURLParam(key),
                                            CBLEscapeURLParam(value)];
         }
+    }
+    
+    // Add seq interval to skip calculating certain sequences
+    if (_seqInterval && _seqInterval > 0) {
+        [path appendFormat: @"&seq_interval=%u", _seqInterval];
     }
 
     return path;
@@ -214,7 +214,6 @@
 }
 
 - (BOOL) receivedChanges: (NSArray*)changes errorMessage: (NSString**)errorMessage {
-    __block id lastSequence = nil;
     [changes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         // being very careful on what we have received from _changes feed
         // no-one likes crashes in production
@@ -224,8 +223,6 @@
             return;
         
         id sequence = [change objectForKey: @"seq"];
-        if (!sequence)
-            return;
         
         NSString* docID = [change objectForKey: @"id"];
         if (!docID || ![docID isKindOfClass: [NSString class]])
@@ -261,12 +258,7 @@
                                             revIDs: revIDs
                                            deleted: deleted
                                            removed: removed];
-        
-        lastSequence = sequence;
     }];
-    
-    if (lastSequence)
-        self.lastSequenceID = lastSequence;
     
     return YES;
 }
@@ -285,6 +277,7 @@
         return -1;
     }
     NSDictionary* changeDict = $castIf(NSDictionary, changeObj);
+    
     NSArray* changes = $castIf(NSArray, changeDict[@"results"]);
     if (!changes) {
         if (errorMessage)
@@ -293,8 +286,16 @@
     }
     if (![self receivedChanges: changes errorMessage: errorMessage])
         return -1;
+    
+    NSString *lastSequence = $castIf(NSString, changeDict[@"last_seq"]);
+    if (!lastSequence) {
+        if (errorMessage)
+            *errorMessage = @"No 'last_seq' field in response";
+        return -1;
+    }
+    [self.client setLastSequence:lastSequence];
+    
     return changes.count;
 }
-
 
 @end

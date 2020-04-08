@@ -28,6 +28,7 @@
                                deleted: (BOOL)deleted
                                removed: (BOOL)removed;
 - (void) changeTrackerFinished;
+- (void) setLastSequence:(NSString*)lastSequence;
 @optional
 - (void) changeTrackerStopped: (CBLChangeTracker*)tracker;
 @end
@@ -59,6 +60,7 @@ typedef enum CBLChangeTrackerMode {
     NSDictionary* _requestHeaders;
     id<CBLAuthorizer> _authorizer;
     unsigned _retryCount;
+    unsigned _seqInterval;
 }
 
 - (instancetype) initWithDatabaseURL: (NSURL*)databaseURL
@@ -84,6 +86,8 @@ typedef enum CBLChangeTrackerMode {
 @property (nonatomic) unsigned limit;
 @property (nonatomic) NSTimeInterval heartbeat;
 @property (nonatomic) NSArray *docIDs;
+
+@property (nonatomic) unsigned seqInterval;
 
 - (BOOL) start;
 - (void) stop;
