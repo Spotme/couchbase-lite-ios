@@ -62,6 +62,12 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     }
     if (!_pendingSequences) {
         _pendingSequences = [[CBLSequenceMap alloc] init];
+        if (_lastSequence != nil) {
+            // Prime _pendingSequences so its checkpointedValue will reflect the last known seq:
+            SequenceNumber seq = [_pendingSequences addValue: _lastSequence];
+            [_pendingSequences removeSequence: seq];
+            AssertEqual(_pendingSequences.checkpointedValue, _lastSequence);
+        }
     }
     
     _caughtUp = NO;
@@ -103,13 +109,6 @@ static NSString* joinQuotedEscaped(NSArray* strings);
     _changeTracker.filterParameters = _filterParameters;
     _changeTracker.docIDs = _docIDs;
     _changeTracker.authorizer = _authorizer;
-    
-    // Specify interval at which sequence values should be calculated to increase the calculation speed on server.
-    // This value comes from the remote server.
-    id seqIntervalObj = _options[kCBLReplicatorOption_SeqInterval];
-    if ([seqIntervalObj respondsToSelector:@selector(unsignedIntValue)]) {
-        _changeTracker.seqInterval = [seqIntervalObj unsignedIntValue];
-    }
 
     unsigned heartbeat = $castIf(NSNumber, _options[kCBLReplicatorOption_Heartbeat]).unsignedIntValue;
     if (heartbeat >= 15000)
@@ -288,6 +287,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
         LogTo(SyncVerbose, @"%@: no new remote revisions to fetch", self);
         SequenceNumber seq = [_pendingSequences addValue: lastInboxSequence];
         [_pendingSequences removeSequence: seq];
+        self.lastSequence = _pendingSequences.checkpointedValue;
         return;
     }
     
@@ -617,6 +617,9 @@ static NSString* joinQuotedEscaped(NSArray* strings);
         return kCBLStatusOK;
     }];
 
+    // Checkpoint:
+    self.lastSequence = _pendingSequences.checkpointedValue;
+
     time = CFAbsoluteTimeGetCurrent() - time;
     LogTo(Sync, @"%@ inserted %u revs (%u in history) in %.3f sec (%.1f/sec)",
           self, (unsigned)downloads.count, (unsigned)totalHistory, time, downloads.count/time);
@@ -635,6 +638,7 @@ static NSString* joinQuotedEscaped(NSArray* strings);
 @implementation CBLPulledRevision
 
 @synthesize remoteSequenceID=_remoteSequenceID, conflicted=_conflicted;
+
 
 @end
 

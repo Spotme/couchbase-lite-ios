@@ -30,7 +30,7 @@
         return NO;
     [super start];
     _inputBuffer = [[NSMutableData alloc] init];
-    
+
     NSMutableURLRequest* request = nil;
     if (self.docIDs) {
         NSMutableString* path = [NSMutableString string];
@@ -46,11 +46,6 @@
         }
         if (_limit > 0)
             [path appendFormat: @"&limit=%u", _limit];
-        
-        // Add seq interval to skip calculating certain sequences
-        if (_seqInterval && _seqInterval > 0) {
-            [path appendFormat: @"&seq_interval=%u", _seqInterval];
-        }
         
         request = [NSMutableURLRequest requestWithURL: CBLAppendToURL(_databaseURL, path)];
         request.HTTPMethod = @"POST";

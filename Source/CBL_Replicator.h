@@ -124,4 +124,3 @@ extern NSString* CBL_ReplicatorStoppedNotification;
 #define kCBLReplicatorOption_BulkGet @"bulk_get"            // Force using the non-standard _bulk_get call which speeds-up replication
 #define kCBLReplicatorOption_IgnoreRemoved @"ignore_removed"// Ignore items in changes feed with removed:true
 #define kCBLReplicatorOption_BatchSize @"batch_size"        // Size for inbox batcher, _bulk_get request and for downloads insert batcher
-#define kCBLReplicatorOption_SeqInterval @"seq_interval"    // seq_interval value to be used in changes feed

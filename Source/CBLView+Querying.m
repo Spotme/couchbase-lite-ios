@@ -24,6 +24,10 @@
 #import "FMResultSet.h"
 #import "ExceptionUtils.h"
 
+
+#define kReduceBatchSize 100
+
+
 const CBLQueryOptions kDefaultCBLQueryOptions = {
     .limit = UINT_MAX,
     .inclusiveEnd = YES,
