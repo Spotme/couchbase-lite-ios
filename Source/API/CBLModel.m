@@ -409,11 +409,12 @@
     return YES;
 }
 
-
+// Xcode 12 doesn't compile without explicitely type-casting `objc_msgSend` to the version with parameters and return value.
+typedef id (*MsgSendWithArguments)(id objc_self, SEL selector);
 + (Class) itemClassForArrayProperty: (NSString*)property {
     SEL sel = NSSelectorFromString([property stringByAppendingString: @"ItemClass"]);
     if ([self respondsToSelector: sel]) {
-        return (Class)objc_msgSend(self, sel);
+        return (Class)((MsgSendWithArguments)objc_msgSend)(self, sel);
     }
     return Nil;
 }
